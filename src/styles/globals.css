@@ -3,3 +3,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base{
+    button{
+        @apply btn-sm md:btn-md !important
+    }
+}
