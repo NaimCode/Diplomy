@@ -4,7 +4,9 @@ import { NextPage, InferGetServerSidePropsType } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { FormEvent, FormEventHandler, useState } from "react";
+import { toast } from "react-toastify";
 import Input from "../components/Input";
 import {
   AdresseIcon,
@@ -16,6 +18,7 @@ import {
   ShortTextIcon,
   TelIcon,
 } from "../constants/icons";
+import { trpc } from "../utils/trpc";
 
 export async function getServerSideProps({ locale }: { locale: string }) {
   return {
@@ -42,14 +45,40 @@ const Inscription = (
 
 const SideForm = () => {
   const { t } = useTranslation();
-  const [etablissement, setetablissement] = useState<string>("")
-  const [abrev, setabrev] = useState("")
-  const [identifiant, setidentifiant] = useState("")
-  const [paysVille, setpaysVille] = useState("")
-  const [address, setaddress] = useState("")
-  const [responsable, setresponsable] = useState("")
-  const [email, setemail] = useState("")
-  const [tel, settel] = useState("")
+  const {push}=useRouter()
+  const { mutate: inscrire, isLoading } = trpc.useMutation(
+    ["auth.inscription"],
+    {
+      onSuccess: (data) => {
+        console.log("Inscrire success:",data);
+        push("/state/success")
+      },
+      onError: (err) => {
+        console.log("Inscrire error:",err);
+        toast.error(t("global.toast erreur"))
+      },
+      onSettled: () => {
+        console.log("settled");
+      },
+    }
+  );
+
+  const [etablissement, setetablissement] = useState<string>("");
+  const [abrev, setabrev] = useState("");
+  const [identifiant, setidentifiant] = useState("");
+  const [paysVille, setpaysVille] = useState("");
+  const [address, setaddress] = useState("");
+  const [responsable, setresponsable] = useState("");
+  const [email, setemail] = useState("");
+  const [tel, settel] = useState("");
+
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    inscrire({
+      etablissement,abrev,identifiant,paysVille,address,responsable,email,tel
+    })
+    
+  };
   return (
     <motion.div
       initial={{
@@ -63,89 +92,79 @@ const SideForm = () => {
       transition={{ duration: 0.5 }}
       className="flex-grow h-full p-3 md:p-10 text-center md:text-left md:overflow-y-scroll"
     >
-      <form className="mx-auto max-w-xl">
+      <form className="mx-auto max-w-xl" onSubmit={(e) => onSubmit(e)}>
         <h2>{t("inscription.SideForm title")}</h2>
         <p>{t("inscription.SideForm description")}</p>
         <div className="h-6 md:h-10"></div>
         <div className="form-control flex flex-col gap-3 md:gap-5">
-     
           <Input
-            icon={  <EtablissementIcon className="icon" />}
+            icon={<EtablissementIcon className="icon" />}
             value={etablissement}
             setValue={setetablissement}
             placeholder="inscription.nom"
             required
-
+        
           />
           <div className="flex flex-col md:flex-row gap-3 md:gap-5">
-          <Input
-            icon={  <ShortTextIcon className="icon" />}
-            value={abrev}
-            setValue={setabrev}
-            placeholder="inscription.abrev"
-            required
-
-          />
             <Input
-            icon={  <ShortTextIcon className="icon" />}
-            value={identifiant}
-            setValue={setidentifiant}
-            placeholder="inscription.numero/identifiant"
-           
-
-          />
-
+              icon={<ShortTextIcon className="icon" />}
+              value={abrev}
+              setValue={setabrev}
+              placeholder="inscription.abrev"
+              required
+            />
+            <Input
+              icon={<ShortTextIcon className="icon" />}
+              value={identifiant}
+              setValue={setidentifiant}
+              placeholder="inscription.numero/identifiant"
+            />
           </div>
-         
-              <Input
-            icon={    <MapIcon className="icon" />}
+
+          <Input
+            icon={<MapIcon className="icon" />}
             value={paysVille}
             setValue={setpaysVille}
             placeholder="inscription.pays/ville"
             required
-
           />
-          
-        
+
           <Input
-            icon={   <AdresseIcon className="icon" />}
+            icon={<AdresseIcon className="icon" />}
             value={address}
             setValue={setaddress}
             placeholder="inscription.adresse"
-            
-
           />
-          
+
           <div className="divider"></div>
           <Input
-            icon={ <PersonIcon className="icon" />}
+            icon={<PersonIcon className="icon" />}
             value={responsable}
             setValue={setresponsable}
             placeholder="inscription.responsable"
             required
-
           />
-       <div className="flex flex-col md:flex-row gap-3 md:gap-5">
-       <Input
-            icon={<EmailIcon className="icon" />}
-            value={email}
-            setValue={setemail}
-            placeholder="inscription.email"
-            required
-            type="email"
-          />
-             <Input
-            icon={<TelIcon className="icon" />}
-            value={tel}
-            setValue={settel}
-            placeholder="inscription.tel"
-            required
-            type="tel"
-          />
-       </div>
+          <div className="flex flex-col md:flex-row gap-3 md:gap-5">
+            <Input
+              icon={<EmailIcon className="icon" />}
+              value={email}
+              setValue={setemail}
+              placeholder="inscription.email"
+              required
+              type="email"
+            />
+            <Input
+              icon={<TelIcon className="icon" />}
+              value={tel}
+              setValue={settel}
+              placeholder="inscription.tel"
+              required
+              type="tel"
+            />
+          </div>
         </div>
-        <div className="mt-[40px] md:mt-[100px]">
-          <button type="submit" className="btn w-full">
+        <div  className="mt-[40px] md:mt-[100px]">
+          <button type="submit" className={`btn w-full ${isLoading&&"loading"}`}>
             {t("inscription.submit")}
           </button>
         </div>

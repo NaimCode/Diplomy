@@ -1,6 +1,7 @@
 {
     "global":{
-     "onInvalid":"Ce champs est obligatoire"
+     "onInvalid":"Ce champs est obligatoire",
+     "toast erreur":"Un problème un été rencontré"
     },
     "home":{
         "Header title":"Diplomy",

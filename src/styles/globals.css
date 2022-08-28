@@ -16,5 +16,8 @@
     textarea{
         @apply  outline-none md:text-lg  md:placeholder:text-lg !important
     }
+    .toast {
+        @apply btn !important
+    }
    
 }

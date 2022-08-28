@@ -71,7 +71,7 @@ model Inscription{
     etablissement String
     abrev String
     identifiant String?
-    pays_ville String
+    paysVille String
     address String?
     responsable String
     email String

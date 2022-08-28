@@ -1,7 +1,6 @@
 import {  NextPageContext } from "next";
 import Document, { Html, Main, NextScript, Head, DocumentContext } from "next/document";
 
-  
 
 class MyDocument extends Document {
   static async getInitialProps(ctx:NextPageContext) {
@@ -21,6 +20,7 @@ class MyDocument extends Document {
         </Head>
         <body>
           <Main />
+       
           <NextScript />
         </body>
       </Html>

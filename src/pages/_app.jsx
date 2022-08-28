@@ -7,13 +7,22 @@ import "rsuite/dist/rsuite.min.css";
 import { CustomProvider } from "rsuite";
 import { appWithTranslation } from "next-i18next";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
-
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/router";
 const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
+  const router = useRouter();
   return (
     <SessionProvider session={session}>
       <CustomProvider theme="light">
         <Component {...pageProps} />
+        <ToastContainer
+          theme="colored"
+          newestOnTop={true}
+          
+          position="top-center"
+          rtl={router.locale === "ar" ? true : false}
+        />
       </CustomProvider>
     </SessionProvider>
   );
