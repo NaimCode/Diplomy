@@ -4,11 +4,17 @@
 @tailwind utilities;
 
 @layer base{
-    button{
+    /* button{
         @apply btn-sm md:btn-md !important
-    }
+    } */
     .icon {
-        @apply text-2xl !important
+        @apply text-xl md:text-2xl !important
+    }
+    input{
+        @apply  outline-none md:text-lg  md:placeholder:text-lg !important
+    }
+    textarea{
+        @apply  outline-none md:text-lg  md:placeholder:text-lg !important
     }
    
 }

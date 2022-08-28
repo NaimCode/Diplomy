@@ -4,5 +4,18 @@
         "Header description":"Diplome assuré sur la blockchain",
         "Button inscription":"demande d'inscription",
         "Button workspace":"workspace"
+    },
+    "inscription":{
+        "SideContent title":"Lancez-vous sur la blockchain avec nous.",
+        "SideForm title":"Demande d'inscription",
+        "SideForm description":"Ces informations nous sont primordiales pour l'étude de votre demande, veuillez donc prendre soin de bien remplir",
+        "nom":"Nom de l'établissement",
+        "abrev":"Abbréviation",
+        "numero/identifiant":"Numéro/Identifiant",
+        "pays/ville":"Pays/Ville",
+        "adresse":"Adresse",
+        "responsable":"Nom et prénom du responsable",
+        "email":"Email",
+        "submit":"Envoyer"
     }
 }

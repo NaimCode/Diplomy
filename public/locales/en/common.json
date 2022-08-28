@@ -4,5 +4,9 @@
         "Header description":"Diploma assured on the blockchain",
         "Button inscription":"Subscription",
         "Button workspace":"workspace"
+    },
+    "inscription":{
+        "SideContent title":"Lancer sur la blockchain avec nous.",
+        "SideContent description":"Ces informations nous sont primordiales pour l'étude de votre demande, veuillez donc prendre soin de bien remplir"
     }
 }

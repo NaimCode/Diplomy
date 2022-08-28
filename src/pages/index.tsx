@@ -6,15 +6,8 @@ import Head from "next/head";
 import NavBar from "../partials/NavBar";
 import { getStaticPropsTranslations } from "../utils/i18n";
 
-  
-export async function getServerSideProps({ locale }: { locale: string }) {
-   return {
-       props: {
-       ...(await serverSideTranslations(locale, ['common'])),
-       },
-   }
-}
-const Home = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+
+const Home:NextPage = (props) => {
   return (
     <>
       <Head>
@@ -31,4 +24,10 @@ const Home = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
 
 export default Home;
 
-
+export async function getServerSideProps({ locale }:{locale:string}) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["common"])),
+    },
+  };
+}

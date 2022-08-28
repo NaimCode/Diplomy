@@ -7,6 +7,8 @@ import "rsuite/dist/rsuite.min.css";
 import { CustomProvider } from "rsuite";
 import { appWithTranslation } from "next-i18next";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
+
+
 const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
   return (
     <SessionProvider session={session}>

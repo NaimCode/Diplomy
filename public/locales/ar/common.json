@@ -4,5 +4,9 @@
         "Header description":"سلسلة الكتل شهادة الدبلوم مضمونة على"  ,
         "Button inscription":"طلب تسجيل",
         "Button workspace":"مساحة العمل"
+    },
+    "inscription":{
+        "SideContent title":"Lancer sur la blockchain avec nous.",
+        "SideContent description":"Ces informations nous sont primordiales pour l'étude de votre demande, veuillez donc prendre soin de bien remplir"
     }
 }
