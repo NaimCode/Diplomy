@@ -12,6 +12,7 @@ const ZInscription = z.object({
   tel: z.string(),
 });
 
+//TODO: implementing case where email exist
 export const authRouter = createRouter().mutation("inscription", {
   input: ZInscription,
   async resolve({ input, ctx }) {

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -22,6 +23,6 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.js"
-, "src/utils/Transition.jsx", "src/pages/_app.jsx"  ],
+, "src/utils/Transition.jsx", "src/pages/_app.jsx", "src/pages/state/success.tsx"  ],
   "exclude": ["node_modules"]
 }

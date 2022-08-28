@@ -1,7 +1,11 @@
 {
     "global":{
      "onInvalid":"Ce champs est obligatoire",
-     "toast erreur":"Un problème un été rencontré"
+     "toast erreur":"Un problème un été rencontré",
+     "retour":"retour"
+    },
+    "state":{
+        "Success inscription":"Demande d'inscription envoyé avec succès, vous récevrez un mail de confirmation une fois la demande est acceptée."
     },
     "home":{
         "Header title":"Diplomy",

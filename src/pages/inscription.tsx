@@ -51,14 +51,11 @@ const SideForm = () => {
     {
       onSuccess: (data) => {
         console.log("Inscrire success:",data);
-        push("/state/success")
+        push("/state/success?type=inscription")
       },
       onError: (err) => {
         console.log("Inscrire error:",err);
         toast.error(t("global.toast erreur"))
-      },
-      onSettled: () => {
-        console.log("settled");
       },
     }
   );
@@ -177,6 +174,7 @@ const SideContent = () => {
   const { t } = useTranslation();
   return (
     <motion.div
+    
       transition={{
         duration: 0.5,
         delay: 0.3,
