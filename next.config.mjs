@@ -1,5 +1,6 @@
 import { env } from "./src/env/server.mjs";
-
+import pkg from "./next-i18next.config.js";
+const { i18n } = pkg;
 /**
  * Don't be scared of the generics here.
  * All they do is to give us autocompletion when using this.
@@ -15,4 +16,5 @@ function defineNextConfig(config) {
 export default defineNextConfig({
   reactStrictMode: true,
   swcMinify: true,
+  i18n,
 });

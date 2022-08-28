@@ -22,6 +22,6 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.js"
-, "src/utils/Transition.jsx"  ],
+, "src/utils/Transition.jsx", "src/pages/_app.jsx"  ],
   "exclude": ["node_modules"]
 }

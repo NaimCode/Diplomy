@@ -1,20 +1,16 @@
-// src/pages/_app.tsx
 import { withTRPC } from "@trpc/next";
-import type { AppRouter } from "../server/router";
-import type { AppType } from "next/dist/shared/lib/utils";
+
 import superjson from "superjson";
 import { SessionProvider } from "next-auth/react";
 import "../styles/globals.css";
-import 'rsuite/dist/rsuite.min.css';
+import "rsuite/dist/rsuite.min.css";
 import { CustomProvider } from "rsuite";
-
-const MyApp: AppType = ({
-  Component,
-  pageProps: { session, ...pageProps },
-}) => {
+import { appWithTranslation } from "next-i18next";
+import "/node_modules/flag-icons/css/flag-icons.min.css";
+const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
   return (
     <SessionProvider session={session}>
-      <CustomProvider theme='light'>
+      <CustomProvider theme="light">
         <Component {...pageProps} />
       </CustomProvider>
     </SessionProvider>
@@ -27,7 +23,7 @@ const getBaseUrl = () => {
   return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
 };
 
-export default withTRPC<AppRouter>({
+export default withTRPC({
   config() {
     /**
      * If you want to use SSR, you need to use the server's full URL
@@ -48,4 +44,4 @@ export default withTRPC<AppRouter>({
    * @link https://trpc.io/docs/ssr
    */
   ssr: false,
-})(MyApp);
+})(appWithTranslation(MyApp));

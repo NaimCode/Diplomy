@@ -7,4 +7,8 @@
     button{
         @apply btn-sm md:btn-md !important
     }
+    .icon {
+        @apply text-2xl !important
+    }
+   
 }
