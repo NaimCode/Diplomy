@@ -6,7 +6,7 @@ import Document, { Html, Main, NextScript, Head, DocumentContext } from "next/do
 class MyDocument extends Document {
   static async getInitialProps(ctx:NextPageContext) {
     const initialProps = await Document.getInitialProps(ctx as DocumentContext);
-    return { ...initialProps, locale: ctx?.locale || "en" };
+    return { ...initialProps, locale: ctx?.locale || "fr" };
   }
 
   render() {

@@ -1,4 +1,7 @@
 {
+    "global":{
+     "onInvalid":"Ce champs est obligatoire"
+    },
     "home":{
         "Header title":"Diplomy",
         "Header description":"Diplome assuré sur la blockchain",
@@ -16,6 +19,7 @@
         "adresse":"Adresse",
         "responsable":"Nom et prénom du responsable",
         "email":"Email",
+        "tel":"Tél",
         "submit":"Envoyer"
     }
 }

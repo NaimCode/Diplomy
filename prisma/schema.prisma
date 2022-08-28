@@ -62,3 +62,21 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+
+///
+
+model Inscription{
+    id String @id @default(uuid())
+    etablissement String
+    abrev String
+    identifiant String?
+    pays_ville String
+    address String?
+    responsable String
+    email String
+    tel String 
+    createAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+    accepted Boolean @default(false)
+}
