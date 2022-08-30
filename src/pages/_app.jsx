@@ -11,9 +11,9 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
 
-
 const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
   const router = useRouter();
+
   return (
     <SessionProvider session={session}>
       <CustomProvider theme="light">

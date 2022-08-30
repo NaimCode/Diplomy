@@ -2,6 +2,8 @@
     "global":{
      "onInvalid":"Ce champs est obligatoire",
      "toast erreur":"Un problème un été rencontré",
+     "dialog cancel":"annuler",
+     "dialog validate":"valider",
      "retour":"retour"
     },
     "state":{
@@ -11,7 +13,8 @@
         "Header title":"Diplomy",
         "Header description":"Diplome assuré sur la blockchain",
         "Button inscription":"demande d'inscription",
-        "Button workspace":"espace de travail"
+        "Button workspace":"espace de travail",
+        "Dialog title":"Vous devez vous connecter"
     },
     "inscription":{
         "SideContent title":"Lancez-vous sur la blockchain avec nous.",

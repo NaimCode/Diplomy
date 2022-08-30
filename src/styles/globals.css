@@ -1,4 +1,4 @@
-
+@import '~rsuite/dist/rsuite-rtl.min.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
