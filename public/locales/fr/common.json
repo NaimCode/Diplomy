@@ -11,7 +11,7 @@
         "Header title":"Diplomy",
         "Header description":"Diplome assuré sur la blockchain",
         "Button inscription":"demande d'inscription",
-        "Button workspace":"workspace"
+        "Button workspace":"espace de travail"
     },
     "inscription":{
         "SideContent title":"Lancez-vous sur la blockchain avec nous.",
@@ -27,4 +27,5 @@
         "tel":"Tél",
         "submit":"Envoyer"
     }
+   
 }

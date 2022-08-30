@@ -3,6 +3,7 @@ import Link from "next/link";
 import LanguageChanger from "../components/LanguageChanger";
 
 import Logo from "../components/Logo";
+import WorkspaceButton from "../components/WorkspaceButton";
 import { FileIcon} from "../constants/icons";
 
 const NavBar = () => {
@@ -21,9 +22,7 @@ const NavBar = () => {
             {t('home.Button inscription')}
           </button>
         </Link>
-        <button className="btn btn-primary">
-          {t('home.Button workspace')}
-        </button>
+       <WorkspaceButton/>
       </div>
     </div>
   );

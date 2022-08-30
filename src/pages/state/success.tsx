@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { motion } from "framer-motion";
 import { useLottie } from "lottie-react";
 import { NextPage, InferGetServerSidePropsType } from "next";
 import { useTranslation } from "next-i18next";
@@ -35,9 +36,18 @@ const Success = (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
   
   return (
     <div className="h-screen w-screen flex flex-col items-center justify-center p-6 text-center">
-      <Animation />
+     <motion.div initial={{
+      y:100,
+      scale:0.8
+     }} animate={{y:0,scale:1}} transition={{
+      duration:0.5
+     }} className="max-w-[200px] md:max-w-[300px]">
+     <Animation />
+     </motion.div>
+  
     
-      <div className="py-[20px] md:py-[50px] w-full md:max-w-xl">
+      <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.4,duration:0.4}}>
+      <div className="py-[20px] md:py-[50px] w-full md:max-w-xl md:text-lg ">
       {t(text)}
       </div>
       <button onClick={()=>{
@@ -46,6 +56,7 @@ const Success = (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
         <NavBackIcon className="icon"/>
         {t('global.retour')}
       </button>
+      </motion.div>
     </div>
   );
 };
@@ -58,6 +69,6 @@ const Animation = () => {
 
   const { View } = useLottie(options);
 
-  return <div className="max-w-[200px] md:max-w-[300px]">{View}</div>;
+  return <>{View}</>;
 };
 export default Success;

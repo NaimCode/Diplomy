@@ -18,6 +18,7 @@ import {
   ShortTextIcon,
   TelIcon,
 } from "../constants/icons";
+import { useLocale } from "../utils/hooks";
 import { trpc } from "../utils/trpc";
 
 export async function getServerSideProps({ locale }: { locale: string }) {
@@ -76,10 +77,11 @@ const SideForm = () => {
     })
     
   };
+  const {isAr}=useLocale()
   return (
     <motion.div
       initial={{
-        x: 100,
+        x:  isAr?-100: 100,
         scale: 1,
       }}
       animate={{
@@ -171,6 +173,8 @@ const SideForm = () => {
 };
 
 const SideContent = () => {
+  const {locale}=useRouter()
+  const isAr=locale=='ar'
   const { t } = useTranslation();
   return (
     <motion.div
@@ -179,7 +183,7 @@ const SideContent = () => {
         duration: 0.5,
         delay: 0.3,
       }}
-      initial={{ x: -1000, opacity: 0.4 }}
+      initial={{ x:isAr?1000: -1000, opacity: 0.4 }}
       animate={{ x: 0, opacity: 1 }}
       className="rounded-lg bg-primary w-[400px] lg:w-[500px] hidden h-full lg:flex flex-col p-10"
     >
