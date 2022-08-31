@@ -6,7 +6,7 @@ import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
 import dataAnimation from "../../../public/lotties/success.json";
-import { NavBackIcon } from "../../constants/icons";
+import { HomeIcon, NavBackIcon } from "../../constants/icons";
 
 
 export async function getServerSideProps({ locale }: { locale: string }) {
@@ -19,6 +19,7 @@ export async function getServerSideProps({ locale }: { locale: string }) {
 const Success = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const {t} = useTranslation()
   const router=useRouter()
+
   const {query}=router
   let text=''
 
@@ -28,7 +29,9 @@ const Success = (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
     case 'inscription':
       text="state.Success inscription"
       break;
-  
+      case 'inscription-accepted':
+        text="state.Success inscription accepte"
+        break;
     default:
       break;
   }
@@ -50,11 +53,10 @@ const Success = (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
       <div className="py-[20px] md:py-[50px] w-full md:max-w-xl md:text-lg ">
       {t(text)}
       </div>
-      <button onClick={()=>{
-        router.back()
+      <button title="Eternum" onClick={()=>{
+        router.push("/")
       }} className="btn btn-outline gap-3">
-        <NavBackIcon className="icon"/>
-        {t('global.retour')}
+        <HomeIcon className="icon"/>
       </button>
       </motion.div>
     </div>

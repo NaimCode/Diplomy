@@ -5,10 +5,11 @@ import {FaMapSigns,FaMapMarker} from 'react-icons/fa'
 import {BsFillPersonFill, BsFillTelephoneFill, BsFillUnlockFill} from 'react-icons/bs'
 import {IoMdClose} from 'react-icons/io'
 import {GrGoogle} from 'react-icons/gr'
+import {HiHome} from 'react-icons/hi'
+
 export const FileIcon=RiFileTextLine
 export const LanguageIcon=TbLanguage
 export const ExpandMoreIcon=MdExpandMore
-
 export const NavBackIcon=MdNavigateBefore
 export const EtablissementIcon=MdSchool
 export const ShortTextIcon=MdOutlineShortText
@@ -20,3 +21,4 @@ export const TelIcon=BsFillTelephoneFill
 export const UnlockIcon=BsFillUnlockFill
 export const CloseIcon=IoMdClose
 export const GoogleIcon=GrGoogle
+export const HomeIcon=HiHome

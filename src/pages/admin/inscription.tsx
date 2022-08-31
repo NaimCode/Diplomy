@@ -35,12 +35,24 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       })
     )
   );
+  if (!id)
+    return {
+      redirect: {
+        destination: "/404",
+        permanent: true,
+      },
+    };
+  if (!demande)
+    return {
+      redirect: {
+        destination: "/state/success?type=inscription-accepted",
+        permanent: true,
+      },
+    };
   return {
     props: {
       ...(await serverSideTranslations(ctx.locale!, ["common"])),
       demande,
-      error: id ? false : true,
-      isNotExist: demande ? false : true,
       code: process.env.ADMINS_PASSWORD,
     },
   };
@@ -50,12 +62,12 @@ const DemandeInscription = (
 ) => {
   const { t } = useTranslation();
   const { push } = useRouter();
-  const { mutate: inscrire, isLoading } = trpc.useMutation(
-    ["auth.inscription"],
+  const { mutate: accepter, isLoading } = trpc.useMutation(
+    ["auth.inscription accepted"],
     {
       onSuccess: (data) => {
         console.log("Inscrire success:", data);
-        push("/state/success?type=demande-acceptee");
+        push("/state/success?type=inscription-accepted");
       },
       onError: (err) => {
         console.log("Inscrire error:", err);
@@ -76,181 +88,145 @@ const DemandeInscription = (
     identifiant,
     tel,
     address,
+    id,
   } = demande;
-const handleChechPwd=()=>{
-  
-    console.log("code", props.code);
-    console.log("this", code);
+  const handleChechPwd = () => {
     if (code == props.code) {
       setisAdmin(true);
       seterr(false);
     } else {
       seterr(true);
-      toast.error(t('admin.mot de passe invalide'))
-    
-  }
-}
+      toast.error(t("admin.mot de passe invalide"));
+    }
+  };
   return (
     <>
-      {isNotExist ? (
-        <IsNotExist />
-      ) : (
-        <>
-          <div className={`modal ${!isAdmin&&"modal-open"} backdrop-blur-md`}>
-            <div className="modal-box  flex justify-center items-center">
-              <div className="form-control">
-                <div className="input-group input-group-lg w-full">
-                  <input
-                    type="password"
-                    onChange={(e)=>setCode(e.target.value)}
-                    value={code}
-                    placeholder={t("admin.mot de passe")}
-                    className={`input input-bordered ${err&&"input-error"}`}
-                  />
-                  <button   onClick={handleChechPwd} title="Déverouiller" className="btn btn-square">
-                    <UnlockIcon className="icon" />
-                  </button>
-                </div>
-              </div>
-              {/* <div>
-                <Input
-                  icon={<UnlockIcon className="icon" />}
-                  value={code}
-                  setValue={setCode}
-                  placeholder="global.mot de passe"
-                  hoverable={false}
-                  border
-                />
-                {err && (
-                  <span className="text-sm text-left text-error">
-                    {t("inscription.mot de passe invalide")}
-                  </span>
-                )}
-              </div> */}
-              {/* <button
-                onClick={() => {
-                  console.log("code", props.code);
-
-                  if (code == props.code) {
-                    setisAdmin(true);
-                    seterr(false);
-                  } else {
-                    seterr(true);
-                  }
-                }}
-                className="btn"
+      <div className={`modal ${!isAdmin && "modal-open"} backdrop-blur-md`}>
+        <div className="modal-box  flex justify-center items-center">
+          <div className="form-control">
+            <div className="input-group input-group-lg w-full">
+              <input
+                type="password"
+                onChange={(e) => setCode(e.target.value)}
+                value={code}
+                placeholder={t("admin.mot de passe")}
+                className={`input input-bordered ${err && "input-error"}`}
+              />
+              <button
+                onClick={handleChechPwd}
+                title="Déverouiller"
+                className="btn btn-square"
               >
-                {t("inscription.valider")}
-              </button> */}
-              <div className="modal-action"></div>
+                <UnlockIcon className="icon" />
+              </button>
             </div>
           </div>
+          <div className="modal-action"></div>
+        </div>
+      </div>
 
-          <div className="min-h-screen bg-primary flex justify-center items-center  p-3 md:p-10 text-center md:text-left">
-            <form className=" mockup-window border p-3 md:p-10 bg-base-100">
-              <div className="h-6 md:h-10"></div>
-              <div className="form-control flex flex-col gap-3 md:gap-5">
-                <Input
-                  icon={<EtablissementIcon className="icon" />}
-                  value={etablissement}
-                  placeholder="inscription.nom"
-                  hoverable={false}
-                  border
-                  readOnly
-                  tooltip
-                />
-                <div className="flex flex-col md:flex-row gap-3 md:gap-5">
-                  <Input
-                    icon={<ShortTextIcon className="icon" />}
-                    value={abrev}
-                    placeholder="inscription.abrev"
-                    readOnly
-                    border
-                    tooltip
-                    hoverable={false}
-                  />
-                  <Input
-                    icon={<ShortTextIcon className="icon" />}
-                    value={identifiant}
-                    placeholder="inscription.numero/identifiant"
-                    readOnly
-                    hoverable={false}
-                    border
-                    tooltip
-                  />
-                </div>
+      <div className="min-h-screen bg-primary flex justify-center items-center  p-3 md:p-10 text-center md:text-left">
+        <div className=" mockup-window border p-3 md:p-10 bg-base-100">
+          <div className="h-6 md:h-10"></div>
+          <div className="form-control flex flex-col gap-3 md:gap-5">
+            <Input
+              icon={<EtablissementIcon className="icon" />}
+              value={etablissement}
+              placeholder="inscription.nom"
+              hoverable={false}
+              border
+              readOnly
+              tooltip
+            />
+            <div className="flex flex-col md:flex-row gap-3 md:gap-5">
+              <Input
+                icon={<ShortTextIcon className="icon" />}
+                value={abrev}
+                placeholder="inscription.abrev"
+                readOnly
+                border
+                tooltip
+                hoverable={false}
+              />
+              <Input
+                icon={<ShortTextIcon className="icon" />}
+                value={identifiant}
+                placeholder="inscription.numero/identifiant"
+                readOnly
+                hoverable={false}
+                border
+                tooltip
+              />
+            </div>
 
-                <Input
-                  icon={<MapIcon className="icon" />}
-                  value={paysVille}
-                  placeholder="inscription.pays/ville"
-                  readOnly
-                  hoverable={false}
-                  border
-                  tooltip
-                />
+            <Input
+              icon={<MapIcon className="icon" />}
+              value={paysVille}
+              placeholder="inscription.pays/ville"
+              readOnly
+              hoverable={false}
+              border
+              tooltip
+            />
 
-                <Input
-                  icon={<AdresseIcon className="icon" />}
-                  value={address}
-                  placeholder="inscription.adresse"
-                  readOnly
-                  hoverable={false}
-                  border
-                  tooltip
-                />
+            <Input
+              icon={<AdresseIcon className="icon" />}
+              value={address}
+              placeholder="inscription.adresse"
+              readOnly
+              hoverable={false}
+              border
+              tooltip
+            />
 
-                <div className="divider"></div>
-                <Input
-                  icon={<PersonIcon className="icon" />}
-                  value={responsable}
-                  placeholder="inscription.responsable"
-                  readOnly
-                  hoverable={false}
-                  border
-                  tooltip
-                />
-                <div className="flex flex-col md:flex-row gap-3 md:gap-5">
-                  <Input
-                    icon={<EmailIcon className="icon" />}
-                    value={email}
-                    placeholder="inscription.email"
-                    readOnly
-                    type="email"
-                    hoverable={false}
-                    border
-                    tooltip
-                  />
+            <div className="divider"></div>
+            <Input
+              icon={<PersonIcon className="icon" />}
+              value={responsable}
+              placeholder="inscription.responsable"
+              readOnly
+              hoverable={false}
+              border
+              tooltip
+            />
+            <div className="flex flex-col md:flex-row gap-3 md:gap-5">
+              <Input
+                icon={<EmailIcon className="icon" />}
+                value={email}
+                placeholder="inscription.email"
+                readOnly
+                type="email"
+                hoverable={false}
+                border
+                tooltip
+              />
 
-                  <Input
-                    icon={<TelIcon className="icon" />}
-                    value={tel}
-                    placeholder="inscription.tel"
-                    readOnly
-                    type="tel"
-                    hoverable={false}
-                    border
-                    tooltip
-                  />
-                </div>
-              </div>
-              <div className="mt-[25px] md:mt-[40px]">
-                <button
-                  type="submit"
-                  className={`btn btn-warning w-full ${isLoading && "loading"}`}
-                >
-                  {t("inscription.valider")}
-                </button>
-              </div>
-            </form>
+              <Input
+                icon={<TelIcon className="icon" />}
+                value={tel}
+                placeholder="inscription.tel"
+                readOnly
+                type="tel"
+                hoverable={false}
+                border
+                tooltip
+              />
+            </div>
           </div>
-        </>
-      )}
+          <div className="mt-[25px] md:mt-[40px]">
+            <button
+              onClick={() => {
+                accepter({ id });
+              }}
+              className={`btn btn-warning w-full ${isLoading && "loading"}`}
+            >
+              {t("inscription.valider")}
+            </button>
+          </div>
+        </div>
+      </div>
     </>
   );
 };
 
-const IsNotExist = () => {
-  return <div>isNotExist</div>;
-};
 export default DemandeInscription;

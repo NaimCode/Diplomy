@@ -78,5 +78,17 @@ model Inscription{
     tel String 
     createAt DateTime @default(now())
     updateAt DateTime @updatedAt
-    accepted Boolean @default(false)
+
+}
+
+model Etablissement {
+    id String @id  @default(uuid())
+    createAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+    abrev String
+    nom String @unique
+    identifiant String?
+    paysVille String?
+    address String?
+    membres String[] @unique
 }
