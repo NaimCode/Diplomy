@@ -4,7 +4,8 @@
      "toast erreur":"Un problème un été rencontré",
      "dialog cancel":"annuler",
      "dialog validate":"valider",
-     "retour":"retour"
+     "retour":"retour",
+     "mot de passe":"Mot de passe"
     },
     "state":{
         "Success inscription":"Demande d'inscription envoyé avec succès, vous récevrez un mail de confirmation une fois la demande est acceptée."
@@ -28,7 +29,8 @@
         "responsable":"Nom et prénom du responsable",
         "email":"Email",
         "tel":"Tél",
-        "submit":"Envoyer"
+        "submit":"Envoyer",
+        "valider":"valider"
     }
    
 }
