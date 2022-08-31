@@ -1,5 +1,9 @@
 import { z } from "zod";
 import { createRouter } from "./context";
+import nodemailer from "nodemailer";
+import { Transporter } from "../../utils/nodemailer";
+import { getBaseUrl } from "../../pages/_app";
+
 
 const ZInscription = z.object({
   etablissement: z.string(),
@@ -19,6 +23,11 @@ export const authRouter = createRouter().mutation("inscription", {
     const { prisma } = ctx;
     return await prisma.inscription.create({
       data: input,
-    });
+    }).then(async (data) => await Transporter.sendMail({
+      to:process.env.ADMINS_EMAIL,
+      from:data.email,
+      subject: `Demande d'inscription`,
+      html: `<a href="${getBaseUrl()}/admin/inscription?id=${data.id}">Voir la demande</a>`
+    }));
   },
 });

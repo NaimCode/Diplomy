@@ -26,30 +26,41 @@ const Dialog = ({
   validateText,
   cancelText,
   noHeader,
-  noClose
+  noClose,
 }: DialogProps) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const { t } = useTranslation();
- const {isAr}=useLocale()
+  const { isAr } = useLocale();
   return (
     <>
       <ButtonToolbar>{trigger?.(handleOpen)}</ButtonToolbar>
 
       <Modal
-  
-      dialogClassName="rounded-xl bg-primary" backdropClassName="backdrop-blur-sm " open={open} onClose={handleClose}>
-        <Modal.Header hidden={noHeader} closeButton={false} className="flex flex-row justify-between gap-2 items-center">
-          <Modal.Title hidden={title == undefined}>{title}</Modal.Title>
-          {!noClose&& <CloseIcon onClick={handleClose} className="icon cursor-pointer transition-all hover:scale-105"/>}
-        </Modal.Header>
+ 
+        dialogClassName="translate-y-[25%] bg-green-400"
+        backdropClassName="backdrop-blur-sm "
+        open={open}
+        onClose={handleClose}
+      >
+        {!noHeader && (
+          <Modal.Header
+            closeButton={false}
+            className="flex flex-row justify-between gap-2 items-center"
+          >
+            <Modal.Title hidden={title == undefined}>{title}</Modal.Title>
+            {!noClose && (
+              <CloseIcon
+                onClick={handleClose}
+                className="icon cursor-pointer transition-all hover:scale-105"
+              />
+            )}
+          </Modal.Header>
+        )}
         <Modal.Body>{children}</Modal.Body>
         {!noFooter && (
-          <Modal.Footer
-            className="flex flex-row gap-3 justify-end"
-          
-          >
+          <Modal.Footer className="flex flex-row gap-3 justify-end">
             <button
               hidden={noCancel}
               className="btn btn-ghost"

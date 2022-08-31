@@ -10,13 +10,18 @@ type TypeProps={
     className?:string,
     type?:string
     value:string,
-    setValue:TSetValue,
-    labelClassName?:string
+    setValue?:TSetValue,
+    labelClassName?:string,
+    readOnly?:boolean,
+    hoverable?:boolean,
+    border?:boolean,
+    tooltip?:boolean,
+    size?:'lg'|'sm'|'md'
 }
-const Input = ({value,setValue, icon,type="text",required=false,placeholder,className,labelClassName="input-group-lg"}:TypeProps) => {
+const Input = ({tooltip="false",size="md",value,setValue,border,readOnly,hoverable=true, icon,type="text",required=false,placeholder,className,labelClassName="input-group-lg"}:TypeProps) => {
     const {t} =useTranslation()
   return (
-    <label className={`input-group ${labelClassName} transition-all hover:scale-105`}>
+    <label className={`input-group ${labelClassName} ${hoverable&&"transition-all hover:scale-105"}`}>
     <span className={`${!icon&& "hidden"}`}>
       {icon}
     </span>
@@ -25,11 +30,13 @@ const Input = ({value,setValue, icon,type="text",required=false,placeholder,clas
       type={type}
       required={required}
       value={value}
-      onChange={(e)=>setValue(e.target.value)}
+      readOnly={readOnly}
+      data-tip={value}
+      onChange={ (e)=>setValue!(e.target.value)}
       onInvalid={e => (e.target as HTMLInputElement).setCustomValidity(t('global.onInvalid'))}
        onInput={e => (e.target as HTMLInputElement).setCustomValidity('')}
       placeholder={t(placeholder)}
-      className={`input flex-grow w-full text-ellipsis focus:input-secondary border-2 ${className}`}
+      className={`input flex-grow w-full text-ellipsis focus:input-secondary border-2 ${border&&"input-bordered"} ${className} ${tooltip&&"tooltip"}`}
     />
   </label>
   )

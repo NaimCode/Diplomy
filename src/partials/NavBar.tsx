@@ -1,12 +1,18 @@
+import { signIn } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import LanguageChanger from "../components/LanguageChanger";
 
 import Logo from "../components/Logo";
-import WorkspaceButton from "../components/WorkspaceButton";
 import { FileIcon} from "../constants/icons";
 
+
 const NavBar = () => {
+const handleSignIn=()=>{
+  signIn('google').then(()=>{}).catch((err)=>{
+    console.log(err)
+  })
+}
   const { t } = useTranslation();
   return (
     <div className="navbar bg-base-100 sticky top-0 left-0">
@@ -22,7 +28,9 @@ const NavBar = () => {
             {t('home.Button inscription')}
           </button>
         </Link>
-       <WorkspaceButton/>
+        <button onClick={handleSignIn} className="btn btn-primary">
+          {t("home.Button workspace")}
+        </button>
       </div>
     </div>
   );
