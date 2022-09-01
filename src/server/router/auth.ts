@@ -54,7 +54,7 @@ export const authRouter = createRouter().mutation("inscription", {
           address,
           paysVille,
           identifiant,
-          membres: [email],
+          membresAutorises: [email],
           abrev
         }
       }),
@@ -70,6 +70,5 @@ export const authRouter = createRouter().mutation("inscription", {
       subject: `Félicitation`,
       html: `<div><h3>Votre demande d'inscription pour <b>ETERNUM</b> est acceptée 🎉</h3> <a href="${getBaseUrl()}">Mon compte</a></div>`
     })
-
   }
 });

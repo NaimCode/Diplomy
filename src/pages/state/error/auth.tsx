@@ -1,10 +1,10 @@
 import { motion } from "framer-motion"
-import MyLottie from "../../components/MyLottie"
-import animationData from '../../../public/lotties/error.json'
+import MyLottie from "../../../components/MyLottie"
+import animationData from '../../../../public/lotties/error.json'
 import { useTranslation } from "next-i18next"
 import { NextPage } from "next"
 import { useRouter } from "next/router"
-import { NavBackIcon } from "../../constants/icons"
+import { NavBackIcon } from "../../../constants/icons"
 //TODO:Styling this page
 const Auth:NextPage = (props) => {
     const {t}=useTranslation()

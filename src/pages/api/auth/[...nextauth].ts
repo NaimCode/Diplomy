@@ -3,13 +3,15 @@ import DiscordProvider from "next-auth/providers/discord";
 
 // Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { prisma } from "../../../server/db/client";
+import { prisma } from '../../../server/db/client';
 import { env } from "../../../env/server.mjs";
 import GoogleProvider from 'next-auth/providers/google';
 
 export const authOptions: NextAuthOptions = {
+  
   // Include user.id on session
   callbacks: {
+
     session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
@@ -17,12 +19,22 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
        
-     signIn({ user, account, profile, email, credentials }) {
-        const isAllowedToSignIn =false
-        console.log('check log');
-        
-        if (isAllowedToSignIn) {
-          return true
+    async signIn({ user, account, profile}) {
+       const {locale,email_verified}=profile
+       const {email}=user
+   
+      const etablissement=await prisma.etablissement.findFirst({
+        where:{
+          membresAutorises:{
+            has:email
+          }
+        }
+      })
+       console.log(user);
+       
+        if (etablissement) {
+
+          return false
         } else {
           // Return false to display a default error message
           return false
@@ -43,7 +55,7 @@ export const authOptions: NextAuthOptions = {
   ],
   pages:{
     signIn:"/",
-    error: '/error/auth',
+    error: '/state/error/auth',
   }
 };
 
