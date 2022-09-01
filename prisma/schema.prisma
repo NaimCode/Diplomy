@@ -51,9 +51,7 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
-    etablissementId String 
-    locale String?
-    etablissement Etablissement @relation(fields: [etablissementId],references: [id],onDelete: Cascade)
+
     accounts      Account[]
     sessions      Session[]
 }
@@ -69,6 +67,14 @@ model VerificationToken {
 
 ///
 
+model Utilisateur{
+    
+    email String @unique
+    etablissementId String 
+    locale String?
+    etablissement Etablissement @relation(fields: [etablissementId],references: [id],onDelete: Cascade)
+}
+
 model Inscription{
     id String @id @default(uuid())
     etablissement String
@@ -81,7 +87,6 @@ model Inscription{
     tel String 
     createAt DateTime @default(now())
     updateAt DateTime @updatedAt
-
 }
 
 model Etablissement {
@@ -94,5 +99,5 @@ model Etablissement {
     paysVille String?
     address String?
     membresAutorises String[] @unique @default([])
-    membres User[] 
+    membres Utilisateur[] 
 }
