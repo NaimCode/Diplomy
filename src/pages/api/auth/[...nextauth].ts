@@ -40,11 +40,7 @@ export const authOptions: NextAuthOptions = {
       })
       ///
       if (etablissement && email) {
-      const isNew=!etablissement.membres.map((m)=>m.email).includes(email)
-      console.log("isNew",isNew);
-      console.log("membres",etablissement.membres.map((m)=>m.email))
-      
-        if (isNew) {
+        if (!etablissement.membres.map((m)=>m.email).includes(email)) {
           await prisma.utilisateur.create({
             data: {
              locale:locale as string,
