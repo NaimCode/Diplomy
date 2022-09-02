@@ -20,6 +20,9 @@
     .toast {
         @apply btn !important
     }
+    .nav{
+        @apply h-[70px] py-3 px-6 flex flex-row items-center !important
+    }
  
  
 }

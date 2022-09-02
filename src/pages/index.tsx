@@ -10,9 +10,6 @@ import { getStaticPropsTranslations } from "../utils/i18n";
 const Home:NextPage = (props) => {
   return (
     <>
-      <Head>
-        <title>Diplomy</title>
-      </Head>
 
       <main className="h-screen">
       <NavBar/>

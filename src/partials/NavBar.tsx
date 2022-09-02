@@ -52,7 +52,6 @@ const ThemeSwitcher = () => {
   const { theme, setTheme } = useTheme();
 
   const handleChange = (isDark: boolean) => {
-    console.log(theme);
     setTheme(isDark ? "dark" : "light");
   };
 

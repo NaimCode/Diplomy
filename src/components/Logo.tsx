@@ -1,6 +1,4 @@
 import React from "react";
-import Image from "next/image";
-import { APP_ICON } from "../constants/assets";
 import { useTheme } from "next-themes";
 import { APP_NAME } from "../constants/global";
 type LogoProps = {
@@ -21,10 +19,7 @@ export const Brand = () => {
   const { theme } = useTheme();
   return (
     <h3
-      style={{
-        color:theme=='dark'?"white":"black"
-      }}
-      className="text-2xl font-bold text-md font-logo"
+      className={`text-2xl font-bold text-md font-logo `}
     >
       {APP_NAME}
     </h3>
@@ -37,10 +32,11 @@ type LogoSVGProps = {
 };
 export const LogoSVG = ({size='medium'}:LogoSVGProps) => {
   const dimension =
-  size == "small" ? "25" : size == "medium" ? "40" : "80";
+  size == "small" ? "25" : size == "medium" ? "42" : "80";
   return (
     <svg
       width={dimension}
+      className="drop-shadow-sm"
       height={dimension}
       viewBox={`0 0 80 80`}
       xmlns="http://www.w3.org/2000/svg"
