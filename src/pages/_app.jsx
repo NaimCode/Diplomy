@@ -1,5 +1,5 @@
 import { withTRPC } from "@trpc/next";
-
+import { ThemeProvider, useTheme } from 'next-themes'
 import superjson from "superjson";
 import { SessionProvider } from "next-auth/react";
 import "../styles/globals.css";
@@ -10,24 +10,37 @@ import "/node_modules/flag-icons/css/flag-icons.min.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
-
+import { useEffect } from 'react'
 const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
-  const router = useRouter();
 
   return (
     <SessionProvider session={session}>
-      <CustomProvider theme="light">
+      <ThemeProvider enableSystem>
+
+        <App>
         <Component {...pageProps} />
-        <ToastContainer
-          theme="colored"
-          newestOnTop={true}
-          position="top-center"
-          rtl={router.locale === "ar" ? true : false}
-        />
-      </CustomProvider>
+        </App>
+      </ThemeProvider>
     </SessionProvider>
   );
 };
+
+const App = ({children}) => {
+  const router = useRouter();
+  const { theme } = useTheme()
+  useEffect(() => {
+    console.log(theme)
+  }, [])
+  return <CustomProvider theme={theme}>
+   {children}
+    <ToastContainer
+      theme="colored"
+      newestOnTop={true}
+      position="top-center"
+      rtl={router.locale === "ar" ? true : false}
+    />
+  </CustomProvider>
+}
 
 export const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""; // browser should use relative url
