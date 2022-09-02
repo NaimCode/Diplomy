@@ -68,7 +68,7 @@ model VerificationToken {
 ///
 
 model Utilisateur{
-    
+    id String @unique @default(uuid())
     email String @unique
     etablissementId String 
     locale String?
