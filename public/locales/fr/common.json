@@ -11,13 +11,13 @@
         "Success inscription":"Demande d'inscription envoyé avec succès, vous récevrez un mail de confirmation une fois la demande est acceptée."
     },
     "home":{
-        "Header title":"Diplomy",
+        "Header title":"Eternum",
         "Header description":"Diplome assuré sur la blockchain",
         "Button inscription":"demande d'inscription",
         "Button workspace":"espace de travail",
         "Dialog title":"Vous devez vous connecter"
     },
-    "inscription":{
+    "inscription":{ap
         "SideContent title":"Lancez-vous sur la blockchain avec nous.",
         "SideForm title":"Demande d'inscription",
         "SideForm description":"Ces informations nous sont primordiales pour l'étude de votre demande, veuillez donc prendre soin de bien remplir",

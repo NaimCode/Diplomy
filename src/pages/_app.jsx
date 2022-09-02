@@ -15,7 +15,7 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
 
   return (
     <SessionProvider session={session}>
-      <ThemeProvider enableSystem>
+      <ThemeProvider enableSystem={false}>
 
         <App>
         <Component {...pageProps} />
