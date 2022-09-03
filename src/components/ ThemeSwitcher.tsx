@@ -5,6 +5,7 @@ const  ThemeSwitcher=()=>{
 
     const handleChange = (isDark: boolean) => {
       setTheme(isDark ? "dark" : "light");
+    
     };
   
     return (

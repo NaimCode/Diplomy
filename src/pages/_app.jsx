@@ -15,7 +15,7 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
 
   return (
     <SessionProvider session={session}>
-      <ThemeProvider enableSystem={false}>
+      <ThemeProvider defaultTheme="system" enableSystem={false}>
 
         <App>
         <Component {...pageProps} />
@@ -31,7 +31,7 @@ const App = ({children}) => {
   useEffect(() => {
     console.log(theme)
   }, [])
-  return <CustomProvider theme={theme}>
+  return <CustomProvider  theme={theme}>
    {children}
     <ToastContainer
       theme="colored"

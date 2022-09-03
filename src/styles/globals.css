@@ -1,5 +1,5 @@
 @import '~rsuite/dist/rsuite-rtl.min.css';
-@import url('https://fonts.googleapis.com/css2?family=Acme&family=Krona+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Acme&family=Krona+One&family=Orbitron:wght@500;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

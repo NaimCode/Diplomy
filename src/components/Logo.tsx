@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { APP_NAME } from "../constants/global";
 type LogoProps = {
@@ -17,9 +17,12 @@ export const LogoBrand = () => {
 //TODO: animate logo
 export const Brand = () => {
   const { theme } = useTheme();
+
   return (
     <h3
-      className={`text-2xl font-bold text-md font-logo `}
+      className={`text-2xl font-bold text-md font-logo ${
+        theme ? (theme == "dark" ? "text-white" : "text-black") : ""
+      }`}
     >
       {APP_NAME}
     </h3>
@@ -30,9 +33,8 @@ type LogoSVGProps = {
   isLinkToHome?: boolean;
   size?: "small" | "medium" | "large";
 };
-export const LogoSVG = ({size='medium'}:LogoSVGProps) => {
-  const dimension =
-  size == "small" ? "25" : size == "medium" ? "42" : "80";
+export const LogoSVG = ({ size = "medium" }: LogoSVGProps) => {
+  const dimension = size == "small" ? "25" : size == "medium" ? "42" : "80";
   return (
     <svg
       width={dimension}
@@ -61,7 +63,7 @@ export const LogoSVG = ({size='medium'}:LogoSVGProps) => {
         d="M64.5516 37.5489V29.7872L41.5352 41.3446V79.9998L49.2595 76.119V45.2254L64.5516 37.5489Z"
         fill="#570DF8"
       />
-      <path 
+      <path
         d="M72.2562 25.9062V56.7827L56.9836 64.4763V72.238L80 60.6636V22.0253L72.2562 25.9062Z"
         fill="#570DF8"
       />
