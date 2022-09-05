@@ -19,9 +19,8 @@ class MyDocument extends Document {
 
         lang={this.props.locale}
       >
-        <Head>
-          <title>{APP_NAME}</title>
-          <link rel="icon" href="/favicon.ico" />
+      <Head>
+
         </Head>
         <body >
           <Main />

@@ -17,7 +17,7 @@
         "Button workspace":"espace de travail",
         "Dialog title":"Vous devez vous connecter"
     },
-    "inscription":{ap
+    "inscription":{
         "SideContent title":"Lancez-vous sur la blockchain avec nous.",
         "SideForm title":"Demande d'inscription",
         "SideForm description":"Ces informations nous sont primordiales pour l'étude de votre demande, veuillez donc prendre soin de bien remplir",
@@ -31,6 +31,20 @@
         "tel":"Tél",
         "submit":"Envoyer",
         "valider":"valider"
+    },
+    "workspace":{
+        "nav":{
+            "notifications":"Notifications",
+            "parametres":"Paramètres",
+            "profil":"Profil"
+        },
+        "sidebar":{
+   "etablissement":"Établissement",
+   "general":"Général",
+   "gestion":"Gestion",
+   "formations":"Formations",
+   "etudiants":"Étudiants"
+        }
     }
    
 }

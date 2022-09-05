@@ -7,13 +7,13 @@ import NavBar from "../partials/NavBar";
 import { getStaticPropsTranslations } from "../utils/i18n";
 
 
-const Home:NextPage = (props) => {
+const Home: NextPage = (props) => {
   return (
     <>
 
       <main className="h-screen">
-      <NavBar/>
-     
+        <NavBar />
+
       </main>
     </>
   );
@@ -21,7 +21,7 @@ const Home:NextPage = (props) => {
 
 export default Home;
 
-export async function getServerSideProps({ locale }:{locale:string}) {
+export async function getServerSideProps({ locale }: { locale: string }) {
   return {
     props: {
       ...(await serverSideTranslations(locale, ["common"])),

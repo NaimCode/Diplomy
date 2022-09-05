@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { APP_NAME } from "../constants/global";
+import { useRouter } from "next/router";
 type LogoProps = {
   isLinkToHome?: boolean;
   size?: "small" | "medium" | "large";
 };
 
 export const LogoBrand = () => {
+  const router = useRouter();
   return (
-    <div className="flex flex-row gap-1 items-center">
+    <div
+      onClick={() => {
+        router.push("/");
+      }}
+      className="flex flex-row gap-1 items-center cursor-pointer transition-all duration-300 hover:drop-shadow-lg hover:scale-105"
+    >
       <LogoSVG />
       <Brand />
     </div>
@@ -20,7 +27,7 @@ export const Brand = () => {
 
   return (
     <h3
-      className={`text-2xl font-bold text-md font-logo ${
+      className={`hidden lg:block text-2xl font-bold font-logo ${
         theme ? (theme == "dark" ? "text-white" : "text-black") : ""
       }`}
     >
@@ -38,7 +45,7 @@ export const LogoSVG = ({ size = "medium" }: LogoSVGProps) => {
   return (
     <svg
       width={dimension}
-      className="drop-shadow-sm"
+      className="drop-shadow-sm scale-75 lg:scale-100"
       height={dimension}
       viewBox={`0 0 80 80`}
       xmlns="http://www.w3.org/2000/svg"

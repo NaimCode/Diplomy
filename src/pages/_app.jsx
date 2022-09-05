@@ -11,12 +11,17 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
 import { useEffect } from 'react'
+import Head from 'next/head'
+import {APP_NAME} from "../constants/global.ts"
 const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
 
   return (
     <SessionProvider session={session}>
-      <ThemeProvider defaultTheme="system" enableSystem={false}>
-
+      <ThemeProvider defaultTheme="system" enableSystem={true}>
+        <Head>
+          <title>{APP_NAME}</title>
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
         <App>
         <Component {...pageProps} />
         </App>
