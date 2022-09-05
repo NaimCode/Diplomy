@@ -5,7 +5,7 @@ import {FaMapSigns,FaMapMarker,FaHandshake} from 'react-icons/fa'
 import {BsFillPersonFill, BsFillTelephoneFill, BsFillUnlockFill,BsPeopleFill} from 'react-icons/bs'
 import {IoMdClose} from 'react-icons/io'
 import {GrGoogle} from 'react-icons/gr'
-import {HiHome} from 'react-icons/hi'
+import {HiHome,HiChartPie} from 'react-icons/hi'
 import {FiSettings} from 'react-icons/fi'
 import {GiDiploma} from "react-icons/gi"
 export const FileIcon=RiFileTextLine
@@ -28,3 +28,4 @@ export const SettingIcon=FiSettings
 export const DiplomaIcon=GiDiploma
 export const PeopleIcon=BsPeopleFill
 export const ShakeIcon=FaHandshake
+export const ChartIcon=HiChartPie
