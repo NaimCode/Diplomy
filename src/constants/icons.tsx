@@ -1,7 +1,7 @@
 import { RiFileTextLine, RiNotification2Line} from 'react-icons/ri';
 import {TbLanguage} from 'react-icons/tb'
 import {MdEmail, MdExpandMore, MdNavigateBefore, MdOutlineShortText, MdSchool} from "react-icons/md"
-import {FaMapSigns,FaMapMarker} from 'react-icons/fa'
+import {FaMapSigns,FaMapMarker,FaHandshake} from 'react-icons/fa'
 import {BsFillPersonFill, BsFillTelephoneFill, BsFillUnlockFill,BsPeopleFill} from 'react-icons/bs'
 import {IoMdClose} from 'react-icons/io'
 import {GrGoogle} from 'react-icons/gr'
@@ -27,3 +27,4 @@ export const NotifIcon=RiNotification2Line
 export const SettingIcon=FiSettings
 export const DiplomaIcon=GiDiploma
 export const PeopleIcon=BsPeopleFill
+export const ShakeIcon=FaHandshake

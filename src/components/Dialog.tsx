@@ -32,7 +32,7 @@ const Dialog = ({
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const { t } = useTranslation();
-  const { isAr } = useLocale();
+
   return (
     <>
       <ButtonToolbar>{trigger?.(handleOpen)}</ButtonToolbar>

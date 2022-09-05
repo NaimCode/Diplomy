@@ -5,7 +5,9 @@
      "dialog cancel":"annuler",
      "dialog validate":"valider",
      "retour":"retour",
-     "mot de passe":"Mot de passe"
+     "mot de passe":"Mot de passe",
+     "theme":"Thème",
+     "langue":"langue"
     },
     "state":{
         "Success inscription":"Demande d'inscription envoyé avec succès, vous récevrez un mail de confirmation une fois la demande est acceptée."
@@ -43,7 +45,9 @@
    "general":"Général",
    "gestion":"Gestion",
    "formations":"Formations",
-   "etudiants":"Étudiants"
+   "etudiants":"Étudiants",
+   "relation":"Relation",
+   "contact":"Entrer en contact"
         }
     }
    

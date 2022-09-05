@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -34,9 +35,11 @@ const LanguageChanger = () => {
       document.querySelector("html")?.setAttribute("dir", dir);
       document.querySelector("html")?.setAttribute("lang", lang);
     }, [router.locale]);
-  
+  const {t}=useTranslation()
     const { locale: activeLocale, pathname, query, asPath } = router;
     return (
+      <div className="tooltip  tooltip-bottom" data-tip={t("global.langue")}>
+
       <div className="dropdown dropdown-end font-semibold">
         <label tabIndex={0} className="btn btn-ghost m-1">
           <LanguageIcon className="icon" />
@@ -45,7 +48,7 @@ const LanguageChanger = () => {
         <ul
           tabIndex={0}
           className="dropdown-content menu p-2 shadow-lg bg-base-200 rounded-box w-52 gap-2"
-        >
+          >
           {langs.map((l, i) => {
             const {title, icon,locale}=l
             return (
@@ -61,6 +64,7 @@ const LanguageChanger = () => {
           })}
         </ul>
       </div>
+          </div>
     );
   };
 

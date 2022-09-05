@@ -18,7 +18,7 @@ type TypeProps={
     tooltip?:boolean,
     size?:'lg'|'sm'|'md'
 }
-const Input = ({tooltip=false,size="md",value,setValue,border,readOnly,hoverable=true, icon,type="text",required=false,placeholder,className,labelClassName="input-group-lg"}:TypeProps) => {
+const Input = ({tooltip=false,value,setValue,border,readOnly,hoverable=true, icon,type="text",required=false,placeholder,className,labelClassName="input-group-lg"}:TypeProps) => {
     const {t} =useTranslation()
   return (
     <label    data-tip={value} className={`input-group flex flex-row ${labelClassName} ${hoverable&&"transition-all hover:scale-105"} ${tooltip&&"tooltip"}`}>
@@ -32,7 +32,11 @@ const Input = ({tooltip=false,size="md",value,setValue,border,readOnly,hoverable
       value={value}
       readOnly={readOnly}
    
-      onChange={ (e)=>setValue!(e.target.value)}
+      onChange={ (e)=>{
+        if(setValue){
+          setValue(e.target.value)
+        }
+      }}
       onInvalid={e => (e.target as HTMLInputElement).setCustomValidity(t('global.onInvalid'))}
        onInput={e => (e.target as HTMLInputElement).setCustomValidity('')}
       placeholder={t(placeholder)}

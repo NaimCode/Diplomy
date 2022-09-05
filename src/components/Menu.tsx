@@ -1,7 +1,5 @@
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { ReactNode, useEffect } from "react";
-import { LanguageIcon, ExpandMoreIcon } from "../constants/icons";
+
+import { ReactNode } from "react";
 
 type MenuType={
 trigger:(tab:number)=>ReactNode,

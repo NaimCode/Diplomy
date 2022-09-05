@@ -1,9 +1,12 @@
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { LogoBrand } from "../components/Logo";
-import { DiplomaIcon, HomeIcon, PeopleIcon} from "../constants/icons";
-
+import MyLottie from "../components/MyLottie";
+import { DiplomaIcon, HomeIcon, PeopleIcon, ShakeIcon} from "../constants/icons";
+import animationData from "../../public/lotties/support.json"
+import animationDataDark from "../../public/lotties/support_dark.json"
+import { useTheme } from "next-themes";
 type TMenuItem = {
   title: string;
   route: string;
@@ -23,6 +26,11 @@ const menu: Array<TMenu> = [
         title: "etablissement",
         route: "/etablissement",
         icon: <HomeIcon className="text-lg" />,
+      },
+      {
+        title: "relation",
+        route: "/relation",
+        icon: <ShakeIcon className="text-lg" />,
       },
     ],
   },
@@ -45,6 +53,12 @@ const menu: Array<TMenu> = [
 const SideBar = () => {
   const router = useRouter();
   const { t } = useTranslation();
+  const {theme}=useTheme()
+  const [isDark, setisDark] = useState(theme=="dark")
+  useEffect(() => {
+    setisDark(theme=="dark")
+  }, [theme])
+  
   return (
     <section className="hidden lg:flex flex-col sticky top-0 left-0 h-screen w-[300px] bg-base-200 px-6">
       <div className="nav justify-center">
@@ -55,7 +69,7 @@ const SideBar = () => {
         {menu.map((m, i) => {
           return (
             <>
-              <li className="menu-title pt-3">
+              <li key={"menu"+i.toString()} className="menu-title pt-3">
                 <span>{t("workspace.sidebar." + m.title)}</span>
               </li>
               {m.children.map((c, i) => {
@@ -78,17 +92,14 @@ const SideBar = () => {
             </>
           );
         })}
-        {/* <li className="menu-title">
-    <span>Category</span>
-  </li>
-  <li><a>Item 1</a></li>
-  <li><a>Item 2</a></li>
-  <li className="menu-title">
-    <span>Category</span>
-  </li>
-  <li><a>Item 1</a></li>
-  <li><a>Item 2</a></li> */}
       </ul>
+      <div className="flex-grow"></div>
+      <div className="flex flex-col items-center gap-2">
+          <MyLottie animationData={isDark?animationDataDark: animationData}/>
+          <button className="-translate-y-8 btn btn-sm btn-accent no-animation">
+              {t("workspace.sidebar.contact")}
+          </button>
+      </div>
     </section>
   );
 };

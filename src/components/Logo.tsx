@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from "react";
+
 import { useTheme } from "next-themes";
 import { APP_NAME } from "../constants/global";
 import { useRouter } from "next/router";
-type LogoProps = {
-  isLinkToHome?: boolean;
-  size?: "small" | "medium" | "large";
-};
+
 
 export const LogoBrand = () => {
   const router = useRouter();

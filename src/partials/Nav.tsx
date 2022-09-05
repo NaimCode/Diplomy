@@ -4,6 +4,8 @@ import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import { useContext } from "react";
 import { Badge } from "rsuite";
+import ThemeSwitcher from "../components/ ThemeSwitcher";
+import LanguageChanger from "../components/LanguageChanger";
 import { LogoBrand } from "../components/Logo";
 import { NotifIcon, SettingIcon } from "../constants/icons";
 
@@ -16,7 +18,10 @@ const Nav = () => {
      </div>
       <div className="flex-grow" />
       <NotifButton />
-      <SettingButton />
+      {/* <SettingButton /> */}
+    
+      <ThemeSwitcher/>
+      <LanguageChanger/>
       <div className="px-2"></div>
       <AvatarButton session={session} />
       {/* <div className="divider divider-horizontal mx-0"></div> */}
@@ -62,7 +67,7 @@ const AvatarButton = ({ session }: { session?: Session| null }) => {
 
     <div className="avatar cursor-pointer">
       <div className="w-[45px] lg:w-[50px] mask mask-squircle ">
-        <Image src={session?.user?.image!} alt="photo" layout="fill" />
+       {session &&  <Image src={session.user!.image!} alt="photo" layout="fill" />}
       </div>
     </div>
     </div>
