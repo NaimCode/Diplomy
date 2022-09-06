@@ -5,25 +5,29 @@ import Image from "next/image";
 import { useContext } from "react";
 import { Badge } from "rsuite";
 import ThemeSwitcher from "../components/ ThemeSwitcher";
+import DrawerMenu from "../components/DrawerMenu";
 import LanguageChanger from "../components/LanguageChanger";
 import { LogoBrand } from "../components/Logo";
-import { NotifIcon, SettingIcon } from "../constants/icons";
+import { MenuIcon, NotifIcon, SettingIcon } from "../constants/icons";
 
 const Nav = () => {
   const { data: session } = useSession();
+
   return (
     <div className="nav top-0 left-0 sticky justify-between shadow-sm backdrop-blur-sm bg-base-100/80">
+     <DrawerMenu/>
      <div className="lg:hidden">
      <LogoBrand/>
      </div>
-      <div className="flex-grow" />
+      <div  className="hidden lg:flex flex-grow" />
       <NotifButton />
-      {/* <SettingButton /> */}
-    
+      <div className={"hidden lg:flex flex-row items-center"}>
       <ThemeSwitcher/>
       <LanguageChanger/>
-      <div className="px-2"></div>
+     
+    
       <AvatarButton session={session} />
+      </div>
       {/* <div className="divider divider-horizontal mx-0"></div> */}
 
       {/* <ThemeSwitcher />
@@ -66,7 +70,7 @@ const AvatarButton = ({ session }: { session?: Session| null }) => {
     <div className="tooltip tooltip-bottom" data-tip={t("workspace.nav.profil")}>
 
     <div className="avatar cursor-pointer">
-      <div className="w-[45px] lg:w-[50px] mask mask-squircle ">
+      <div className="w-[40px] lg:w-[50px] mask mask-squircle ">
        {session &&  <Image src={session.user!.image!} alt="photo" layout="fill" />}
       </div>
     </div>

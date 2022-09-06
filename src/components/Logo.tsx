@@ -11,7 +11,7 @@ export const LogoBrand = () => {
       onClick={() => {
         router.push("/");
       }}
-      className="flex flex-row gap-1 items-center cursor-pointer transition-all duration-300 hover:drop-shadow-lg hover:scale-105"
+      className="flex flex-row gap-1 items-center cursor-pointer transition-all duration-300 hover:drop-shadow-sm hover:scale-105"
     >
       <LogoSVG />
       <Brand />
@@ -24,7 +24,7 @@ export const Brand = () => {
 
   return (
     <h3
-      className={`hidden lg:block text-2xl font-bold font-logo ${
+      className={`hidden lg:block text-xl font-bold font-logo ${
         theme ? (theme == "dark" ? "text-white" : "text-black") : ""
       }`}
     >

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { ReactNode, useEffect, useState } from "react";
 import { LogoBrand } from "../components/Logo";
 import MyLottie from "../components/MyLottie";
-import { ChartIcon, DiplomaIcon, HomeIcon, PeopleIcon, SettingIcon, ShakeIcon} from "../constants/icons";
+import { ChartIcon, DiplomaIcon, HomeIcon, PeopleIcon, SettingIcon, ShakeIcon, TelIcon} from "../constants/icons";
 import animationData from "../../public/lotties/support.json"
 import animationDataDark from "../../public/lotties/support_dark.json"
 import { useTheme } from "next-themes";
@@ -72,16 +72,17 @@ const SideBar = () => {
 
 
   return (
-    <section className="hidden lg:flex flex-col sticky top-0 left-0 h-screen w-[300px] bg-base-200 px-6 overflow-hidden">
-      <div className="nav justify-center">
+    <section className="flex flex-col w-[300px] bg-base-200 p-2 md:px-6 overflow-hidden">
+        
+      <div className="nav justify-center hidden lg:flex">
         <LogoBrand />
       </div>
-      <div className="p-3" />
+      <div className="p-3 hidden lg:block" />
       <ul className="menu w-full p-2 rounded-box gap-1 overflow-scroll">
         {menu.map((m, i) => {
           return (
             <>
-              <li key={"menu"+i.toString()} className="menu-title pt-3">
+              <li key={"menu"+i.toString()} className="menu-title pt-2 lg:pt-3">
                 <span>{t("workspace.sidebar." + m.title)}</span>
               </li>
               {m.children.map((c, i) => {
@@ -120,12 +121,13 @@ const Contact=()=>{
     }, [theme])
   
     const { height, width } = useWindowDimensions();
-    return   <div className={`flex flex-col items-center gap-2 translate-y-3`}>
-    <div className={`${height!<=800 &&"h-[200px] w-[200px]"}`}>
+    return   <div className={`flex flex-col items-center gap-1 lg:gap-2 lg:translate-y-3`}>
+    <div className={`${height!<=900 &&"hidden lg:block h-[200px] w-[200px]"} `}>
 
     <MyLottie animationData={isDark?animationDataDark: animationData}/>
     </div>
-    <button className="-translate-y-8 btn btn-sm btn-accent no-animation">
+    <button className="-translate-y-4 lg:-translate-y-8 btn btn-sm btn-accent no-animation gap-2">
+        <TelIcon className="lg:hidden text-xl"/>
         {t("workspace.sidebar.contact")}
     </button>
 </div>
