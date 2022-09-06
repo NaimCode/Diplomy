@@ -5,13 +5,14 @@ import Image from "next/image";
 import { useContext } from "react";
 import { Badge } from "rsuite";
 import ThemeSwitcher from "../components/ ThemeSwitcher";
+import AvatarButton from "../components/Avatar";
 import DrawerMenu from "../components/DrawerMenu";
 import LanguageChanger from "../components/LanguageChanger";
 import { LogoBrand } from "../components/Logo";
 import { MenuIcon, NotifIcon, SettingIcon } from "../constants/icons";
 
 const Nav = () => {
-  const { data: session } = useSession();
+ 
 
   return (
     <div className="nav top-0 left-0 sticky justify-between shadow-sm backdrop-blur-sm bg-base-100/80">
@@ -26,7 +27,7 @@ const Nav = () => {
       <LanguageChanger/>
      
     
-      <AvatarButton session={session} />
+      <AvatarButton />
       </div>
       {/* <div className="divider divider-horizontal mx-0"></div> */}
 
@@ -64,17 +65,5 @@ const SettingButton = () => {
   );
 };
 
-const AvatarButton = ({ session }: { session?: Session| null }) => {
-  const {t}=useTranslation()
-  return (
-    <div className="tooltip tooltip-bottom" data-tip={t("workspace.nav.profil")}>
 
-    <div className="avatar cursor-pointer">
-      <div className="w-[40px] lg:w-[50px] mask mask-squircle ">
-       {session &&  <Image src={session.user!.image!} alt="photo" layout="fill" />}
-      </div>
-    </div>
-    </div>
-  );
-};
 export default Nav;

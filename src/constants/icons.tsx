@@ -1,4 +1,4 @@
-import { RiFileTextLine, RiNotification2Line} from 'react-icons/ri';
+import { RiFileTextLine, RiLogoutBoxLine, RiNotification2Line} from 'react-icons/ri';
 import {TbLanguage} from 'react-icons/tb'
 import {MdEmail, MdExpandMore, MdNavigateBefore, MdOutlineShortText, MdSchool} from "react-icons/md"
 import {FaMapSigns,FaMapMarker,FaHandshake} from 'react-icons/fa'
@@ -30,3 +30,4 @@ export const PeopleIcon=BsPeopleFill
 export const ShakeIcon=FaHandshake
 export const ChartIcon=HiChartPie
 export const MenuIcon=HiOutlineMenuAlt2
+export const LogOutIcon=RiLogoutBoxLine

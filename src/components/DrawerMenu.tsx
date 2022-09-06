@@ -6,20 +6,18 @@ import { MenuIcon } from "../constants/icons";
 const DrawerMenu = () => {
   const { t } = useTranslation();
 
-  const [open, setOpen] = React.useState(false);
-  const [openWithHeader, setOpenWithHeader] = React.useState(false);
-
   return (
     <label
    
-      className="tooltip tooltip-bottom"
+      className="tooltip tooltip-bottom lg:hidden" 
       data-tip={t("workspace.nav.menu")}
     >
-      <label htmlFor="Menu" className="btn btn-ghost drawer-button">
+      <label htmlFor="Menu" className="btn btn-ghost drawer-button ">
         <MenuIcon className="icon" />
       </label>
     </label>
   );
 };
+
 
 export default DrawerMenu;

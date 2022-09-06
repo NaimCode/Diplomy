@@ -8,6 +8,10 @@ import animationData from "../../public/lotties/support.json"
 import animationDataDark from "../../public/lotties/support_dark.json"
 import { useTheme } from "next-themes";
 import useWindowDimensions from "../utils/hooks";
+import ThemeSwitcher from "../components/ ThemeSwitcher";
+import LanguageChanger from "../components/LanguageChanger";
+import LogOut from "../components/LogOut";
+import AvatarButton from "../components/Avatar";
 type TMenuItem = {
   title: string;
   route: string;
@@ -72,13 +76,20 @@ const SideBar = () => {
 
 
   return (
-    <section className="flex flex-col w-[300px] bg-base-200 p-2 md:px-6 overflow-hidden">
+    <section className="flex flex-col w-[300px] bg-base-200 p-2 md:px-6 lg:overflow-hidden">
         
       <div className="nav justify-center hidden lg:flex">
         <LogoBrand />
       </div>
+      <div className="shadow-sm flex flex-row justify-between items-center">
+    
+ <ThemeSwitcher/>
+<LanguageChanger/>
+ <AvatarButton/>
+      </div>
+   
       <div className="p-3 hidden lg:block" />
-      <ul className="menu w-full p-2 rounded-box gap-1 overflow-scroll">
+      <ul className="menu w-full p-2 rounded-box gap-1 lg:overflow-scroll">
         {menu.map((m, i) => {
           return (
             <>
@@ -122,7 +133,7 @@ const Contact=()=>{
   
     const { height, width } = useWindowDimensions();
     return   <div className={`flex flex-col items-center gap-1 lg:gap-2 lg:translate-y-3`}>
-    <div className={`${height!<=900 &&"hidden lg:block h-[200px] w-[200px]"} `}>
+    <div className={`${height!<=900 &&" h-[200px] w-[200px]"} `}>
 
     <MyLottie animationData={isDark?animationDataDark: animationData}/>
     </div>
@@ -131,5 +142,11 @@ const Contact=()=>{
         {t("workspace.sidebar.contact")}
     </button>
 </div>
+}
+
+const ProfilCard=()=>{
+  return <div>
+
+  </div>
 }
 export default SideBar;
