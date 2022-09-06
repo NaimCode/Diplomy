@@ -3,6 +3,8 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import Workspace from "../../../components/Workspace";
+import { useTranslation } from "next-i18next";
+import { AddIcon } from "../../../constants/icons";
 
 export const getServerSideProps: GetServerSideProps = async (context) =>{
     const session = await unstable_getServerSession(
@@ -26,12 +28,22 @@ export const getServerSideProps: GetServerSideProps = async (context) =>{
     };
   }
   
-const Etablissement=(props: InferGetServerSidePropsType<typeof getServerSideProps>)=>{
+const Formations=(props: InferGetServerSidePropsType<typeof getServerSideProps>)=>{
+  const {t}=useTranslation()
     return <>
     <Workspace>
-        <div></div>
+      <div className="p-4 lg:p-6">
+   
+      <div className="flex flex-row justify-between">
+        <div/>
+        <button className="btn  btn-primary gap-2 btn-sm lg:btn-md">
+   <AddIcon className="text-xl"/>
+  {t("global.ajouter")}
+</button>
+        </div>
+        </div>
     </Workspace>
     </>
 }
 
-export default Etablissement
+export default Formations

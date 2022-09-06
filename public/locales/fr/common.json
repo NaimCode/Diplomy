@@ -7,7 +7,8 @@
      "retour":"retour",
      "mot de passe":"Mot de passe",
      "theme":"Thème",
-     "langue":"langue"
+     "langue":"langue",
+     "ajouter":"Ajouter"
     },
     "state":{
         "Success inscription":"Demande d'inscription envoyé avec succès, vous récevrez un mail de confirmation une fois la demande est acceptée."

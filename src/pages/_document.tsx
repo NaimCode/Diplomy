@@ -20,7 +20,10 @@ class MyDocument extends Document {
         lang={this.props.locale}
       >
       <Head>
-
+      <link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/icon?family=Material+Icons"
+/>
         </Head>
         <body >
           <Main />

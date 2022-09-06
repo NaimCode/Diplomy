@@ -3,9 +3,17 @@ import { useRouter } from "next/router";
 import { ReactNode, useEffect, useState } from "react";
 import { LogoBrand } from "../components/Logo";
 import MyLottie from "../components/MyLottie";
-import { ChartIcon, DiplomaIcon, HomeIcon, PeopleIcon, SettingIcon, ShakeIcon, TelIcon} from "../constants/icons";
-import animationData from "../../public/lotties/support.json"
-import animationDataDark from "../../public/lotties/support_dark.json"
+import {
+  ChartIcon,
+  DiplomaIcon,
+  HomeIcon,
+  PeopleIcon,
+  SettingIcon,
+  ShakeIcon,
+  TelIcon,
+} from "../constants/icons";
+import animationData from "../../public/lotties/support.json";
+import animationDataDark from "../../public/lotties/support_dark.json";
 import { useTheme } from "next-themes";
 import useWindowDimensions from "../utils/hooks";
 import ThemeSwitcher from "../components/ ThemeSwitcher";
@@ -74,35 +82,31 @@ const SideBar = () => {
   const router = useRouter();
   const { t } = useTranslation();
 
-
   return (
     <section className="flex flex-col w-[300px] bg-base-200 p-2 md:px-6 lg:overflow-hidden">
-        
       <div className="nav justify-center hidden lg:flex">
         <LogoBrand />
       </div>
-      <div className="shadow-sm flex flex-row justify-between items-center">
-    
- <ThemeSwitcher/>
-<LanguageChanger/>
- <AvatarButton/>
-      </div>
-   
+
+      <NavSideBar />
       <div className="p-3 hidden lg:block" />
       <ul className="menu w-full p-2 rounded-box gap-1 lg:overflow-scroll">
         {menu.map((m, i) => {
           return (
             <>
-              <li key={"menu"+i.toString()} className="menu-title pt-2 lg:pt-3">
+              <li
+                key={"menu" + i.toString()}
+                className="menu-title pt-2 lg:pt-3"
+              >
                 <span>{t("workspace.sidebar." + m.title)}</span>
               </li>
               {m.children.map((c, i) => {
                 return (
                   <li key={i}>
                     <button
-                    onClick={()=>{
-                        router.push("/workspace/"+c.route)
-                    }}
+                      onClick={() => {
+                        router.push("/workspace/" + c.route);
+                      }}
                       className={`font-semibold ${
                         router.asPath.includes(c.route) && "active"
                       }`}
@@ -118,35 +122,49 @@ const SideBar = () => {
         })}
       </ul>
       <div className="flex-grow"></div>
-    <Contact/>
+      <Contact />
     </section>
   );
 };
 
-const Contact=()=>{
-    const { t } = useTranslation();
-    const {theme}=useTheme()
-    const [isDark, setisDark] = useState(theme=="dark")
-    useEffect(() => {
-      setisDark(theme=="dark")
-    }, [theme])
-  
-    const { height, width } = useWindowDimensions();
-    return   <div className={`flex flex-col items-center gap-1 lg:gap-2 lg:translate-y-3`}>
-    <div className={`${height!<=900 &&" h-[200px] w-[200px]"} `}>
-
-    <MyLottie animationData={isDark?animationDataDark: animationData}/>
+const NavSideBar = () => {
+  return (
+    <div className="lg:hidden shadow-sm flex flex-row justify-between items-center">
+      <ThemeSwitcher />
+      <LanguageChanger />
+      <AvatarButton />
     </div>
-    <button className="-translate-y-4 lg:-translate-y-8 btn btn-sm btn-accent no-animation gap-2">
-        <TelIcon className="lg:hidden text-xl"/>
+  );
+};
+const Contact = () => {
+  const { t } = useTranslation();
+  const { theme } = useTheme();
+  const [isDark, setisDark] = useState(theme == "dark");
+  useEffect(() => {
+    setisDark(theme == "dark");
+  }, [theme]);
+
+  const { height, width } = useWindowDimensions();
+  return (
+    <div
+      className={`flex flex-col items-center gap-1 lg:gap-2 lg:translate-y-3`}
+    >
+      <div
+        className={`${
+          height! <= 900 && "hidden lg:block h-[200px] w-[200px]"
+        } `}
+      >
+        <MyLottie animationData={isDark ? animationDataDark : animationData} />
+      </div>
+      <button className="-translate-y-4 lg:-translate-y-8 btn btn-sm btn-accent no-animation gap-2">
+        <TelIcon className="lg:hidden text-xl" />
         {t("workspace.sidebar.contact")}
-    </button>
-</div>
-}
+      </button>
+    </div>
+  );
+};
 
-const ProfilCard=()=>{
-  return <div>
-
-  </div>
-}
+const ProfilCard = () => {
+  return <div></div>;
+};
 export default SideBar;
