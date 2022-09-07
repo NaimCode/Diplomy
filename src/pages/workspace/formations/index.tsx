@@ -65,7 +65,7 @@ const Formations = (
               {t('workspace.sidebar.formations')}
             </h1>
    
-          <Link href="/workspace/formations/new">
+          <Link href="/workspace/formations/ajouter">
           <button className="btn  btn-primary gap-2 btn-sm lg:btn-md">
               <AddIcon className="text-xl" />
               {t("global.ajouter")}

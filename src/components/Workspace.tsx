@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactNode } from "react";
@@ -34,6 +35,7 @@ const Workspace = ({ children }: WorkSpaceProps) => {
 };
 
 const BreadCrumbs = () => {
+  const {t}=useTranslation()
   const router = useRouter();
   const routes = router.asPath.split("/").filter((f, i) => i >= 2);
 
@@ -41,16 +43,16 @@ const BreadCrumbs = () => {
     <div
       className={`${
         routes && routes.length <= 1 && "hidden"
-      } text-sm lg:text-md breadcrumbs px-3 lg:px-6`}
+      } text-xs lg:text-sm breadcrumbs p-3 lg:p-6`}
     >
       <ul>
         {routes.map((r, i) => {
           const isLast = i == routes.length - 1;
-          
+          const intern=["ajouter"].includes(r)
           return (
-            <li key={i}>
+            <li key={i} className="first-letter:uppercase">
               {isLast ? (
-                r
+               intern? t("global."+r):r
               ) : (
                 <Link href={"/workspace/"+routes.filter((rn,index)=>index<=i).join("/")}>
                   <a>{r}</a>
