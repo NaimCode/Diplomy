@@ -47,7 +47,7 @@ const LanguageChanger = () => {
         </label>
         <ul
           tabIndex={0}
-          className="dropdown-content menu p-2 shadow-lg bg-base-200 rounded-box w-52 gap-2"
+          className="dropdown-content menu p-2 shadow-lg bg-base-200 rounded-box w-52 gap-2 z-50"
           >
           {langs.map((l, i) => {
             const {title, icon,locale}=l

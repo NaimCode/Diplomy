@@ -2,6 +2,7 @@
 import { useTheme } from "next-themes";
 import { APP_NAME } from "../constants/global";
 import { useRouter } from "next/router";
+import { useMyTheme } from "../utils/hooks";
 
 
 export const LogoBrand = () => {
@@ -20,12 +21,10 @@ export const LogoBrand = () => {
 };
 //TODO: animate logo
 export const Brand = () => {
-  const { theme } = useTheme();
-
+  const {isDark}=useMyTheme()
   return (
     <h3
-      className={`hidden lg:block text-xl font-bold font-logo ${
-        theme ? (theme == "dark" ? "text-white" : "text-black") : ""
+      className={`hidden lg:block text-xl font-bold font-logo ${isDark ? "text-white" : "text-black"
       }`}
     >
       {APP_NAME}

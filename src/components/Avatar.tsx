@@ -8,7 +8,7 @@ const AvatarButton = () => {
       <div className="tooltip tooltip-bottom" data-tip={t("workspace.nav.profil")}>
   
       <div className="avatar cursor-pointer">
-        <div className="w-[40px] lg:w-[50px] mask mask-squircle ">
+        <div className="relative w-[40px] lg:w-[50px] mask mask-squircle ">
          {session &&  <Image src={session.user!.image!} alt="photo" layout="fill" />}
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { ReactNode, useEffect, useState } from "react";
+import { Fragment, ReactNode, useEffect, useState } from "react";
 import { LogoBrand } from "../components/Logo";
 import MyLottie from "../components/MyLottie";
 import {
@@ -83,26 +83,26 @@ const SideBar = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="flex flex-col w-[300px] bg-base-200 p-2 md:px-6 lg:overflow-hidden">
+    <section key={router.asPath} className="flex flex-col w-[300px] bg-base-200 p-2 md:px-6 lg:overflow-hidden">
       <div className="nav justify-center hidden lg:flex">
         <LogoBrand />
       </div>
 
       <NavSideBar />
       <div className="p-3 hidden lg:block" />
-      <ul className="menu w-full p-2 rounded-box gap-1 lg:overflow-scroll">
+      <ol className="menu w-full p-2 rounded-box gap-1 lg:overflow-scroll">
         {menu.map((m, i) => {
           return (
-            <>
+            <Fragment key={i}>
               <li
                 key={"menu" + i.toString()}
                 className="menu-title pt-2 lg:pt-3"
               >
                 <span>{t("workspace.sidebar." + m.title)}</span>
               </li>
-              {m.children.map((c, i) => {
+              {m.children.map((c, j) => {
                 return (
-                  <li key={i}>
+                  <li key={"menu"+i+"items"+j}>
                     <button
                       onClick={() => {
                         router.push("/workspace/" + c.route);
@@ -117,10 +117,10 @@ const SideBar = () => {
                   </li>
                 );
               })}
-            </>
+            </Fragment>
           );
         })}
-      </ul>
+      </ol>
       <div className="flex-grow"></div>
       <Contact />
     </section>

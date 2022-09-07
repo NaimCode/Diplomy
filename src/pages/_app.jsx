@@ -33,9 +33,7 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
 const App = ({children}) => {
   const router = useRouter();
   const { theme } = useTheme()
-  useEffect(() => {
-    console.log(theme)
-  }, [])
+
   return <CustomProvider  theme={theme}>
    {children}
     <ToastContainer

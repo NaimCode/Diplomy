@@ -1,3 +1,4 @@
+import { useTheme } from "next-themes";
 import { useRouter } from "next/router"
 import { useState, useEffect } from 'react';
 type useLocaleType=()=>{isAr:boolean}
@@ -36,4 +37,15 @@ export default function useWindowDimensions() {
   }, [hasWindow]);
 
   return windowDimensions;
+}
+
+
+export const useMyTheme=()=>{
+  const { theme } = useTheme();
+  const [isDark, setisDark] = useState(theme == "dark");
+  useEffect(() => {
+    setisDark(theme == "dark");
+  }, [theme]);
+
+  return {isDark}
 }
