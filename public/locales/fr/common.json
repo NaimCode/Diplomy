@@ -39,7 +39,8 @@
         "nav":{
             "notifications":"Notifications",
             "parametres":"Paramètres",
-            "profil":"Profil"
+            "profil":"Profil",
+            "retour":"Retour"
         },
         "sidebar":{
    "etablissement":"Établissement",

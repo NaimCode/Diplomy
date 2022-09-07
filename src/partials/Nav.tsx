@@ -7,15 +7,20 @@ import { Badge } from "rsuite";
 import ThemeSwitcher from "../components/ ThemeSwitcher";
 import AvatarButton from "../components/Avatar";
 import DrawerMenu from "../components/DrawerMenu";
+import Back from "../components/Back";
 import LanguageChanger from "../components/LanguageChanger";
 import { LogoBrand } from "../components/Logo";
 import { MenuIcon, NotifIcon, SettingIcon } from "../constants/icons";
-
+import {useRouter} from 'next/router'
 const Nav = () => {
- 
+ const router=useRouter()
+const hasBack=router.asPath.split("/")[3]
 
   return (
-    <div className="nav top-0 left-0 sticky justify-between shadow-sm backdrop-blur-sm bg-base-100/80">
+    <div className="nav top-0 left-0 sticky justify-between shadow-sm backdrop-blur-sm bg-base-100/80 z-40">
+    <div className={`hidden ${hasBack&&"lg:flex"}`}>
+    <Back/>
+    </div>
      <DrawerMenu/>
      <div className="lg:hidden">
      <LogoBrand/>

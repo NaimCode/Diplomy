@@ -10,7 +10,7 @@ const DrawerMenu = () => {
     <label
    
       className="tooltip tooltip-bottom lg:hidden" 
-      data-tip={t("workspace.nav.menu")}
+      data-tip={t("workspace.sidebar.menu")}
     >
       <label htmlFor="Menu" className="btn btn-ghost drawer-button ">
         <MenuIcon className="icon" />

@@ -8,6 +8,7 @@ import { AddIcon } from "../../../constants/icons";
 import { prisma } from '../../../server/db/client';
 import { Formation, Utilisateur } from ".prisma/client";
 import { createColumn, createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import Link from "next/link";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
@@ -51,20 +52,28 @@ const Formations = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { formations } = props.etablissement
-  console.log(formations)
   const { t } = useTranslation();
+
   return (
     <>
       <Workspace>
         <div className="px-4 lg:px-6">
           <div className="flex flex-row justify-between py-4 lg:py-6">
-            <div />
-            <button className="btn  btn-primary gap-2 btn-sm lg:btn-md">
+          
+
+        <h1 className="text-xl lg:text-4xl">
+              {t('workspace.sidebar.formations')}
+            </h1>
+   
+          <Link href="/workspace/formations/new">
+          <button className="btn  btn-primary gap-2 btn-sm lg:btn-md">
               <AddIcon className="text-xl" />
               {t("global.ajouter")}
             </button>
+          </Link>
           </div>
           <Table data={formations} />
+
         </div>
       </Workspace>
     </>
@@ -97,7 +106,7 @@ const Table = ({ data }: TableProps) => {
   })
   //table-compact for small rows
   return <div className="overflow-x-auto">
-    <table className="table w-full">
+    <table className="table w-full table-zebra">
       <thead>
         {table.getHeaderGroups().map(headerGroup => (
           <tr key={headerGroup.id}>
@@ -116,14 +125,14 @@ const Table = ({ data }: TableProps) => {
       </thead>
       <tbody>
         {table.getRowModel().rows.map(row => (
-          <tr key={row.id} className="transition-all duration-500 hover:active cursor-pointer">
+          <tr key={row.id} className=" hover:active cursor-pointer">
+    
             {row.getVisibleCells().map(cell => 
-             {
-               console.log(cell)
-               return  <td key={cell.id} className={cell.column.id == "version" ? "text-center":""}>
+            
+             (  <td key={cell.id} className={cell.column.id == "version" ? "text-center":""}>
                {flexRender(cell.column.columnDef.cell, cell.getContext())}
              </td>
-             }
+             )
             )}
           </tr>
         ))}
