@@ -15,6 +15,8 @@ import {
 import { motion, useAnimationControls } from "framer-motion";
 import { useMyTransition, useDimensionFromEl } from "../../../utils/hooks";
 import { AddFileIcon } from "../../../constants/icons";
+import { SubmitHandler, useForm } from "react-hook-form";
+import InputForm from "../../../components/InputForm";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
     context.req,
@@ -55,7 +57,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   };
 };
+//TODO: added ability to choose template
 
+type Inputs = {
+  peutAvoir: boolean;
+  intituleDiff: boolean;
+
+  version: number;
+  intitule: string;
+  diplomeIntitule: string;
+  exp: boolean;
+  annee: number;
+  mois: number;
+};
 const FormationItem = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
@@ -63,44 +77,73 @@ const FormationItem = (
   const { formations } = props.etablissement;
   const { t } = useTranslation();
   //TODO: set false
-  const [peutAvoir, setpeutAvoir] = useState(true);
-  const [intituleDiff, setintituleDiff] = useState(true);
-  const [estVirtuel, setestVirtuel] = useState(false);
-  const [version, setversion] = useState("1");
-  const [intitule, setintitule] = useState("");
-  const [diplomeIntitule, setdiplomeIntitule] = useState("");
-  const [exp, setexp] = useState(false);
-  const [duree, setduree] = useState<{ annee?: number; mois?: number }>({});
-  const { controls } = useMyTransition({ trigger: peutAvoir });
-  const { controls: ctl2 } = useMyTransition({ trigger: intituleDiff });
-  const { controls: ctl3 } = useMyTransition({ trigger: exp });
+  //   const [peutAvoir, setpeutAvoir] = useState(true);
+  //   const [intituleDiff, setintituleDiff] = useState(true);
+  //   const [estVirtuel, setestVirtuel] = useState(false);
+  //   const [version, setversion] = useState(1);
+  //   const [intitule, setintitule] = useState("");
+  //   const [diplomeIntitule, setdiplomeIntitule] = useState("");
+  //   const [exp, setexp] = useState(false);
+  //   const [duree, setduree] = useState<{ annee?: number; mois?: number }>({});
+
+  //React hook
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<Inputs>({
+    defaultValues: {
+      peutAvoir: true,
+      intituleDiff: true,
+
+      version: 1,
+   
+      exp: false,
+    },
+  });
+
+  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+
+
+  ///
+  const [estVirtuel, setestVirtuel] = useState(false)
+  const { controls } = useMyTransition({ trigger: watch("peutAvoir") });
+  const { controls: ctl2 } = useMyTransition({
+    trigger: watch("intituleDiff"),
+  });
+
+  const { controls: ctl3 } = useMyTransition({ trigger: watch("exp") });
   const { controls: ctl4 } = useMyTransition({ trigger: estVirtuel });
-  const { ref, show, dimension } = useDimensionFromEl();
   return (
     <>
       <Workspace>
-        <div className="px-3 md:px-6 max-w-[700px] mx-auto space-y-3">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="px-3 md:px-6 max-w-[700px] mx-auto space-y-3"
+        >
           {isNew && (
             <h1 className="text-xl lg:text-4xl">
               {t("workspace.formation.nouvelle")}
             </h1>
           )}
 
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">
-                {t("workspace.formation.intitule")}
-              </span>
-            </label>
-            <input
-              type="text"
-              value={intitule}
-              onChange={(e) => setintitule(e.target.value)}
-              placeholder={t("workspace.formation.saisir")}
-              className="input input-bordered w-full"
-            />
-          </div>
-          <div className="form-control">
+          <InputForm
+            register={register("intitule", {
+              required: true,
+            })}
+            label={t("workspace.formation.intitule")}
+            placeholder={t("workspace.formation.saisir")}
+            error={errors.intitule}
+          />
+          <InputForm
+            register={register("peutAvoir")}
+            label={t("workspace.formation.peut avoir")}
+            error={errors.peutAvoir}
+        
+            toggle
+          />
+          {/* <div className="form-control">
             <label className="label cursor-pointer">
               <span className="label-text">
                 {t("workspace.formation.peut avoir")}
@@ -114,7 +157,7 @@ const FormationItem = (
                 }}
               />
             </label>
-          </div>
+          </div> */}
           <motion.div
             animate={controls}
             className="flex flex-row justify-between items-center px-1"
@@ -122,18 +165,33 @@ const FormationItem = (
             <span className="label-text">
               {t("workspace.formation.version form")}
             </span>
-            <input
+            <InputForm
+            type="number"
+              register={register("version", {
+                required: ,
+              })}
+              containerClass="w-[100px]"
+             inputClass="input-sm text-center"
+              error={errors.intitule}
+            />
+            {/* <input
               placeholder="_"
-              className="input input-bordered input-sm w-[100px] text-center"
+              className="placeholder:opacity-0 input input-bordered input-sm w-[100px] text-center"
               value={version}
               onChange={(e: any) => setversion(e.target.value)}
-            />
+            /> */}
           </motion.div>
           <div className="py-2 lg:py-3" />
           <div className="card  bg-base-100 shadow-xl border-[1px]">
             <div className="card-body">
               <h2 className="card-title">{t("global.diplome/attestation")}</h2>
-              <div className="form-control">
+              <InputForm
+                register={register("intituleDiff")}
+                label={t("workspace.formation.meme intitule")}
+                error={errors.intituleDiff}
+                toggle
+              />
+              {/* <div className="form-control">
                 <label className="label cursor-pointer">
                   <span className="label-text">
                     {t("workspace.formation.meme intitule")}
@@ -147,17 +205,28 @@ const FormationItem = (
                     }}
                   />
                 </label>
-              </div>
+              </div> */}
               <motion.div animate={ctl2}>
-                <input
+              <InputForm
+              register={register("diplomeIntitule", {
+                required: watch("intituleDiff"),
+              })}
+              error={errors.intitule}
+              />
+                {/* <input
                   className="input input-bordered input-sm w-full"
                   value={diplomeIntitule}
                   onChange={(e) => setdiplomeIntitule(e.target.value)}
                   placeholder={t("workspace.formation.saisir")}
-                />
+                /> */}
               </motion.div>
-
-              <div className="form-control">
+              <InputForm
+                register={register("exp")}
+                label={t("workspace.formation.expiration")}
+                error={errors.exp}
+                toggle
+              />
+              {/* <div className="form-control">
                 <label className="label cursor-pointer">
                   <span className="label-text">
                     {t("workspace.formation.expiration")}
@@ -171,7 +240,7 @@ const FormationItem = (
                     }}
                   />
                 </label>
-              </div>
+              </div> */}
               <motion.div
                 animate={ctl3}
                 className="flex flex-row justify-between items-center px-1"
@@ -181,23 +250,35 @@ const FormationItem = (
                 </span>
 
                 <div className="flex flex-row items-center gap-2">
-                  <input
+                <InputForm
+              register={register("annee", {
+                required: watch("exp"),
+              })}
+              error={errors.intitule}
+              />
+                  {/* <input
                     placeholder={t("workspace.formation.annee")}
                     className="input input-bordered input-sm w-[60px] text-right"
                     value={duree.annee || "0"}
                     onChange={(e: any) =>
                       setduree({ ...duree, annee: parseInt(e.target.value) })
                     }
-                  />
+                  /> */}
                   /{" "}
-                  <input
+                  <InputForm
+              register={register("mois", {
+                required: watch("exp"),
+              })}
+              error={errors.intitule}
+              />
+                  {/* <input
                     placeholder={t("workspace.formation.mois")}
                     className="input input-bordered input-sm w-[60px] text-right"
                     value={duree.mois || "0"}
                     onChange={(e: any) =>
                       setduree({ ...duree, mois: parseInt(e.target.value) })
                     }
-                  />
+                  /> */}
                 </div>
               </motion.div>
 
@@ -206,12 +287,12 @@ const FormationItem = (
                   {t("workspace.formation.type")}
                 </label>
 
-                <div className="flex flex-row gap-1 lg:gap-2">
-                  <input
+                <div className="mt-3 flex flex-row items-center gap-1 lg:gap-2 ">
+                <input
                     placeholder="_"
                     type="radio"
                     name="radio-2"
-                    className="radio radio-primary"
+                    className="radio radio-secondary"
                     checked={!estVirtuel}
                     onChange={(e) => setestVirtuel(false)}
                   />{" "}
@@ -228,12 +309,15 @@ const FormationItem = (
                   <span>{t("workspace.formation.virtuel")}</span>
                 </div>
               </div>
-              <motion.div animate={ctl4} className="space-y-2 py-1 lg:py-3 px-1">
-                  <span className="label-text">
-                      {t('workspace.formation.template')}
-                  </span>
+              <motion.div
+                animate={ctl4}
+                className="space-y-2 py-1 lg:py-3 px-1"
+              >
+                <span className="label-text">
+                  {t("workspace.formation.template")}
+                </span>
                 <div className="aspect-video w-full border-dashed border-2 border-secondary flex flex-ol items-center justify-center transition duration-300 hover:bg-base-200 cursor-pointer">
-                    <AddFileIcon className="icon"/>
+                  <AddFileIcon className="icon" />
                 </div>
               </motion.div>
 
@@ -243,9 +327,11 @@ const FormationItem = (
             </div>
           </div>
           <div className="py-2 lg:py-4"></div>
-          <button className="btn btn-block btn-sm lg:btn-md">{t('inscription.valider')}</button>
+          <button type="submit" className="btn btn-block btn-sm lg:btn-md">
+            {t("inscription.valider")}
+          </button>
           <div className="py-6 lg:py-6"></div>
-        </div>
+        </form>
       </Workspace>
     </>
   );
