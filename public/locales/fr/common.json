@@ -70,7 +70,15 @@
         "saisir":"Saisir",
         "peut avoir":"Peut avoir des versions ?",
         "version form":"Version de cette formation",
-        "meme intitule":"Utiliser un intitulé différent ?"
+        "meme intitule":"Utiliser un intitulé différent ?",
+        "expiration":"A une date d'expiration ?",
+        "annee":"Année",
+        "mois":"Mois",
+        "duree de validite":"Durée de validité",
+        "physique":"Physique",
+        "virtuel":"Virtuel",
+        "type":"Type",
+        "template":"Template"
     }
   }
 }

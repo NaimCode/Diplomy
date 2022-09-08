@@ -1,7 +1,7 @@
 import { useAnimationControls } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 type useLocaleType = () => { isAr: boolean };
 export const useLocale: useLocaleType = () => {
   const { locale } = useRouter();
@@ -74,3 +74,25 @@ export const useMyTransition = ({ trigger }: useMyTransition) => {
 
   return {controls}
 };
+
+
+export const useDimensionFromEl=()=>{
+  const ref=useRef<HTMLDivElement>(null)
+  const [show, setshow] = useState(false)
+  const [dimension, setdimension] = useState({width:0,height:0})
+
+  useEffect(() => {
+    if(ref.current){
+      const el=ref.current
+      const width=el.clientWidth
+      const height=el.clientHeight
+      setdimension({
+        width,
+        height
+      })
+      setshow(true)
+    }
+  }, [ref.current])
+  
+  return {ref,dimension,show}
+}
