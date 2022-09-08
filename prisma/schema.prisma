@@ -123,6 +123,8 @@ model Diplome{
     id String @id @default(uuid())
     createAt DateTime @default(now())
     updateAt DateTime @updatedAt
+    expiration Boolean
+    dureeExpiration DateTime 
     estVirtuel Boolean
     formationId String @unique
     formation Formation @relation(fields: [formationId],references: [id],onDelete: Cascade)

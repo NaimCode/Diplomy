@@ -1,18 +1,18 @@
+import { useAnimationControls } from "framer-motion";
 import { useTheme } from "next-themes";
-import { useRouter } from "next/router"
-import { useState, useEffect } from 'react';
-type useLocaleType=()=>{isAr:boolean}
-export const useLocale:useLocaleType=()=>{
-    const {locale}=useRouter()
-    const isAr:boolean=locale==='ar'
-    return {
-        isAr
-    }
-}
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
+type useLocaleType = () => { isAr: boolean };
+export const useLocale: useLocaleType = () => {
+  const { locale } = useRouter();
+  const isAr: boolean = locale === "ar";
+  return {
+    isAr,
+  };
+};
 
 export default function useWindowDimensions() {
-
-  const hasWindow = typeof window !== 'undefined';
+  const hasWindow = typeof window !== "undefined";
 
   function getWindowDimensions() {
     const width = hasWindow ? window.innerWidth : null;
@@ -23,29 +23,54 @@ export default function useWindowDimensions() {
     };
   }
 
-  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+  const [windowDimensions, setWindowDimensions] = useState(
+    getWindowDimensions()
+  );
 
   useEffect(() => {
     if (hasWindow) {
-      const handleResize=()=> {
+      const handleResize = () => {
         setWindowDimensions(getWindowDimensions());
-      }
+      };
 
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
     }
   }, [hasWindow]);
 
   return windowDimensions;
 }
 
-
-export const useMyTheme=()=>{
+export const useMyTheme = () => {
   const { theme } = useTheme();
   const [isDark, setisDark] = useState(theme == "dark");
   useEffect(() => {
     setisDark(theme == "dark");
   }, [theme]);
 
-  return {isDark}
-}
+  return { isDark };
+};
+
+type useMyTransition = {
+  trigger: boolean;
+};
+export const useMyTransition = ({ trigger }: useMyTransition) => {
+  const controls = useAnimationControls();
+  useEffect(() => {
+    if (trigger) {
+      controls.start({
+        opacity: 1,
+        x: 0,
+        height: "auto",
+      });
+    } else {
+      controls.start({
+        opacity: 0,
+        x: -100,
+        height: 0,
+      });
+    }
+  }, [trigger]);
+
+  return {controls}
+};

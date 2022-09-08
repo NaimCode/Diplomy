@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { Presets } from "react-component-transition";
 import { ComponentTransition, AnimationTypes } from "react-component-transition";
 import { motion, useAnimationControls } from "framer-motion";
+import { useMyTransition } from "../../../utils/hooks";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
     context.req,
@@ -54,28 +55,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const FormationItem = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
-    const controlsVersion = useAnimationControls()
+
   const { isNew } = props;
   const { formations } = props.etablissement;
   const { t } = useTranslation();
+  //TODO: set false
   const [peutAvoir, setpeutAvoir] = useState(true);
+  const [intituleDiff, setintituleDiff] = useState(true);
   const [version, setversion] = useState("1");
+  const [intitule, setintitule] = useState("");
+  const [diplomeIntitule, setdiplomeIntitule] = useState("");
   const [initule, setinitule] = useState("");
-  useEffect(()=>{
-      if(!peutAvoir){
-controlsVersion.start({
-    opacity:0,
-    x:-100,
-    height:0
-})
-      }else{
-        controlsVersion.start({
-            opacity:1,
-            x:0,
-            height:"auto"
-        })
-      }
-  },[peutAvoir])
+  const {controls}=useMyTransition({trigger:peutAvoir})
+  const {controls: ctl2}=useMyTransition({trigger:intituleDiff})
   return (
     <>
       <Workspace>
@@ -94,6 +86,8 @@ controlsVersion.start({
             </label>
             <input
               type="text"
+              value={intitule}
+              onChange={(e)=>setintitule(e.target.value)}
               placeholder={t("workspace.formation.saisir")}
               className="input input-bordered w-full"
             />
@@ -105,7 +99,7 @@ controlsVersion.start({
               </span>
               <input
                 type="checkbox"
-                className="toggle"
+                className="toggle toggle-primary"
                 checked={peutAvoir}
                 onChange={(e) => {
                     
@@ -115,22 +109,47 @@ controlsVersion.start({
               />
             </label>
           </div>
-          <motion.div animate={controlsVersion} className="flex flex-row justify-between items-center px-1">
+          <motion.div animate={controls} className="flex flex-row justify-between items-center px-1">
             <span className="label-text">
               {t("workspace.formation.version form")}
             </span>
             <input
-              placeholder="_"
+              placeholder=""
               className="input input-bordered input-sm w-[100px] text-center"
               value={version}
               onChange={(e: any) => setversion(e.target.value)}
             />
           </motion.div>
-          
+          <div className="py-2 lg:py-3"/>
           <div className="card  bg-base-100 shadow-xl border-[1px]">
             <div className="card-body">
               <h2 className="card-title">{t("global.diplome/attestation")}</h2>
-              <p>If a dog chews shoes whose shoes does he choose?</p>
+              <div className="form-control">
+            <label className="label cursor-pointer">
+              <span className="label-text">
+                {t("workspace.formation.meme intitule")}
+              </span>
+              <input
+                type="checkbox"
+                className="toggle toggle-primary"
+                checked={intituleDiff}
+                onChange={(e) => {
+                    setintituleDiff(e.target.checked)
+                }}
+              />
+            </label>
+
+          </div>
+          <motion.div animate={ctl2}>
+            <input
+          
+              className="input input-bordered input-sm w-full"
+              value={diplomeIntitule}
+              onChange={(e)=>setdiplomeIntitule(e.target.value)}
+              placeholder={t("workspace.formation.saisir")}
+            />
+            </motion.div>
+
               {/* <div className="card-actions justify-end">
                 <button className="btn btn-primary">Buy Now</button>
               </div> */}

@@ -68,8 +68,9 @@
         "nouvelle":"Nouvelle formation",
         "intitule":"Intitulé",
         "saisir":"Saisir",
-        "peut avoir":"Peut avoir des versions?",
-        "version form":"Version de cette formation"
+        "peut avoir":"Peut avoir des versions ?",
+        "version form":"Version de cette formation",
+        "meme intitule":"Utiliser un intitulé différent ?"
     }
   }
 }
