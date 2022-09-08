@@ -128,5 +128,11 @@ model Diplome{
     estVirtuel Boolean
     formationId String @unique
     formation Formation @relation(fields: [formationId],references: [id],onDelete: Cascade)
+    canvasId String?
+    canvas Canvas? @relation(fields: [canvasId],references: [id],onDelete: Cascade)
 }
 
+model Canvas{
+    id String @id @default(uuid())
+    diplomes Diplome[]
+}
