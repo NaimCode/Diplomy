@@ -80,7 +80,9 @@
         "physique":"Physique",
         "virtuel":"Virtuel",
         "type":"Type",
-        "template":"Template"
+        "template":"Template",
+        "sans version":"sans version",
+        "version":"Version"
       
     }
   }

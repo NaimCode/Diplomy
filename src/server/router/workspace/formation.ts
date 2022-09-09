@@ -12,23 +12,34 @@ export const formationRouter = createRouter().mutation("new", {
     const { prisma } = ctx;
     const { intitule, intituleDiff, version, peutAvoir, estVirtuel, diplomeIntitule, exp, mois, annee } = input.more;
 
-    
-    return await prisma.formation.create({
+    // peutAvoir ? undefined :
+    const diplome = await prisma.diplome.create({
+      data: {
+        intituleDiff,
+        intitule: intituleDiff ? diplomeIntitule : undefined,
+        estVirtuel,
+        expiration: exp,
+        dureeExpiration: parseInt(mois) + 12 * parseInt(annee)
+      }
+    })
+        //TODO:in case parseInt(version)==null 
+   return await prisma.formation.create({
       data: {
         intitule,
         etablissementId: input.etablissement,
-        peutAvoirVersion: peutAvoir,
-        version: peutAvoir ? parseInt(version) : undefined
-      }
-    }).then(async (formation) => await prisma.diplome.create({
-      data: {
-        intitule: intituleDiff ? diplomeIntitule : undefined,
-        intituleDiff,
-        formationId: formation.id,
-        estVirtuel,
-        expiration: exp,
-        dureeExpiration: exp ? parseInt(mois) + 12 * parseInt(annee) : undefined
-      }
-    }))
+        versionnage: peutAvoir,
+        diplomeId: peutAvoir ? undefined : diplome.id,
+        versions:{   
+          create:peutAvoir?[
+            {
+              diplomeId: diplome.id,
+              id: parseInt(version)
+            }
+          ]:undefined
+        }
+      },
+    })
+
+   
   }
 })

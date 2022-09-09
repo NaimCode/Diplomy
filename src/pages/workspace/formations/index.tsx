@@ -7,7 +7,7 @@ import Workspace from "../../../components/Workspace";
 import { useTranslation } from "next-i18next";
 import { AddIcon } from "../../../constants/icons";
 import { prisma } from "../../../server/db/client";
-import { Formation } from ".prisma/client";
+import { Formation, Version } from ".prisma/client";
 import {
   createColumnHelper,
   flexRender,
@@ -80,7 +80,7 @@ const Formations = (
               </button>
             </Link>
           </div>
-          {/* <Table data={formations.reverse()} /> */}
+          <Table data={formations.reverse()} />
         </div>
       </Workspace>
     </>
@@ -90,24 +90,22 @@ const Formations = (
 type TableProps = {
   data: Array<any>;
 };
-type FormationTable = {
-  intitule: string,
-  version: int
-}
+
 const Table = ({ data }: TableProps) => {
-  const columnsHelper = createColumnHelper<FormationTable>();
+  const { t } = useTranslation()
+  const columnsHelper = createColumnHelper<Formation &{versions:Array<Version>}>();
   const columns = [
     columnsHelper.accessor("intitule", {
-      header: () => "Intitulé",
+      header: () => t('workspace.formation.intitule'),
     }),
-    columnsHelper.accessor("version", {
-      header: () => "version",
+    columnsHelper.accessor("versionnage", {
+      header: () => t('workspace.formation.version'),
 
       cell: (formation) => {
-        return formation.cell.row.original.peutAvoirVersion ? (
-          <div className="badge badge-warning">{formation.getValue()}</div>
+        return formation.cell.row.original.versionnage ? (
+          <div className="badge badge-warning">{formation.cell.row.original.versions.at(-1)?.id}</div>
         ) : (
-          <div className="badge badge-secondary">Sans version</div>
+          <div className="badge badge-secondary">{t('workspace.formation.sans version')}</div>
         );
       },
     }),
@@ -118,7 +116,7 @@ const Table = ({ data }: TableProps) => {
     getCoreRowModel: getCoreRowModel(),
   });
   //table-compact for small rows
-  const { t } = useTranslation()
+
   return (
     <div className="overflow-x-auto">
       <table className="table w-full table-zebra">
@@ -128,7 +126,7 @@ const Table = ({ data }: TableProps) => {
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  className={header.id == "version" ? "text-center" : ""}
+                  className={header.id == "versionnage" ? "text-center" : ""}
                 >
                   {header.isPlaceholder
                     ? null
@@ -147,7 +145,7 @@ const Table = ({ data }: TableProps) => {
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}
-                  className={cell.column.id == "version" ? "text-center" : ""}
+                  className={cell.column.id == "versionnage" ? "text-center" : ""}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>

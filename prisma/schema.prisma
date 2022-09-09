@@ -113,7 +113,7 @@ model Formation {
 
     //foreigh
     diplomeId String?  @unique
-    Diplome   Diplome? @relation(fields: [diplomeId], references: [id], onDelete: Cascade)
+    diplome   Diplome? @relation(fields: [diplomeId], references: [id], onDelete: Cascade)
     etablissementId String
     etablissement   Etablissement @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
     
@@ -131,7 +131,7 @@ model Version {
     //foreign
     formationId String
     diplomeId   String    @unique
-    Diplome     Diplome   @relation(fields: [diplomeId], references: [id], onDelete: Cascade)
+    diplome     Diplome   @relation(fields: [diplomeId], references: [id], onDelete: Cascade)
     formation   Formation @relation(fields: [formationId], references: [id], onDelete: Cascade)
 
     //extra
