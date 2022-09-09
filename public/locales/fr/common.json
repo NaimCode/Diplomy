@@ -2,6 +2,7 @@
   "global": {
     "onInvalid": "Ce champs est obligatoire",
     "toast erreur": "Un problème un été rencontré",
+    "toast succes": "Opération réussie",
     "dialog cancel": "annuler",
     "dialog validate": "valider",
     "retour": "retour",

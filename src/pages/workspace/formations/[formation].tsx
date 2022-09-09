@@ -5,18 +5,16 @@ import { authOptions } from "../../api/auth/[...nextauth]";
 import Workspace from "../../../components/Workspace";
 import { useTranslation } from "next-i18next";
 import { prisma } from "../../../server/db/client";
-import { Formation } from ".prisma/client";
-import { useEffect, useState } from "react";
-import { Presets } from "react-component-transition";
-import {
-  ComponentTransition,
-  AnimationTypes,
-} from "react-component-transition";
-import { motion, useAnimationControls } from "framer-motion";
-import { useMyTransition, useDimensionFromEl } from "../../../utils/hooks";
+
+import { motion } from "framer-motion";
+import { useMyTransition } from "../../../utils/hooks";
 import { AddFileIcon } from "../../../constants/icons";
 import { SubmitHandler, useForm } from "react-hook-form";
 import InputForm from "../../../components/InputForm";
+import { useState } from "react";
+import { trpc } from "../../../utils/trpc";
+import { toast } from "react-toastify";
+import router from "next/router";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
     context.req,
@@ -35,7 +33,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const utilisateur = await prisma.utilisateur
     .findUnique({
       where: {
-        email: session.user?.email!,
+        email: session.user?.email || "",
       },
       include: {
         etablissement: true,
@@ -51,18 +49,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       isNew: context.query.formation == "ajouter",
-      etablissement: utilisateur?.etablissement!,
+      etablissement: utilisateur.etablissement,
 
-      ...(await serverSideTranslations(context.locale!, ["common"])),
+      ...(await serverSideTranslations(context.locale || "", ["common"])),
     },
   };
 };
 //TODO: added ability to choose template
 
-type Inputs = {
+export type InputsFormation = {
   peutAvoir: boolean;
   intituleDiff: boolean;
-
   version: number;
   intitule: string;
   diplomeIntitule: string;
@@ -74,17 +71,21 @@ const FormationItem = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { isNew } = props;
-  const { formations } = props.etablissement;
+  //const { formations } = props.etablissement;
   const { t } = useTranslation();
-  //TODO: set false
-  //   const [peutAvoir, setpeutAvoir] = useState(true);
-  //   const [intituleDiff, setintituleDiff] = useState(true);
-  //   const [estVirtuel, setestVirtuel] = useState(false);
-  //   const [version, setversion] = useState(1);
-  //   const [intitule, setintitule] = useState("");
-  //   const [diplomeIntitule, setdiplomeIntitule] = useState("");
-  //   const [exp, setexp] = useState(false);
-  //   const [duree, setduree] = useState<{ annee?: number; mois?: number }>({});
+  const add = trpc.useMutation(["formation.new"], {
+    onSuccess: () => {
+      toast.info(t("global.toast succes"));
+      setTimeout(() => {
+        router.push("/workspace/formations");
+      }, 2000);
+    },
+    onError: (err) => {
+      console.log(err);
+      add.reset()
+      toast.error(t("global.toast erreur"));
+    },
+  });
 
   //React hook
   const {
@@ -92,22 +93,22 @@ const FormationItem = (
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<Inputs>({
+  } = useForm<InputsFormation>({
     defaultValues: {
       peutAvoir: true,
       intituleDiff: true,
 
       version: 1,
-   
+
       exp: false,
     },
   });
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
-
+  const onSubmit: SubmitHandler<InputsFormation> = (data) =>
+    add.mutate({ etablissement: props.etablissement.id, more: {...data,estVirtuel} });
 
   ///
-  const [estVirtuel, setestVirtuel] = useState(false)
+  const [estVirtuel, setestVirtuel] = useState(false);
   const { controls } = useMyTransition({ trigger: watch("peutAvoir") });
   const { controls: ctl2 } = useMyTransition({
     trigger: watch("intituleDiff"),
@@ -140,24 +141,9 @@ const FormationItem = (
             register={register("peutAvoir")}
             label={t("workspace.formation.peut avoir")}
             error={errors.peutAvoir}
-        
             toggle
           />
-          {/* <div className="form-control">
-            <label className="label cursor-pointer">
-              <span className="label-text">
-                {t("workspace.formation.peut avoir")}
-              </span>
-              <input
-                type="checkbox"
-                className="toggle toggle-primary"
-                checked={peutAvoir}
-                onChange={(e) => {
-                  setpeutAvoir(e.target.checked);
-                }}
-              />
-            </label>
-          </div> */}
+
           <motion.div
             animate={controls}
             className="flex flex-row justify-between items-center px-1"
@@ -166,20 +152,11 @@ const FormationItem = (
               {t("workspace.formation.version form")}
             </span>
             <InputForm
-            type="number"
-              register={register("version", {
-                required: ,
-              })}
+              register={register("version")}
               containerClass="w-[100px]"
-             inputClass="input-sm text-center"
+              inputClass="input-sm text-center"
               error={errors.intitule}
             />
-            {/* <input
-              placeholder="_"
-              className="placeholder:opacity-0 input input-bordered input-sm w-[100px] text-center"
-              value={version}
-              onChange={(e: any) => setversion(e.target.value)}
-            /> */}
           </motion.div>
           <div className="py-2 lg:py-3" />
           <div className="card  bg-base-100 shadow-xl border-[1px]">
@@ -191,34 +168,12 @@ const FormationItem = (
                 error={errors.intituleDiff}
                 toggle
               />
-              {/* <div className="form-control">
-                <label className="label cursor-pointer">
-                  <span className="label-text">
-                    {t("workspace.formation.meme intitule")}
-                  </span>
-                  <input
-                    type="checkbox"
-                    className="toggle toggle-primary"
-                    checked={intituleDiff}
-                    onChange={(e) => {
-                      setintituleDiff(e.target.checked);
-                    }}
-                  />
-                </label>
-              </div> */}
               <motion.div animate={ctl2}>
-              <InputForm
-              register={register("diplomeIntitule", {
-                required: watch("intituleDiff"),
-              })}
-              error={errors.intitule}
-              />
-                {/* <input
-                  className="input input-bordered input-sm w-full"
-                  value={diplomeIntitule}
-                  onChange={(e) => setdiplomeIntitule(e.target.value)}
-                  placeholder={t("workspace.formation.saisir")}
-                /> */}
+                <InputForm
+                  register={register("diplomeIntitule")}
+                  error={errors.intitule}
+                  inputClass="input-sm"
+                />
               </motion.div>
               <InputForm
                 register={register("exp")}
@@ -250,12 +205,13 @@ const FormationItem = (
                 </span>
 
                 <div className="flex flex-row items-center gap-2">
-                <InputForm
-              register={register("annee", {
-                required: watch("exp"),
-              })}
-              error={errors.intitule}
-              />
+                  <InputForm
+                    register={register("annee")}
+                    error={errors.intitule}
+                    placeholder={t("workspace.formation.annee")}
+                    containerClass="w-[80px]"
+                    inputClass="input-sm text-center placeholder:text-sm"
+                  />
                   {/* <input
                     placeholder={t("workspace.formation.annee")}
                     className="input input-bordered input-sm w-[60px] text-right"
@@ -266,11 +222,12 @@ const FormationItem = (
                   /> */}
                   /{" "}
                   <InputForm
-              register={register("mois", {
-                required: watch("exp"),
-              })}
-              error={errors.intitule}
-              />
+                    register={register("mois")}
+                    error={errors.intitule}
+                    placeholder={t("workspace.formation.mois")}
+                    containerClass="w-[80px]"
+                    inputClass="input-sm text-center placeholder:text-sm"
+                  />
                   {/* <input
                     placeholder={t("workspace.formation.mois")}
                     className="input input-bordered input-sm w-[60px] text-right"
@@ -288,13 +245,13 @@ const FormationItem = (
                 </label>
 
                 <div className="mt-3 flex flex-row items-center gap-1 lg:gap-2 ">
-                <input
+                  <input
                     placeholder="_"
                     type="radio"
                     name="radio-2"
                     className="radio radio-secondary"
                     checked={!estVirtuel}
-                    onChange={(e) => setestVirtuel(false)}
+                    onChange={() => setestVirtuel(false)}
                   />{" "}
                   <span>{t("workspace.formation.physique")}</span>
                   <div className="px-1 lg:px-3" />
@@ -304,7 +261,7 @@ const FormationItem = (
                     name="radio-2"
                     className="radio radio-primary"
                     checked={estVirtuel}
-                    onChange={(e) => setestVirtuel(true)}
+                    onChange={() => setestVirtuel(true)}
                   />{" "}
                   <span>{t("workspace.formation.virtuel")}</span>
                 </div>
@@ -327,7 +284,12 @@ const FormationItem = (
             </div>
           </div>
           <div className="py-2 lg:py-4"></div>
-          <button type="submit" className="btn btn-block btn-sm lg:btn-md">
+          <button
+            type="submit"
+            className={`btn btn-block btn-sm lg:btn-md ${
+              add.isLoading && "loading"
+            }`}
+          >
             {t("inscription.valider")}
           </button>
           <div className="py-6 lg:py-6"></div>

@@ -1,31 +1,33 @@
 import { z } from "zod";
 import { createRouter } from "./../context";
 
-import { Etablissement } from "@prisma/client";
 
 
-const ZInscription = z.object({
-  intitule: z.string(),
-  intituleDiff: z.boolean(),
-  peutAvoirVersion: z.boolean(),
-  estVirtuel: z.boolean(),
-  identifiant: z.string().nullable(),
-  paysVille: z.string(),
-  address: z.string().nullable(),
-  responsable: z.string(),
-  email: z.string().email(),
-  tel: z.string(),
-
-});
-
-//TODO: implementing case where email exist
 export const formationRouter = createRouter().mutation("new", {
-  input: ZInscription,
+  input: z.object({
+    etablissement: z.string(),
+    more: z.any()
+  }),
   async resolve({ input, ctx }) {
     const { prisma } = ctx;
-    // const data = await prisma.inscription.create({
-    //   data: input,
-    // })
-    
-  },
+    const { intitule, intituleDiff, version, peutAvoir, estVirtuel, diplomeIntitule, exp, mois, annee } = input.more;
+
+    return await prisma.formation.create({
+      data: {
+        intitule,
+        etablissementId: input.etablissement,
+        peutAvoirVersion: peutAvoir,
+        version: peutAvoir ? parseInt(version) : undefined
+      }
+    }).then(async (formation) => await prisma.diplome.create({
+      data: {
+        intitule: intituleDiff ? diplomeIntitule : undefined,
+        intituleDiff,
+        formationId: formation.id,
+        estVirtuel,
+        expiration: exp,
+        dureeExpiration: exp ? parseInt(mois) + 12 * parseInt(annee) : undefined
+      }
+    }))
+  }
 })

@@ -39,7 +39,7 @@ if(toggle){
       <input
       type={type}
         {...register}
-        placeholder={placeholder}
+        placeholder={placeholder||(t('workspace.formation.saisir'))}
         onInvalid={e => (e.target as HTMLInputElement).setCustomValidity(t('global.onInvalid'))}
         onInput={e => (e.target as HTMLInputElement).setCustomValidity('')}
         className={`input input-bordered  w-full ${error?"input-error":""} ${inputClass}`}

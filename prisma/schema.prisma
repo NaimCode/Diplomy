@@ -111,9 +111,8 @@ model Formation {
     etablissementId String
     etablissement Etablissement @relation(fields: [etablissementId],references: [id],onDelete: Cascade)
     formationParentId String?
-    estParent Boolean @default(true)
     peutAvoirVersion Boolean @default(true)
-    version Int @default(1)
+    version Int? @default(1)
     diplome Diplome?
    
 }
@@ -126,7 +125,7 @@ model Diplome{
     intitule String?
     intituleDiff Boolean
     expiration Boolean
-    dureeExpiration DateTime 
+    dureeExpiration Int?
     estVirtuel Boolean
 
     formationId String @unique
