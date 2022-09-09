@@ -34,23 +34,27 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const utilisateur = await prisma.utilisateur
     .findUnique({
       where: {
-        email: session?.user?.email||"",
+        email: session?.user?.email || "",
       },
       include: {
         etablissement: {
           include: {
-            formations: true,
+            formations: {
+              include: {
+                versions: true
+              }
+            },
           },
         },
       },
     })
     .then((data) => JSON.parse(JSON.stringify(data)));
-
+  console.log(utilisateur.etablissement.formations)
   return {
     props: {
       etablissement: utilisateur.etablissement,
 
-      ...(await serverSideTranslations(context.locale||"", ["common"])),
+      ...(await serverSideTranslations(context.locale || "", ["common"])),
     },
   };
 };
@@ -76,7 +80,7 @@ const Formations = (
               </button>
             </Link>
           </div>
-          <Table data={formations.reverse()} />
+          {/* <Table data={formations.reverse()} /> */}
         </div>
       </Workspace>
     </>
@@ -86,8 +90,12 @@ const Formations = (
 type TableProps = {
   data: Array<any>;
 };
+type FormationTable = {
+  intitule: string,
+  version: int
+}
 const Table = ({ data }: TableProps) => {
-  const columnsHelper = createColumnHelper<Formation>();
+  const columnsHelper = createColumnHelper<FormationTable>();
   const columns = [
     columnsHelper.accessor("intitule", {
       header: () => "Intitulé",
@@ -110,6 +118,7 @@ const Table = ({ data }: TableProps) => {
     getCoreRowModel: getCoreRowModel(),
   });
   //table-compact for small rows
+  const { t } = useTranslation()
   return (
     <div className="overflow-x-auto">
       <table className="table w-full table-zebra">
@@ -124,9 +133,9 @@ const Table = ({ data }: TableProps) => {
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
                 </th>
               ))}
             </tr>
@@ -134,7 +143,7 @@ const Table = ({ data }: TableProps) => {
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} onClick={()=>router.push('/workspace/formations/'+row.original.intitule)} className=" hover:active cursor-pointer">
+            <tr key={row.id} onClick={() => router.push('/workspace/formations/' + row.original.intitule)} className=" hover:active cursor-pointer">
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}
@@ -147,6 +156,11 @@ const Table = ({ data }: TableProps) => {
           ))}
         </tbody>
       </table>
+      {
+        data.length == 0 && <div className="flex flex-row justify-center items-center label-text p-2 lg:p-4">
+          {t('global.liste vide')}
+        </div>
+      }
     </div>
   );
 };

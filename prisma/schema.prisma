@@ -112,8 +112,8 @@ model Formation {
     versionnage     Boolean       @default(true)
 
     //foreigh
-    diplomeId String  @unique
-    Diplome   Diplome @relation(fields: [diplomeId], references: [id], onDelete: Cascade)
+    diplomeId String?  @unique
+    Diplome   Diplome? @relation(fields: [diplomeId], references: [id], onDelete: Cascade)
     etablissementId String
     etablissement   Etablissement @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
     
