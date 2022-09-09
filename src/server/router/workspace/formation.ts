@@ -12,6 +12,7 @@ export const formationRouter = createRouter().mutation("new", {
     const { prisma } = ctx;
     const { intitule, intituleDiff, version, peutAvoir, estVirtuel, diplomeIntitule, exp, mois, annee } = input.more;
 
+    
     return await prisma.formation.create({
       data: {
         intitule,

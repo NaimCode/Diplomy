@@ -63,78 +63,102 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
-
 ///
 
-model Utilisateur{
-    id String @unique @default(uuid())
-    email String @unique
-    etablissementId String 
-    locale String?
-    isMembre Boolean @default(true)
-    etablissement Etablissement @relation(fields: [etablissementId],references: [id],onDelete: Cascade)
+model Utilisateur {
+    id              String        @unique @default(uuid())
+    email           String        @unique
+    etablissementId String
+    locale          String?
+    isMembre        Boolean       @default(true)
+    etablissement   Etablissement @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
 }
 
-model Inscription{
-    id String @id @default(uuid())
+model Inscription {
+    id            String   @id @default(uuid())
     etablissement String
-    abrev String
-    identifiant String?
-    paysVille String
-    address String?
-    responsable String
-    email String
-    tel String 
-    createAt DateTime @default(now())
-    updateAt DateTime @updatedAt
+    abrev         String
+    identifiant   String?
+    paysVille     String
+    address       String?
+    responsable   String
+    email         String
+    tel           String
+    createAt      DateTime @default(now())
+    updateAt      DateTime @updatedAt
 }
 
 model Etablissement {
-    id String @id  @default(uuid())
-    createAt DateTime @default(now())
-    updateAt DateTime @updatedAt
-    abrev String
-    nom String @unique
-    identifiant String?
-    paysVille String?
-    address String?
-    membresAutorises String[] @unique @default([])
-    membres Utilisateur[] 
-    formations Formation[]
+    id               String        @id @default(uuid())
+    createAt         DateTime      @default(now())
+    updateAt         DateTime      @updatedAt
+    abrev            String
+    nom              String        @unique
+    identifiant      String?
+    paysVille        String?
+    address          String?
+    membresAutorises String[]      @unique @default([])
+    membres          Utilisateur[]
+    formations       Formation[]
 }
 
 model Formation {
-    id String @id @default(uuid())
+    id       String   @id @default(uuid())
     createAt DateTime @default(now())
     updateAt DateTime @updatedAt
-    intitule String
+
+    //fields
+    intitule        String        @unique
+    versionnage     Boolean       @default(true)
+
+    //foreigh
+    diplomeId String  @unique
+    Diplome   Diplome @relation(fields: [diplomeId], references: [id], onDelete: Cascade)
     etablissementId String
-    etablissement Etablissement @relation(fields: [etablissementId],references: [id],onDelete: Cascade)
-    formationParentId String?
-    peutAvoirVersion Boolean @default(true)
-    version Int? @default(1)
-    diplome Diplome?
-   
+    etablissement   Etablissement @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
+    
+    //extra
+    versions Version[]
 }
 
-
-model Diplome{
-    id String @id @default(uuid())
+model Version {
+    id       Int      @id
     createAt DateTime @default(now())
     updateAt DateTime @updatedAt
-    intitule String?
-    intituleDiff Boolean
-    expiration Boolean
-    dureeExpiration Int?
-    estVirtuel Boolean
 
-    formationId String @unique
-    formation Formation @relation(fields: [formationId],references: [id],onDelete: Cascade)
-    canvasId String?
-    canvas Canvas? @relation(fields: [canvasId],references: [id],onDelete: Cascade)
+    //fields
+
+    //foreign
+    formationId String
+    diplomeId   String    @unique
+    Diplome     Diplome   @relation(fields: [diplomeId], references: [id], onDelete: Cascade)
+    formation   Formation @relation(fields: [formationId], references: [id], onDelete: Cascade)
+
+    //extra
 }
 
-model Canvas{
-    id String @id @default(uuid())
+model Diplome {
+    id       String   @id @default(uuid())
+    createAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+
+    //fields
+    intitule        String?
+    intituleDiff    Boolean
+    expiration      Boolean
+    dureeExpiration Int?
+    estVirtuel      Boolean
+
+    //foreign
+    canvasId String?
+    canvas   Canvas? @relation(fields: [canvasId], references: [id], onDelete: Cascade)
+
+    //extra
+    version   Version?
+    formation Formation?
+}
+
+model Canvas {
+    id       String    @id @default(uuid())
     diplomes Diplome[]
 }

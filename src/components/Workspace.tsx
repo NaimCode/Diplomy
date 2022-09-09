@@ -37,7 +37,7 @@ const Workspace = ({ children }: WorkSpaceProps) => {
 const BreadCrumbs = () => {
   const {t}=useTranslation()
   const router = useRouter();
-  const routes = router.asPath.split("/").filter((f, i) => i >= 2);
+  const routes = router.asPath.replaceAll("%20"," ").split("/").filter((f, i) => i >= 2);
 
   return (
     <div
@@ -50,10 +50,14 @@ const BreadCrumbs = () => {
           const isLast = i == routes.length - 1;
           const intern=["ajouter"].includes(r)
           return (
-            <li key={i} className="first-letter:uppercase">
-              {isLast ? (
-               intern? t("global."+r):r
-              ) : (
+            <li key={i} className="first-letter:uppercase max-w-[120px] lg:max-w-[220px]">
+              {isLast ? 
+              <span className="truncate">
+              {
+                  intern? t("global."+r):r
+               }
+              </span>
+               : (
                 <Link href={"/workspace/"+routes.filter((rn,index)=>index<=i).join("/")}>
                   <a>{r}</a>
                 </Link>

@@ -10,7 +10,6 @@ import "/node_modules/flag-icons/css/flag-icons.min.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
-import { useEffect } from 'react'
 import Head from 'next/head'
 import {APP_NAME} from "../constants/global.ts"
 const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
@@ -37,7 +36,7 @@ const App = ({children}) => {
   return <CustomProvider  theme={theme}>
    {children}
     <ToastContainer
-      theme="colored"
+      theme={theme=='dark' ? 'dark' : 'light'}
       newestOnTop={true}
       position="top-center"
       rtl={router.locale === "ar" ? true : false}
