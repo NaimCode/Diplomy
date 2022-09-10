@@ -4,7 +4,7 @@ import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import { useContext } from "react";
 import { Badge } from "rsuite";
-import ThemeSwitcher from "../components/ ThemeSwitcher";
+import ThemeSwitcher from "../components/ThemeSwitcher";
 import AvatarButton from "../components/Avatar";
 import DrawerMenu from "../components/DrawerMenu";
 import Back from "../components/Back";

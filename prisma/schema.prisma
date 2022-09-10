@@ -122,11 +122,12 @@ model Formation {
 }
 
 model Version {
-    id       Int      @id
+    id       String      @id @default(uuid())
     createAt DateTime @default(now())
     updateAt DateTime @updatedAt
 
     //fields
+    numero Int 
 
     //foreign
     formationId String

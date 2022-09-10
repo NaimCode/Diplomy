@@ -49,7 +49,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     })
     .then((data) => JSON.parse(JSON.stringify(data)));
-  console.log(utilisateur.etablissement.formations)
   return {
     props: {
       etablissement: utilisateur.etablissement,
@@ -103,7 +102,7 @@ const Table = ({ data }: TableProps) => {
 
       cell: (formation) => {
         return formation.cell.row.original.versionnage ? (
-          <div className="badge badge-warning">{formation.cell.row.original.versions.at(-1)?.id}</div>
+          <div className="badge badge-warning">{formation.cell.row.original.versions.at(-1)?.numero}</div>
         ) : (
           <div className="badge badge-secondary">{t('workspace.formation.sans version')}</div>
         );

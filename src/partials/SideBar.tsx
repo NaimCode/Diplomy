@@ -16,7 +16,7 @@ import animationData from "../../public/lotties/support.json";
 import animationDataDark from "../../public/lotties/support_dark.json";
 import { useTheme } from "next-themes";
 import useWindowDimensions from "../utils/hooks";
-import ThemeSwitcher from "../components/ ThemeSwitcher";
+import ThemeSwitcher from "../components/ThemeSwitcher";
 import LanguageChanger from "../components/LanguageChanger";
 import LogOut from "../components/LogOut";
 import AvatarButton from "../components/Avatar";

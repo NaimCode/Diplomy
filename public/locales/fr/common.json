@@ -13,6 +13,10 @@
     "diplome":"Diplôme",
     "liste vide":"Aucune donnée",
     "attestation":"Attestation",
+    "enregistrer":"Enregistrer",
+    "annuler":"Annuler",
+    "confirmer":"Confirmer",
+    "confirmation":"Veuillez confirmer l'opération",
     "diplome/attestation":"Diplôme / Attestation"
   },
   "state": {
@@ -82,7 +86,12 @@
         "type":"Type",
         "template":"Template",
         "sans version":"sans version",
-        "version":"Version"
+        "version":"Version",
+        "nouvelle version":"Nouvelle version",
+        "versions":"Versions",
+        "suppression":"Suppression",
+        "historique":"Historique des versions"
+   
       
     }
   }

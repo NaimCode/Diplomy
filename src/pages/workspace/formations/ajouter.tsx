@@ -82,7 +82,6 @@ const FormationItem = (
     },
     onError: (err) => {
       console.log(err);
-      add.reset()
       toast.error(t("global.toast erreur"));
     },
   });

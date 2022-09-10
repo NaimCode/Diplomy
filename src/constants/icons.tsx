@@ -1,6 +1,6 @@
 import { RiFileTextLine,RiAddFill, RiLogoutBoxLine, RiNotification2Line} from 'react-icons/ri';
 import {TbLanguage} from 'react-icons/tb'
-import {MdEmail,MdOutlineArrowBackIos, MdExpandMore, MdNavigateBefore, MdOutlineShortText, MdSchool} from "react-icons/md"
+import {MdEmail,MdDeleteOutline,MdOutlineArrowBackIos, MdExpandMore, MdNavigateBefore, MdOutlineShortText, MdSchool} from "react-icons/md"
 import {FaMapSigns,FaMapMarker,FaHandshake} from 'react-icons/fa'
 import {BsFillPersonFill, BsFillTelephoneFill, BsFillUnlockFill,BsPeopleFill} from 'react-icons/bs'
 import {IoMdClose} from 'react-icons/io'
@@ -34,3 +34,4 @@ export const LogOutIcon=RiLogoutBoxLine
 export const AddIcon=RiAddFill
 export const BackIcon=MdOutlineArrowBackIos
 export const AddFileIcon=HiOutlineDocumentAdd
+export const DeleteIcon=MdDeleteOutline

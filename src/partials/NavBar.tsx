@@ -3,7 +3,7 @@ import { useTranslation } from "next-i18next";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import ThemeSwitcher from "../components/ ThemeSwitcher";
+import ThemeSwitcher from "../components/ThemeSwitcher";
 import LanguageChanger from "../components/LanguageChanger";
 
 import Logo,{LogoBrand} from "../components/Logo";

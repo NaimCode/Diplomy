@@ -24,7 +24,7 @@ const Workspace = ({ children }: WorkSpaceProps) => {
           {children}
         </main>
 
-        <div className="drawer-side">
+        <div className="drawer-side z-30">
           <label htmlFor="Menu" className="drawer-overlay"></label>
 
           <SideBar />
@@ -37,7 +37,7 @@ const Workspace = ({ children }: WorkSpaceProps) => {
 const BreadCrumbs = () => {
   const {t}=useTranslation()
   const router = useRouter();
-  const routes = router.asPath.replaceAll("%20"," ").split("/").filter((f, i) => i >= 2);
+  const routes =decodeURI(router.asPath).split("/").filter((f, i) => i >= 2);
 
   return (
     <div

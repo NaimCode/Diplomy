@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useTranslation } from "next-i18next";
 
 type InputFormProps = {
@@ -8,10 +10,11 @@ type InputFormProps = {
   label?:string,
   error:any,
   toggle?:boolean,
-  type?:string
+  type?:string,
+  props?:any
   
 };
-const InputForm = ({type="text", register,placeholder,toggle=false,inputClass="",label,error,containerClass="w-full" }: InputFormProps) => {
+const InputForm = ({props,type="text", register,placeholder,toggle=false,inputClass="",label,error,containerClass="w-full" }: InputFormProps) => {
   const { t } = useTranslation();
 if(toggle){
     return <div className={`form-control ${containerClass}`}>
@@ -23,6 +26,7 @@ if(toggle){
       type="checkbox"
            {...register}
         // type="checkbox"
+        {...props}
         className={`toggle toggle-primary ${error?"input-error":""}`}
    
       />
@@ -39,6 +43,7 @@ if(toggle){
       <input
       type={type}
         {...register}
+        {...props}
         placeholder={placeholder||(t('workspace.formation.saisir'))}
         onInvalid={e => (e.target as HTMLInputElement).setCustomValidity(t('global.onInvalid'))}
         onInput={e => (e.target as HTMLInputElement).setCustomValidity('')}
@@ -49,4 +54,26 @@ if(toggle){
   );
 };
 
+export const TextAreaForm = ({ register,placeholder,inputClass="",label,error,containerClass="w-full" }: InputFormProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <div className={`form-control  ${containerClass}`}>
+      {label && <label className="label">
+        <span className="label-text">{label}</span>
+      </label>
+      }
+      <textarea
+    
+    rows={4}
+        {...register}
+        placeholder={placeholder||(t('workspace.formation.saisir'))}
+        onInvalid={e => (e.target as HTMLInputElement).setCustomValidity(t('global.onInvalid'))}
+        onInput={e => (e.target as HTMLInputElement).setCustomValidity('')}
+        className={`textarea textarea-bordered  w-full ${error?"input-error":""} ${inputClass}`}
+      />
+      
+    </div>
+  );
+};
 export default InputForm;

@@ -78,4 +78,23 @@ const Dialog = ({
   );
 };
 
+
+export const DialogConfirmation=({children,classButton,onClick}:{children:ReactNode,classButton:string,onClick:Function})=>{
+  const {t}=useTranslation()
+  return <>
+  <label htmlFor="di" className={`modal-button ${classButton}`}>{children}</label>
+
+
+<input type="checkbox" id="di" className="modal-toggle" />
+<div className="modal z-50">
+  <div className="modal-box">
+    <h3 className="font-bold text-lg">{t("global.confirmation")}</h3>
+    <div className="modal-action">
+    <label htmlFor="di" className="btn btn-ghost">{t('global.annuler')}</label>
+      <label htmlFor="di" onClick={onClick} className="btn">{t('global.confirmer')}</label>
+    </div>
+  </div>
+</div>
+  </>
+}
 export default Dialog;

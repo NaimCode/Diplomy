@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useAnimationControls } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
@@ -52,10 +54,23 @@ export const useMyTheme = () => {
 };
 
 type useMyTransition = {
-  trigger: boolean;
+  trigger: boolean,
+  direction?:"right"|"left"|"top"|"bottom"
 };
-export const useMyTransition = ({ trigger }: useMyTransition) => {
+export const useMyTransition = ({ trigger,direction='left' }: useMyTransition) => {
   const controls = useAnimationControls();
+  let x=0
+  switch (direction) {
+    case 'left':
+      x=-100
+      break;
+      case 'right':
+        x=100
+        break;
+    
+    default:
+      break;
+  }
   useEffect(() => {
     if (trigger) {
       controls.start({
@@ -66,7 +81,7 @@ export const useMyTransition = ({ trigger }: useMyTransition) => {
     } else {
       controls.start({
         opacity: 0,
-        x: -100,
+        x,
         height: 0,
       });
     }
