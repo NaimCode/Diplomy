@@ -19,10 +19,10 @@ export const formationRouter = createRouter().mutation("new", {
         intitule: intituleDiff ? diplomeIntitule : undefined,
         estVirtuel,
         expiration: exp,
-        dureeExpiration: parseInt(mois) + 12 * parseInt(annee)
+        dureeExpiration: exp ? parseInt(mois) + 12 * parseInt(annee) : undefined
       }
     })
-    //TODO:in case parseInt(version)==null 
+
     return await prisma.formation.create({
       data: {
         intitule,
@@ -48,19 +48,50 @@ export const formationRouter = createRouter().mutation("new", {
   async resolve({ input, ctx }) {
     return await ctx.prisma.formation.update({
       where: {
-        id:input.id
+        id: input.id
       },
       data: {
         intitule: input.intitule
       }
     })
   }
-}).mutation('delete',{
-  input:z.string(),
-  async resolve({input,ctx}){
+}).mutation('delete', {
+  input: z.string(),
+  async resolve({ input, ctx }) {
     return await ctx.prisma.formation.delete({
-      where:{
-        id:input
+      where: {
+        id: input
+      }
+    })
+  }
+}).mutation('new version', {
+  input: z.object({
+
+    formation: z.any(),
+    more: z.any()
+  }),
+  async resolve({ input, ctx }) {
+    const { prisma } = ctx
+    const { more, formation } = input
+    const { intituleDiff, version, estVirtuel, diplomeIntitule, exp, mois, annee } = more;
+
+    // peutAvoir ? undefined :
+    const diplome = await prisma.diplome.create({
+      data: {
+        intituleDiff,
+        intitule: intituleDiff ? diplomeIntitule : undefined,
+        estVirtuel,
+        expiration: exp,
+        dureeExpiration: exp ? parseInt(mois) + 12 * parseInt(annee) : undefined
+      }
+    })
+
+    return await prisma.version.create({
+
+      data: {
+        formationId: formation.id,
+        numero: parseInt(version),
+        diplomeId: diplome.id
       }
     })
   }

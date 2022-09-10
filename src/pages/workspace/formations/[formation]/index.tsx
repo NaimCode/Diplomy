@@ -1,21 +1,21 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { unstable_getServerSession } from "next-auth";
-import { authOptions } from "../../api/auth/[...nextauth]";
-import Workspace from "../../../components/Workspace";
-import { prisma } from "../../../server/db/client";
+import { authOptions } from "../../../api/auth/[...nextauth]";
+import Workspace from "../../../../components/Workspace";
+import { prisma } from "../../../../server/db/client";
 import { useTranslation } from "next-i18next";
-import { AddFileIcon, AddIcon, DeleteIcon } from "../../../constants/icons";
+import { AddFileIcon, AddIcon, DeleteIcon } from "../../../../constants/icons";
 import { Diplome, Formation, Version } from "@prisma/client";
 import { useForm } from "react-hook-form";
-import InputForm, { TextAreaForm } from "../../../components/InputForm";
+import InputForm, { TextAreaForm } from "../../../../components/InputForm";
 import { motion } from "framer-motion";
-import { useMyTransition } from "../../../utils/hooks";
+import { useMyTransition } from "../../../../utils/hooks";
 import { useState } from "react";
-import { trpc } from "../../../utils/trpc";
+import { trpc } from "../../../../utils/trpc";
 import { toast } from "react-toastify";
 import router from "next/router";
-import { DialogConfirmation } from "../../../components/Dialog";
+import { DialogConfirmation } from "../../../../components/Dialog";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
     context.req,
@@ -141,7 +141,7 @@ const FormationItem = (
 
   const dateString = (date: string) => {
     const d = new Date(date);
-    return d.getMonth() + "-" + d.getFullYear();
+    return d.getDay() +"-"+d.getMonth() + "-" + d.getFullYear();
   };
   const [estVirtuel, setestVirtuel] = useState(false);
   const { controls: ctl2 } = useMyTransition({
@@ -149,7 +149,9 @@ const FormationItem = (
   });
   const { controls: ctl3 } = useMyTransition({ trigger: watch("exp") });
   const { controls: ctl4 } = useMyTransition({ trigger: estVirtuel });
-  const versions = formation.versions.reverse();
+  const versions = formation.versions.sort((a,b)=>a<=b);
+
+  
   return (
     <>
       <Workspace>
@@ -164,7 +166,7 @@ const FormationItem = (
                   {/* <h6>{t("workspace.formation.versions")}</h6> */}
                   <span
                     onClick={() => {
-                      console.log("click");
+                     router.push("/workspace/formations/"+formation.intitule+"/version")
                     }}
                     className="btn btn-outline btn-sm btn-secondary gap-2"
                   >

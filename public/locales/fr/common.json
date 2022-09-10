@@ -15,6 +15,7 @@
     "attestation":"Attestation",
     "enregistrer":"Enregistrer",
     "annuler":"Annuler",
+    "version":"Version",
     "confirmer":"Confirmer",
     "confirmation":"Veuillez confirmer l'opération",
     "diplome/attestation":"Diplôme / Attestation"
@@ -90,6 +91,7 @@
         "nouvelle version":"Nouvelle version",
         "versions":"Versions",
         "suppression":"Suppression",
+        "version precedente":"Version précedente",
         "historique":"Historique des versions"
    
       

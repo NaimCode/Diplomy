@@ -24,7 +24,7 @@ const Workspace = ({ children }: WorkSpaceProps) => {
           {children}
         </main>
 
-        <div className="drawer-side z-30">
+        <div className="drawer-side">
           <label htmlFor="Menu" className="drawer-overlay"></label>
 
           <SideBar />
@@ -35,9 +35,11 @@ const Workspace = ({ children }: WorkSpaceProps) => {
 };
 
 const BreadCrumbs = () => {
-  const {t}=useTranslation()
+  const { t } = useTranslation();
   const router = useRouter();
-  const routes =decodeURI(router.asPath).split("/").filter((f, i) => i >= 2);
+  const routes = decodeURI(router.asPath)
+    .split("/")
+    .filter((f, i) => i >= 2);
 
   return (
     <div
@@ -45,21 +47,28 @@ const BreadCrumbs = () => {
         routes && routes.length <= 1 && "hidden"
       } text-xs lg:text-sm breadcrumbs p-3 lg:p-6`}
     >
-      <ul>
+      <ul className="gap-1">
         {routes.map((r, i) => {
           const isLast = i == routes.length - 1;
-          const intern=["ajouter"].includes(r)
+          const intern = ["ajouter"].includes(r);
           return (
-            <li key={i} className="first-letter:uppercase max-w-[120px] lg:max-w-[220px]">
-              {isLast ? 
-              <span className="truncate">
-              {
-                  intern? t("global."+r):r
-               }
-              </span>
-               : (
-                <Link href={"/workspace/"+routes.filter((rn,index)=>index<=i).join("/")}>
-                  <a>{r}</a>
+            <li
+              key={i}
+              className="first-letter:uppercase max-w-[120px] lg:max-w-[220px]"
+            >
+              {isLast ? (
+                <span className="truncate">
+                  {intern ? t("global." + r) : r}
+                </span>
+              ) : (
+                <Link
+                  href={
+                    "/workspace/" +
+                    routes.filter((rn, index) => index <= i).join("/")
+                  }
+                 
+                >
+                  <a  className="truncate">{r}</a>
                 </Link>
               )}
             </li>

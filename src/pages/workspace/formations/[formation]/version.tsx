@@ -1,20 +1,21 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { unstable_getServerSession } from "next-auth";
-import { authOptions } from "../../api/auth/[...nextauth]";
-import Workspace from "../../../components/Workspace";
+import { authOptions } from "../../../api/auth/[...nextauth]";
+import Workspace from "../../../../components/Workspace";
 import { useTranslation } from "next-i18next";
-import { prisma } from "../../../server/db/client";
+import { prisma } from "../../../../server/db/client";
 
 import { motion } from "framer-motion";
-import { useMyTransition } from "../../../utils/hooks";
-import { AddFileIcon } from "../../../constants/icons";
+import { useMyTransition } from "../../../../utils/hooks";
+import { AddFileIcon } from "../../../../constants/icons";
 import { SubmitHandler, useForm } from "react-hook-form";
-import InputForm from "../../../components/InputForm";
+import InputForm from "../../../../components/InputForm";
 import { useState } from "react";
-import { trpc } from "../../../utils/trpc";
+import { trpc } from "../../../../utils/trpc";
 import { toast } from "react-toastify";
 import router from "next/router";
+import { Formation } from "@prisma/client";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
     context.req,
@@ -33,22 +34,33 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const utilisateur = await prisma.utilisateur
     .findUnique({
       where: {
-        email: session.user?.email || "",
+        email: session?.user?.email || "",
       },
       include: {
-        etablissement: true,
-        // {
-        //   include: {
-        //     formations: true,
-        //   },
-        // },
+        etablissement: {
+          include: {
+            formations: {
+              include: {
+                versions: {
+                  include: {
+                    diplome: true,
+                  },
+                },
+                diplome: true,
+              },
+            },
+          },
+        },
       },
     })
     .then((data) => JSON.parse(JSON.stringify(data)));
-
+  const formations = utilisateur.etablissement.formations;
+  const formation: Formation = formations.filter(
+    (f: Formation) => f.intitule == context.query.formation
+  )[0];
   return {
     props: {
-      isNew: context.query.formation == "ajouter",
+      formation,
       etablissement: utilisateur.etablissement,
 
       ...(await serverSideTranslations(context.locale || "", ["common"])),
@@ -58,10 +70,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 //TODO: added ability to choose template
 
 export type InputsFormation = {
-  peutAvoir: boolean;
+
   intituleDiff: boolean;
   version: number;
-  intitule: string;
+
   diplomeIntitule: string;
   exp: boolean;
   annee: number;
@@ -71,13 +83,14 @@ const FormationItem = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { isNew } = props;
-  //const { formations } = props.etablissement;
+  const { formation } = props;
+  const lastVersion=formation.versions.at(-1)
   const { t } = useTranslation();
-  const add = trpc.useMutation(["formation.new"], {
+  const add = trpc.useMutation(["formation.new version"], {
     onSuccess: () => {
       toast.success(t("global.toast succes"));
       
-        router.push("/workspace/formations");
+        router.push("/workspace/formations/"+formation.intitule);
     
     },
     onError: (err) => {
@@ -94,22 +107,17 @@ const FormationItem = (
     formState: { errors },
   } = useForm<InputsFormation>({
     defaultValues: {
-      peutAvoir: true,
-      intituleDiff: true,
-   annee:0,
-mois:0,
-      version: 1,
+  
+      version: lastVersion.numero+1,
 
-      exp: false,
     },
   });
 
   const onSubmit: SubmitHandler<InputsFormation> = (data) =>
-    add.mutate({ etablissement: props.etablissement.id, more: {...data,estVirtuel} });
+ add.mutate({ formation, more: {...data,estVirtuel} });
 
   ///
   const [estVirtuel, setestVirtuel] = useState(false);
-  const { controls } = useMyTransition({ trigger: watch("peutAvoir") });
   const { controls: ctl2 } = useMyTransition({
     trigger: watch("intituleDiff"),
   });
@@ -128,37 +136,29 @@ mois:0,
               {t("workspace.formation.nouvelle")}
             </h1>
           )}
+        <div className="flex flex-row items-center justify-between px-1">
+           <span className="label-text">{t("workspace.formation.version precedente")}
+            </span>
+           <div className="badge lg:badge-lg">{lastVersion.numero}</div>
 
-          <InputForm
-            register={register("intitule", {
-              required: true,
-            })}
-            label={t("workspace.formation.intitule")}
-            placeholder={t("workspace.formation.saisir")}
-            error={errors.intitule}
-          />
-          <InputForm
-            register={register("peutAvoir")}
-            label={t("workspace.formation.peut avoir")}
-            error={errors.peutAvoir}
-            toggle
-          />
-
-          <motion.div
-            animate={controls}
+          </div>
+<div className="divider"/>
+          <div
+          
             className="flex flex-row justify-between items-center px-1"
           >
             <span className="label-text">
-              {t("workspace.formation.version form")}
+              {t("workspace.formation.nouvelle version")}
             </span>
             <InputForm
-             type="number"
+            type="number"
               register={register("version")}
               containerClass="w-[100px]"
               inputClass="input-sm text-center"
-              error={errors.version}
+              error={watch('version')<=lastVersion.numero}
             />
-          </motion.div>
+          </div>
+        
           <div className="py-2 lg:py-3" />
           <div className="card  bg-base-100 shadow-xl border-[1px]">
             <div className="card-body">
@@ -172,7 +172,7 @@ mois:0,
               <motion.div animate={ctl2}>
                 <InputForm
                   register={register("diplomeIntitule")}
-                  error={errors.intitule}
+                  error={watch('intituleDiff')? errors.diplomeIntitule:null}
                   inputClass="input-sm"
                 />
               </motion.div>
@@ -199,7 +199,7 @@ mois:0,
               </div> */}
               <motion.div
                 animate={ctl3}
-                className="flex flex-row justify-between items-center px-1"
+                className="flex flex-wrap justify-between items-center px-1"
               >
                 <span className="label-text">
                   {t("workspace.formation.duree de validite")}
@@ -209,7 +209,7 @@ mois:0,
                   <InputForm
                    type="number"
                     register={register("annee")}
-                    error={errors.intitule}
+                    error={watch('exp')? errors.annee:null}
                     placeholder={t("workspace.formation.annee")}
                     containerClass="w-[100px]"
                     inputClass="input-sm text-center placeholder:text-sm"
@@ -224,9 +224,9 @@ mois:0,
                   /> */}
                   /{" "}
                   <InputForm
-                   type="number"
                     register={register("mois")}
-                    error={errors.intitule}
+                    type="number"
+                    error={watch('exp')? errors.mois:null}
                     placeholder={t("workspace.formation.mois")}
                     containerClass="w-[100px]"
                     inputClass="input-sm text-center placeholder:text-sm"
