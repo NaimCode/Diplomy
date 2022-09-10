@@ -55,9 +55,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     })
     .then((data) => JSON.parse(JSON.stringify(data)));
   const formations = utilisateur.etablissement.formations;
-  const formation: Formation = formations.filter(
+let formation: Formation = formations.filter(
     (f: Formation) => f.intitule == context.query.formation
-  )[0];
+  )[0]
+  formation={...formation,versions:formation.versions.sort((a,b)=>a.numero-b.numero)};
 
   // const formation
 
@@ -106,7 +107,7 @@ const FormationItem = (
     },
   });
   const { t } = useTranslation();
-  const deleteFormation= trpc.useMutation(["formation.delete"], {
+  const deleteFormation = trpc.useMutation(["formation.delete"], {
     onSuccess: (data) => {
       toast.success(t("global.toast succes"));
       router.back();
@@ -138,10 +139,10 @@ const FormationItem = (
     trigger: watch("intitule") != formation.intitule,
     direction: "right",
   });
-
+//TODO: fix date format
   const dateString = (date: string) => {
     const d = new Date(date);
-    return d.getDay() +"-"+d.getMonth() + "-" + d.getFullYear();
+    return d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear();
   };
   const [estVirtuel, setestVirtuel] = useState(false);
   const { controls: ctl2 } = useMyTransition({
@@ -149,9 +150,9 @@ const FormationItem = (
   });
   const { controls: ctl3 } = useMyTransition({ trigger: watch("exp") });
   const { controls: ctl4 } = useMyTransition({ trigger: estVirtuel });
-  const versions = formation.versions.sort((a,b)=>a<=b);
+  const versions = formation.versions;
 
-  
+
   return (
     <>
       <Workspace>
@@ -166,7 +167,7 @@ const FormationItem = (
                   {/* <h6>{t("workspace.formation.versions")}</h6> */}
                   <span
                     onClick={() => {
-                     router.push("/workspace/formations/"+formation.intitule+"/version")
+                      router.push("/workspace/formations/" + formation.intitule + "/version")
                     }}
                     className="btn btn-outline btn-sm btn-secondary gap-2"
                   >
@@ -176,21 +177,22 @@ const FormationItem = (
                 </div>
 
                 <div className="stack w-full text-white">
-                  {versions.map((f: Version, i: number) => {
+                  {versions.reverse().map((f: Version, i: number) => {
+                    console.log((new Date(f.createAt)).getDate())
                     return (
                       <div
                         key={f + i.toString()}
-                        className={`w-full h-20 rounded ${
-                          i == 0
-                            ? "bg-primary"
-                            : i == 1
+                        className={`w-full h-20 rounded ${i == 0
+                          ? "bg-primary"
+                          : i == 1
                             ? "bg-accent"
                             : "bg-secondary"
-                        }   p-4 flex flex-col justify-between`}
+                          }   p-4 flex flex-col justify-between`}
                       >
                         <h6>({f.numero})</h6>
                         <p className="text-right text-[12px] italic opacity-70">
                           {dateString(f.createAt.toString())}
+
                         </p>
                       </div>
                     );
@@ -352,8 +354,8 @@ const FormationItem = (
             </div>
 
             <div className="flex flex-row justify-between items-center">
-              <DialogConfirmation onClick={()=>deleteFormation.mutate(formation.id)} classButton="btn btn-sm lg:btn-md btn-error gap-2 lg:gap-3">
-                <DeleteIcon className={`lg:text-2xl ${deleteFormation.isLoading &&"loading"}`} />
+              <DialogConfirmation onClick={() => deleteFormation.mutate(formation.id)} classButton="btn btn-sm lg:btn-md btn-error gap-2 lg:gap-3">
+                <DeleteIcon className={`lg:text-2xl ${deleteFormation.isLoading && "loading"}`} />
                 {t("workspace.formation.suppression")}
               </DialogConfirmation>
               <motion.button

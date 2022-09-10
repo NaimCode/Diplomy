@@ -73,25 +73,24 @@ export type InputsFormation = {
 
   intituleDiff: boolean;
   version: number;
-
-  diplomeIntitule: string;
+  diplomeIntitule?: string;
   exp: boolean;
-  annee: number;
-  mois: number;
+  annee?: number;
+  mois?: number;
 };
 const FormationItem = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { isNew } = props;
   const { formation } = props;
-  const lastVersion=formation.versions.at(-1)
+  const lastVersion = formation.versions.at(-1)
   const { t } = useTranslation();
   const add = trpc.useMutation(["formation.new version"], {
     onSuccess: () => {
       toast.success(t("global.toast succes"));
-      
-        router.push("/workspace/formations/"+formation.intitule);
-    
+
+      router.push("/workspace/formations/" + formation.intitule);
+
     },
     onError: (err) => {
       console.log(err);
@@ -104,17 +103,22 @@ const FormationItem = (
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState,
   } = useForm<InputsFormation>({
     defaultValues: {
-  
-      version: lastVersion.numero+1,
+
+      version: lastVersion.numero + 1,
 
     },
   });
-
-  const onSubmit: SubmitHandler<InputsFormation> = (data) =>
- add.mutate({ formation, more: {...data,estVirtuel} });
+  const { errors } = formState
+  const onSubmit: SubmitHandler<InputsFormation> = (data) => {
+   if( formState.isValid)
+    add.mutate({ formation, more: { ...data, estVirtuel } })
+    else{
+      console.log(formState)
+    }
+  };
 
   ///
   const [estVirtuel, setestVirtuel] = useState(false);
@@ -136,29 +140,29 @@ const FormationItem = (
               {t("workspace.formation.nouvelle")}
             </h1>
           )}
-        <div className="flex flex-row items-center justify-between px-1">
-           <span className="label-text">{t("workspace.formation.version precedente")}
+          <div className="flex flex-row items-center justify-between px-1">
+            <span className="label-text">{t("workspace.formation.version precedente")}
             </span>
-           <div className="badge lg:badge-lg">{lastVersion.numero}</div>
+            <div className="badge lg:badge-lg">{lastVersion.numero}</div>
 
           </div>
-<div className="divider"/>
+          <div className="divider" />
           <div
-          
+
             className="flex flex-row justify-between items-center px-1"
           >
             <span className="label-text">
               {t("workspace.formation.nouvelle version")}
             </span>
             <InputForm
-            type="number"
+              type="number"
               register={register("version")}
               containerClass="w-[100px]"
               inputClass="input-sm text-center"
-              error={watch('version')<=lastVersion.numero}
+              error={watch('version') <= lastVersion.numero}
             />
           </div>
-        
+
           <div className="py-2 lg:py-3" />
           <div className="card  bg-base-100 shadow-xl border-[1px]">
             <div className="card-body">
@@ -172,7 +176,7 @@ const FormationItem = (
               <motion.div animate={ctl2}>
                 <InputForm
                   register={register("diplomeIntitule")}
-                  error={watch('intituleDiff')? errors.diplomeIntitule:null}
+                  error={watch('intituleDiff') ? errors.diplomeIntitule : null}
                   inputClass="input-sm"
                 />
               </motion.div>
@@ -207,9 +211,9 @@ const FormationItem = (
 
                 <div className="flex flex-row items-center gap-2">
                   <InputForm
-                   type="number"
+                    type="number"
                     register={register("annee")}
-                    error={watch('exp')? errors.annee:null}
+                    error={watch('exp') ? errors.annee : null}
                     placeholder={t("workspace.formation.annee")}
                     containerClass="w-[100px]"
                     inputClass="input-sm text-center placeholder:text-sm"
@@ -226,7 +230,7 @@ const FormationItem = (
                   <InputForm
                     register={register("mois")}
                     type="number"
-                    error={watch('exp')? errors.mois:null}
+                    error={watch('exp') ? errors.mois : null}
                     placeholder={t("workspace.formation.mois")}
                     containerClass="w-[100px]"
                     inputClass="input-sm text-center placeholder:text-sm"
@@ -289,9 +293,8 @@ const FormationItem = (
           <div className="py-2 lg:py-4"></div>
           <button
             type="submit"
-            className={`btn btn-block btn-sm lg:btn-md ${
-              add.isLoading && "loading"
-            }`}
+            className={`btn btn-block btn-sm lg:btn-md ${add.isLoading && "loading"
+              }`}
           >
             {t("inscription.valider")}
           </button>
