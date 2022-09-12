@@ -112,13 +112,10 @@ const FormationItem = (
     },
   });
   const { errors } = formState
-  const onSubmit: SubmitHandler<InputsFormation> = (data) => {
-   if( formState.isValid)
+  const onSubmit: SubmitHandler<InputsFormation> = (data) => 
     add.mutate({ formation, more: { ...data, estVirtuel } })
-    else{
-      console.log(formState)
-    }
-  };
+
+
 
   ///
   const [estVirtuel, setestVirtuel] = useState(false);

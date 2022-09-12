@@ -55,10 +55,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     })
     .then((data) => JSON.parse(JSON.stringify(data)));
   const formations = utilisateur.etablissement.formations;
-let formation: Formation = formations.filter(
-    (f: Formation) => f.intitule == context.query.formation
+let formation = formations.filter(
+    (f) => f.intitule == context.query.formation
   )[0]
-  formation={...formation,versions:formation.versions.sort((a,b)=>a.numero-b.numero)};
+  formation={...formation,versions:formation.versions.sort((a,b)=>b.numero-a.numero)};
 
   // const formation
 
@@ -177,7 +177,7 @@ const FormationItem = (
                 </div>
 
                 <div className="stack w-full text-white">
-                  {versions.reverse().map((f: Version, i: number) => {
+                  {versions.slice(0,4).map((f: Version, i: number) => {
                     console.log((new Date(f.createAt)).getDate())
                     return (
                       <div
