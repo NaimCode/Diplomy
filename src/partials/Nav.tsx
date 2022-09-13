@@ -12,14 +12,15 @@ import LanguageChanger from "../components/LanguageChanger";
 import { LogoBrand } from "../components/Logo";
 import { MenuIcon, NotifIcon, SettingIcon } from "../constants/icons";
 import {useRouter} from 'next/router'
+
 const Nav = () => {
  const router=useRouter()
 const hasBack=router.asPath.split("/")[3]
 
-  return (
+return (
     <div className="nav top-0 left-0 sticky justify-between shadow-sm backdrop-blur-sm bg-base-100/80 z-40">
     <div className={`hidden ${hasBack&&"lg:flex"}`}>
-    <Back/>
+    {/* <Back/> */}
     </div>
      <DrawerMenu/>
      <div className="lg:hidden">

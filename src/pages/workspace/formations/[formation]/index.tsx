@@ -55,10 +55,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     })
     .then((data) => JSON.parse(JSON.stringify(data)));
   const formations = utilisateur.etablissement.formations;
-let formation = formations.filter(
+let formation:any = formations.filter(
     (f) => f.intitule == context.query.formation
   )[0]
-  formation={...formation,versions:formation.versions.sort((a,b)=>b.numero-a.numero)};
+  formation={...formation,versions:formation.versions.sort((a:Formation,b:Formation)=>b.numero-a.numero)};
 
   // const formation
 

@@ -95,6 +95,12 @@
         "historique":"Historique des versions"
    
       
+    },
+    "etudiant":{
+      "liste initiale":"Liste initiale",
+      "en attente":"En attente de validation",
+      "certifie":"Liste des certifiés",
+      "init list etudiants":"La Liste intiale des étudiants"
     }
   }
 }

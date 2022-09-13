@@ -7,8 +7,9 @@ import SideBar from "../partials/SideBar";
 
 type WorkSpaceProps = {
   children: ReactNode;
+  breadcrumb?:boolean
 };
-const Workspace = ({ children }: WorkSpaceProps) => {
+const Workspace = ({ children,breadcrumb=true }: WorkSpaceProps) => {
   return (
     <>
       <div className="drawer drawer-mobile">
@@ -20,7 +21,7 @@ const Workspace = ({ children }: WorkSpaceProps) => {
         />
         <main className="drawer-content relative bg-base-100">
           <Nav />
-          <BreadCrumbs />
+          {breadcrumb && <BreadCrumbs />}
           {children}
         </main>
 
