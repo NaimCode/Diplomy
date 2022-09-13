@@ -100,6 +100,7 @@ model Etablissement {
     membresAutorises String[]      @unique @default([])
     membres          Utilisateur[]
     formations       Formation[]
+    etudiants Etudiant[]
 }
 
 model Formation {
@@ -119,6 +120,7 @@ model Formation {
     
     //extra
     versions Version[]
+     etudiants Etudiant[]
 }
 
 model Version {
@@ -136,6 +138,7 @@ model Version {
     formation   Formation @relation(fields: [formationId], references: [id], onDelete: Cascade)
 
     //extra
+   
 }
 
 model Diplome {
@@ -162,4 +165,25 @@ model Diplome {
 model Canvas {
     id       String    @id @default(uuid())
     diplomes Diplome[]
+}
+
+
+model Etudiant{
+    id String @id @default(uuid())
+    createAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+
+    //fields
+    nom String
+    prenom String
+    email String
+    
+    
+    //Foreign
+    etablissemntId String
+    etablissement Etablissement @relation(fields: [etablissemntId],references: [id],onDelete: Cascade)
+    formationId String
+    formation Formation @relation(fields: [formationId],references: [id],onDelete: Cascade)
+
+    //extra
 }

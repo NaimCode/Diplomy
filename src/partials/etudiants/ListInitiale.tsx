@@ -6,8 +6,7 @@ const ListInitiale = () => {
   const text = (s: string) => t("workspace.etudiant." + s);
   return (
     <div className="py-3 lg:py-8">
-      <h1 className="text-center text-xl lg:text-4xl">{text("init list etudiants")}</h1>
-      <div className="divider"></div>
+      
     </div>
   );
 };
