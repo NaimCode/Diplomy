@@ -2,7 +2,7 @@ import { RiFileTextLine,RiAddFill, RiLogoutBoxLine, RiNotification2Line} from 'r
 import {TbLanguage} from 'react-icons/tb'
 import {MdEmail,MdDeleteOutline,MdOutlineArrowBackIos, MdExpandMore, MdNavigateBefore, MdOutlineShortText, MdSchool} from "react-icons/md"
 import {FaMapSigns,FaMapMarker,FaHandshake, FaRegCheckCircle} from 'react-icons/fa'
-import {BsFillPersonFill, BsFillTelephoneFill, BsFillUnlockFill,BsPeopleFill} from 'react-icons/bs'
+import {BsArrowRight, BsFillPersonFill, BsFillTelephoneFill, BsFillUnlockFill,BsPeopleFill} from 'react-icons/bs'
 import {IoMdClose} from 'react-icons/io'
 import {GrGoogle} from 'react-icons/gr'
 import {HiHome,HiChartPie,HiOutlineMenuAlt2, HiOutlineDocumentAdd} from 'react-icons/hi'
@@ -40,3 +40,4 @@ export const DeleteIcon=MdDeleteOutline
 export const WaitingIcon=CgSandClock
 export const ListIcon=AiOutlineOrderedList
 export const CheckIcon=FaRegCheckCircle
+export const ArrayRightIcon=BsArrowRight

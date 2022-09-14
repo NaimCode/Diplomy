@@ -8,7 +8,9 @@
     "retour": "retour",
     "mot de passe": "Mot de passe",
     "theme": "Thème",
+    "voir plus":"voir plus",
     "langue": "langue",
+    "detail":"Détail",
     "ajouter": "Ajouter",
     "diplome":"Diplôme",
     "liste vide":"Aucune donnée",
@@ -101,6 +103,9 @@
       "en attente":"En attente de validation",
       "certifie":"Liste des certifiés",
       "init list etudiants":"La Liste intiale des étudiants"
+    },
+    "relation":{
+      "recent":"Les récents contrats"
     }
   }
 }

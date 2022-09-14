@@ -88,7 +88,7 @@ const Tabs = () => {
   const currentTab = router.query.tab;
 
   return (
-    <div className="tabs tabs-boxed max-w-4xl mx-auto">
+    <div className="tabs tabs-boxed max-w-4xl mx-auto py-3 px-5">
       {tabs.map((tab, i) => {
         return (
           <span
