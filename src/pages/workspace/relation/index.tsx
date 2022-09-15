@@ -37,12 +37,12 @@ const Relation = (
   return (
     <>
       <Workspace>
-        <div className="w-full flex flex-col justify-around h-[300px] bg-base-200/50 py-3 pl-3">
+        <div className="w-full flex flex-col justify-around h-[300px] bg-base-200/50 p-3">
           <div className="flex flex-row justify-between items-center">
             <h3>{text("recent")}</h3>
             <VoirPlus link="/workspace/relation/contracts" />
           </div>
-          <div className="carousel carousel-center space-x-8">
+          <div className="carousel  space-x-8">
             <ContractCard title="Contract 1" color="bg-pink-200"/>
             <ContractCard title="Contract 1" color="bg-purple-200"/>
             <ContractCard title="Contract 1" color="bg-orange-200"/>

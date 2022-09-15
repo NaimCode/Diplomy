@@ -106,6 +106,12 @@
     },
     "relation":{
       "recent":"Les récents contrats"
+    },
+    "parametre":{
+      "general":"Général",
+      "membres et roles":"Membres et rôles",
+       "avance":"Avancé",
+       "logo":"Logo"
     }
   }
 }
