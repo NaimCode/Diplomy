@@ -8,19 +8,21 @@
     "retour": "retour",
     "mot de passe": "Mot de passe",
     "theme": "Thème",
-    "voir plus":"voir plus",
+    "voir plus": "voir plus",
     "langue": "langue",
-    "detail":"Détail",
+    "detail": "Détail",
+   
     "ajouter": "Ajouter",
-    "diplome":"Diplôme",
-    "liste vide":"Aucune donnée",
-    "attestation":"Attestation",
-    "enregistrer":"Enregistrer",
-    "annuler":"Annuler",
-    "version":"Version",
-    "confirmer":"Confirmer",
-    "confirmation":"Veuillez confirmer l'opération",
-    "diplome/attestation":"Diplôme / Attestation"
+    "diplome": "Diplôme",
+    "liste vide": "Aucune donnée",
+    "attestation": "Attestation",
+    "enregistrer": "Enregistrer",
+    "annuler": "Annuler",
+    "version": "Version",
+    "saisir": "Saisir",
+    "confirmer": "Confirmer",
+    "confirmation": "Veuillez confirmer l'opération",
+    "diplome/attestation": "Diplôme / Attestation"
   },
   "state": {
     "Success inscription": "Demande d'inscription envoyé avec succès, vous récevrez un mail de confirmation une fois la demande est acceptée."
@@ -38,20 +40,19 @@
     "SideForm description": "Ces informations nous sont primordiales pour l'étude de votre demande, veuillez donc prendre soin de bien remplir",
     "nom": "Nom de l'établissement",
     "abrev": "Abbréviation",
-    "numero/identifiant": "Numéro/Identifiant",
-    "pays/ville": "Pays/Ville",
+    "numero/identifiant": "Numéro / Identifiant",
+    "pays/ville": "Pays / Ville",
     "adresse": "Adresse",
     "responsable": "Nom et prénom du responsable",
     "email": "Email",
+    "nom utilisateur":"Votre nom",
     "tel": "Tél",
     "submit": "Envoyer",
     "valider": "valider"
   },
   "workspace": {
-    "global":{
-        "nouveau":"Nouveau"
-
-
+    "global": {
+      "nouveau": "Nouveau"
     },
     "nav": {
       "notifications": "Notifications",
@@ -73,45 +74,45 @@
       "menu": "Menu",
       "deconnexion": "Déconnexion"
     },
-    "formation":{
-        "nouvelle":"Nouvelle formation",
-        "intitule":"Intitulé",
-        "saisir":"Saisir",
-        "peut avoir":"Peut avoir des versions ?",
-        "version form":"Version de cette formation",
-        "meme intitule":"Utiliser un intitulé différent ?",
-        "expiration":"A une date d'expiration ?",
-        "annee":"Année",
-        "mois":"Mois",
-        "duree de validite":"Durée de validité",
-        "physique":"Physique",
-        "virtuel":"Virtuel",
-        "type":"Type",
-        "template":"Template",
-        "sans version":"sans version",
-        "version":"Version",
-        "nouvelle version":"Nouvelle version",
-        "versions":"Versions",
-        "suppression":"Suppression",
-        "version precedente":"Version précedente",
-        "historique":"Historique des versions"
-   
-      
+    "formation": {
+      "nouvelle": "Nouvelle formation",
+      "intitule": "Intitulé",
+      "saisir": "Saisir",
+      "peut avoir": "Peut avoir des versions ?",
+      "version form": "Version de cette formation",
+      "meme intitule": "Utiliser un intitulé différent ?",
+      "expiration": "A une date d'expiration ?",
+      "annee": "Année",
+      "mois": "Mois",
+      "duree de validite": "Durée de validité",
+      "physique": "Physique",
+      "virtuel": "Virtuel",
+      "type": "Type",
+      "template": "Template",
+      "sans version": "sans version",
+      "version": "Version",
+      "nouvelle version": "Nouvelle version",
+      "versions": "Versions",
+      "suppression": "Suppression",
+      "version precedente": "Version précedente",
+      "historique": "Historique des versions"
     },
-    "etudiant":{
-      "liste initiale":"Liste initiale",
-      "en attente":"En attente de validation",
-      "certifie":"Liste des certifiés",
-      "init list etudiants":"La Liste intiale des étudiants"
+    "etudiant": {
+      "liste initiale": "Liste initiale",
+      "en attente": "En attente de validation",
+      "certifie": "Liste des certifiés",
+      "init list etudiants": "La Liste intiale des étudiants"
     },
-    "relation":{
-      "recent":"Les récents contrats"
+    "relation": {
+      "recent": "Les récents contrats"
     },
-    "parametre":{
-      "general":"Général",
-      "membres et roles":"Membres et rôles",
-       "avance":"Avancé",
-       "logo":"Logo"
+    "parametre": {
+      "general": "Général",
+      "membres et roles": "Membres et rôles",
+      "avance": "Avancé",
+      "logo": "Logo",
+      "photo":"Photo",
+      "nom etablissement": "Nom de l'établissement"
     }
   }
 }

@@ -1,10 +1,10 @@
-import { Uploader, Message, Loader, useToaster } from 'rsuite';
-import AvatarIcon from '@rsuite/icons/legacy/Avatar';
-import React, { useId } from 'react';
-import { toast } from 'react-toastify';
-import { AddIcon } from '../constants/icons';
+import { Uploader, Message, Loader, useToaster } from "rsuite";
+import AvatarIcon from "@rsuite/icons/legacy/Avatar";
+import React, { useId } from "react";
+import { toast } from "react-toastify";
+import { AddIcon } from "../constants/icons";
 
-function previewFile(file:any, callback:any) {
+function previewFile(file: any, callback: any) {
   const reader = new FileReader();
   reader.onloadend = () => {
     callback(reader.result);
@@ -12,53 +12,55 @@ function previewFile(file:any, callback:any) {
   reader.readAsDataURL(file);
 }
 
-type UploadProps={
-  label?:string
-}
-const Upload= ({label}:UploadProps) => {
-  const toaster = useToaster();
+type UploadProps = {
+  label?: string;
+  url?: string;
+};
+const Upload = ({ label, url }: UploadProps) => {
   const [uploading, setUploading] = React.useState(false);
   const [fileInfo, setFileInfo] = React.useState(null);
-const id=useId()
+  const id = useId();
   return (
-   <div className="flex flex-col gap-2">
-    <label>{label}</label>
-     <Uploader 
+    <Uploader
       fileListVisible={false}
       listType="picture"
-      action=''
+      action={""}
       // shouldQueueUpdate={() => {
       //   alert('The file is checked and allowed to be added to the queue');
       //   return true;
       // }}
-      onUpload={file => {
+      onUpload={(file) => {
         setUploading(true);
-        previewFile(file.blobFile, (value:any) => {
+        previewFile(file.blobFile, (value: any) => {
           setFileInfo(value);
         });
       }}
       onSuccess={(response, file) => {
         setUploading(false);
-        toast.success('global.toast succes');
+        toast.success("global.toast succes");
         console.log(file);
       }}
       onError={() => {
         setFileInfo(null);
         setUploading(false);
-        toast.error('global.toast erreur');
+        toast.error("global.toast erreur");
       }}
     >
-      <button style={{ width: 150, height: 150 }} className="flex justify-center items-center">
+      <button
+        style={{ width: 150, height: 150 }}
+        className="flex flex-col justify-center items-center"
+      >
         {uploading && <Loader backdrop center />}
         {fileInfo ? (
           <img src={fileInfo} width="100%" height="100%" />
+        ) : url ? (
+          <img src={url} width="100%" height="100%" />
         ) : (
-          <AddIcon className='mx-auto icon'/>
+          <label>{label}</label>
         )}
       </button>
     </Uploader>
-   </div>
   );
 };
 
-export default Upload
+export default Upload;

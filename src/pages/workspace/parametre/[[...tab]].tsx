@@ -3,16 +3,15 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import Workspace from "../../../components/Workspace";
-import { ReactNode } from "react";
-import { AdminIcon, AdvanceIcon, CheckIcon, ListIcon, SchoolIcon, WaitingIcon } from "../../../constants/icons";
+import { createContext, ReactNode } from "react";
+import { AdminIcon, AdvanceIcon, SchoolIcon} from "../../../constants/icons";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import ListInitiale from "../../../partials/etudiants/ListInitiale";
-import Certifies from "../../../partials/etudiants/Certifies";
-import Attente from "../../../partials/etudiants/Attente";
+import { prisma } from "../../../server/db/client";
 import General from "../../../partials/parametre/General";
 import MembresRoles from "../../../partials/parametre/MembresRoles";
 import Avance from "../../../partials/parametre/Avance";
+import { FullUserContext } from "../../../utils/context";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
@@ -40,8 +39,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
  }
+
+ const utilisateur = await prisma.utilisateur
+ .findUnique({
+   where: {
+     email: session?.user?.email || "",
+   },
+   include: {
+     etablissement: true,
+   },
+ })
+ .then((data) => JSON.parse(JSON.stringify(data)));
   return {
     props: {
+      user:utilisateur,
       ...(await serverSideTranslations(context.locale!, ["common"])),
     },
   };
@@ -73,28 +84,29 @@ const tabs: Array<TTap> = [
     content: <Avance />,
   },
 ];
+
+
 const Etablissement = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { t } = useTranslation();
   const router = useRouter();
+  const {user} = props
   const currentTab = router.query.tab;
-
   return (
-    <>
+    <FullUserContext.Provider value={user}>
       <Workspace breadcrumb={false}>
         <div className="p-3 lg:p-6">
           <div className="hidden lg:block">
             <Tabs />
           </div>
           <BottomNav />
-  
          <div className="p-2 lg:pt-[50px] lg:p-4 max-w-3xl mx-auto">
          {tabs.filter((t) => t.route == currentTab)[0]?.content}
          </div>
         </div>
       </Workspace>
-    </>
+    </FullUserContext.Provider>
   );
 };
 
