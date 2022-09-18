@@ -22,10 +22,13 @@ export const LogoBrand = () => {
 //TODO: animate logo
 export const Brand = () => {
   const {isDark}=useMyTheme()
+
   return (
     <h3
-      className={`hidden lg:block text-xl font-bold font-logo ${isDark ? "text-white" : "text-black"
-      }`}
+    style={{
+      color:isDark?"white":"black"
+    }}
+      className={`hidden lg:block text-xl font-bold font-logo`}
     >
       {APP_NAME}
     </h3>

@@ -3,6 +3,7 @@ import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import React, { useId } from "react";
 import { toast } from "react-toastify";
 import { AddIcon } from "../constants/icons";
+import { setTimeout } from "timers";
 
 function previewFile(file: any, callback: any) {
   const reader = new FileReader();
@@ -15,8 +16,10 @@ function previewFile(file: any, callback: any) {
 type UploadProps = {
   label?: string;
   url?: string;
+  name?:string
+  
 };
-const Upload = ({ label, url }: UploadProps) => {
+const Upload = ({ label, url,name }: UploadProps) => {
   const [uploading, setUploading] = React.useState(false);
   const [fileInfo, setFileInfo] = React.useState(null);
   const id = useId();
@@ -24,14 +27,19 @@ const Upload = ({ label, url }: UploadProps) => {
     <Uploader
       fileListVisible={false}
       listType="picture"
-      action={""}
+      action={`/api/upload?name=${name}.png`}
+      multiple={false}
+
       // shouldQueueUpdate={() => {
       //   alert('The file is checked and allowed to be added to the queue');
       //   return true;
       // }}
+    
       onUpload={(file) => {
         setUploading(true);
-        previewFile(file.blobFile, (value: any) => {
+        
+        previewFile(file.blobFile,async (value: any) => {
+          console.log('file', file.blobFile)
           setFileInfo(value);
         });
       }}

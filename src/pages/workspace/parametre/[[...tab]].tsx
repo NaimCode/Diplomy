@@ -145,7 +145,7 @@ const BottomNav = () => {
   const currentTab = router.query.tab;
 
   return (
-    <div className={`btm-nav transition-all lg:hidden`}>
+    <div className={`btm-nav z-50 transition-all lg:hidden`}>
       {tabs.map((tab, i) => {
         return (
           <button

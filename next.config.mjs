@@ -18,7 +18,7 @@ export default defineNextConfig({
   swcMinify: true,
   i18n,
   images: {
-    domains: ['lh3.googleusercontent.com'],
+    domains: ['lh3.googleusercontent.com','firebasestorage.googleapis.com'],
   },
 });
 
