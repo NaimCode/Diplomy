@@ -61,7 +61,7 @@ const General = () => {
     <>
     
       <div className="flex flex-row gap-[50px]">
-        <Upload props={{accept:"image/png"}} url={etablissement.logo} id={etablissement.id} label={text("logo")} />
+        <Upload table="etablissement" props={{accept:"image/png"}} url={etablissement.logo} id={etablissement.id} label={text("logo")} />
         <div className="flex-grow flex flex-col gap-2 lg:gap-5">
           <Input register={register("nom")} label={text1("nom")} />
           <Input register={register("abrev")} label={text1("abrev")} />
@@ -79,7 +79,7 @@ const General = () => {
       </div>
       <div className="divider my-10"></div>
       <div className="flex flex-row gap-[50px]">
-        <Upload id={email} url={photo} label={text("photo")} />
+        <Upload table="utilisateur" id={email} url={photo} label={text("photo")} />
         <div className="flex-grow flex flex-col gap-2 lg:gap-5">
           <Input2
             value={nom}

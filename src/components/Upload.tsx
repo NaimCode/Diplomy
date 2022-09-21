@@ -9,6 +9,7 @@ import { getDownloadURL, ref } from "firebase/storage";
 import { Storage } from "../utils/firebase";
 import { trpc } from "../utils/trpc";
 import Image from "next/image";
+import { useTranslation } from "next-i18next";
 
 function previewFile(file: any, callback: any) {
   const reader = new FileReader();
@@ -24,13 +25,19 @@ type UploadProps = {
   name?: string;
   id: string;
   props?: object;
+  table:'etablissement'|'utilisateur'
 };
-const Upload = ({ label, url, name, id, props }: UploadProps) => {
+const Upload = ({ label, url, name, id, props,table }: UploadProps) => {
   const [uploading, setUploading] = React.useState(false);
   const [fileInfo, setFileInfo] = React.useState(null);
+  const {t}=useTranslation()
   const {mutate,isLoading}=trpc.useMutation(['parametreRouter.update image'],{
-    onError:(err)=>{},
-    onSuccess:()=>{},
+    onError:(err)=> {
+      toast.success(t("global.toast error"))
+    },
+    onSuccess:()=>{
+      toast.success(t("global.toast success"))
+    },
     onSettled:()=>setUploading(false)
   })
    
@@ -53,7 +60,7 @@ const Upload = ({ label, url, name, id, props }: UploadProps) => {
           console.log(value);
 
           setFileInfo(value);
-          mutate({file:value,id:id,isLogo:true})
+          mutate({file:value,id:id,table})
         });
       }}
       onSuccess={(response, file) => {

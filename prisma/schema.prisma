@@ -69,6 +69,7 @@ model Utilisateur {
     id              String        @unique @default(uuid())
     email           String        @unique
     etablissementId String
+    photo String?
     locale          String?
     isMembre        Boolean       @default(true)
     etablissement   Etablissement @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
