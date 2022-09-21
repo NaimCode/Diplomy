@@ -7,6 +7,8 @@ import { setTimeout } from "timers";
 import axios from "axios";
 import { getDownloadURL, ref } from "firebase/storage";
 import { Storage } from "../utils/firebase";
+import { trpc } from "../utils/trpc";
+import Image from "next/image";
 
 function previewFile(file: any, callback: any) {
   const reader = new FileReader();
@@ -20,13 +22,18 @@ type UploadProps = {
   label?: string;
   url?: string;
   name?: string;
-  id?: string;
+  id: string;
   props?: object;
 };
 const Upload = ({ label, url, name, id, props }: UploadProps) => {
   const [uploading, setUploading] = React.useState(false);
   const [fileInfo, setFileInfo] = React.useState(null);
-
+  const {mutate,isLoading}=trpc.useMutation(['parametreRouter.update image'],{
+    onError:(err)=>{},
+    onSuccess:()=>{},
+    onSettled:()=>setUploading(false)
+  })
+   
   return (
     <Uploader
       fileListVisible={false}
@@ -44,17 +51,14 @@ const Upload = ({ label, url, name, id, props }: UploadProps) => {
 
         previewFile(file.blobFile, async (value: any) => {
           console.log(value);
-          
+
           setFileInfo(value);
-          await axios.post('/api/upload?folder=logo&id='+id,{file:value})
+          mutate({file:value,id:id,isLogo:true})
         });
-     
-       
-        
       }}
       onSuccess={(response, file) => {
         setUploading(false);
-        toast.success("global.toast succes");
+       
       }}
       onError={() => {
         setFileInfo(null);
@@ -63,14 +67,14 @@ const Upload = ({ label, url, name, id, props }: UploadProps) => {
       }}
     >
       <button
-        style={{ width: 150, height: 150 }}
+        style={{ width: 160, height: 160 }}
         className="flex flex-col justify-center items-center"
       >
         {uploading && <Loader backdrop center />}
         {fileInfo ? (
-          <MyImage url={fileInfo} props={{ width: "100%", height: "100%" }} />
+          <Image src={fileInfo} layout="fill"  className="object-cover w-full"/>
         ) : url ? (
-          <MyImage url={url} props={{ width: "100%", height: "100%" }} />
+          <Image src={url} layout="fill"  className="object-cover w-full" />
         ) : (
           <label>{label}</label>
         )}
@@ -79,10 +83,5 @@ const Upload = ({ label, url, name, id, props }: UploadProps) => {
   );
 };
 
-const MyImage = ({ url, props }: { url: string; props?: object }) => {
-  const [imgUrl, setimgUrl] = useState<string | undefined>();
- 
-  return <img src={url} {...props} />;
-};
-export default Upload;
 
+export default Upload;

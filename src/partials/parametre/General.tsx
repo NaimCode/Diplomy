@@ -56,11 +56,7 @@ const General = () => {
   const updable = () =>  !_.isEqual(initData,watch()) || nom!=session?.user?.name! ||photo!=session?.user?.image!
   
   const { controls } = useMyTransition({ trigger: updable() });
-  const getUrl=async(s:string)=>{
-    const res = await fetch(s)
-    const blob = await res.blob()
-    return URL.createObjectURL(blob)
-  }
+
   return (
     <>
     
@@ -83,7 +79,7 @@ const General = () => {
       </div>
       <div className="divider my-10"></div>
       <div className="flex flex-row gap-[50px]">
-        <Upload url={photo} label={text("photo")} />
+        <Upload id={email} url={photo} label={text("photo")} />
         <div className="flex-grow flex flex-col gap-2 lg:gap-5">
           <Input2
             value={nom}
