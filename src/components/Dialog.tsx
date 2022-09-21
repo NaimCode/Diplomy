@@ -91,7 +91,7 @@ export const DialogConfirmation=({children,classButton,onClick}:{children:ReactN
     <h3 className="font-bold text-lg">{t("global.confirmation")}</h3>
     <div className="modal-action">
     <label htmlFor="di" className="btn btn-ghost">{t('global.annuler')}</label>
-      <button htmlFor="di" onClick={onClick} className="btn">{t('global.confirmer')}</button>
+      <label htmlFor="di" onClick={()=>onClick()} className="btn">{t('global.confirmer')}</label>
     </div>
   </div>
 </div>

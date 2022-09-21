@@ -1,9 +1,12 @@
 import { Uploader, Message, Loader, useToaster } from "rsuite";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
-import React, { useId } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { AddIcon } from "../constants/icons";
 import { setTimeout } from "timers";
+import axios from "axios";
+import { getDownloadURL, ref } from "firebase/storage";
+import { Storage } from "../utils/firebase";
 
 function previewFile(file: any, callback: any) {
   const reader = new FileReader();
@@ -16,37 +19,42 @@ function previewFile(file: any, callback: any) {
 type UploadProps = {
   label?: string;
   url?: string;
-  name?:string
-  
+  name?: string;
+  id?: string;
+  props?: object;
 };
-const Upload = ({ label, url,name }: UploadProps) => {
+const Upload = ({ label, url, name, id, props }: UploadProps) => {
   const [uploading, setUploading] = React.useState(false);
   const [fileInfo, setFileInfo] = React.useState(null);
-  const id = useId();
+
   return (
     <Uploader
       fileListVisible={false}
       listType="picture"
-      action={`/api/upload?name=${name}.png`}
+      action={""}
       multiple={false}
-
+      {...props}
       // shouldQueueUpdate={() => {
       //   alert('The file is checked and allowed to be added to the queue');
       //   return true;
       // }}
-    
+
       onUpload={(file) => {
         setUploading(true);
-        
-        previewFile(file.blobFile,async (value: any) => {
-          console.log('file', file.blobFile)
+
+        previewFile(file.blobFile, async (value: any) => {
+          console.log(value);
+          
           setFileInfo(value);
+          await axios.post('/api/upload?folder=logo&id='+id,{file:value})
         });
+     
+       
+        
       }}
       onSuccess={(response, file) => {
         setUploading(false);
         toast.success("global.toast succes");
-        console.log(file);
       }}
       onError={() => {
         setFileInfo(null);
@@ -60,9 +68,9 @@ const Upload = ({ label, url,name }: UploadProps) => {
       >
         {uploading && <Loader backdrop center />}
         {fileInfo ? (
-          <img src={fileInfo} width="100%" height="100%" />
+          <MyImage url={fileInfo} props={{ width: "100%", height: "100%" }} />
         ) : url ? (
-          <img src={url} width="100%" height="100%" />
+          <MyImage url={url} props={{ width: "100%", height: "100%" }} />
         ) : (
           <label>{label}</label>
         )}
@@ -71,4 +79,10 @@ const Upload = ({ label, url,name }: UploadProps) => {
   );
 };
 
+const MyImage = ({ url, props }: { url: string; props?: object }) => {
+  const [imgUrl, setimgUrl] = useState<string | undefined>();
+ 
+  return <img src={url} {...props} />;
+};
 export default Upload;
+

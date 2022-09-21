@@ -63,9 +63,9 @@ const General = () => {
   }
   return (
     <>
-    <Image unoptimized={true} src={getUrl("https://firebasestorage.googleapis.com/v0/b/eternum-ba998.appspot.com/o/logo_100df3cd-6207-41d6-8c35-a360f5634d5c.png?alt=media&token=975b2c23-5173-466b-a750-40181658f5e1")} alt="" width={100} height={100} layout="fixed" className="w-[100px] h-[100px]"/>
+    
       <div className="flex flex-row gap-[50px]">
-        <Upload  name={`logo_${etablissement.id}`} label={text("logo")} />
+        <Upload props={{accept:"image/png"}} url={etablissement.logo} id={etablissement.id} label={text("logo")} />
         <div className="flex-grow flex flex-col gap-2 lg:gap-5">
           <Input register={register("nom")} label={text1("nom")} />
           <Input register={register("abrev")} label={text1("abrev")} />

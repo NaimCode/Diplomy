@@ -92,6 +92,7 @@ model Etablissement {
     id               String        @id @default(uuid())
     createAt         DateTime      @default(now())
     updateAt         DateTime      @updatedAt
+    logo String?
     abrev            String
     nom              String        @unique
     identifiant      String?
