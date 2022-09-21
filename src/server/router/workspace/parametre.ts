@@ -6,18 +6,18 @@ export const parametreRouter = createRouter().mutation("update image", {
   input: z.object({
     file: z.string(),
     table: z.enum(["etablissement", "utilisateur"]),
-
+  folder:z.string(),
     id: z.string(),
   }),
   async resolve({ input, ctx }) {
     const { prisma } = ctx;
-    const { id, file, table } = input;
+    const { id, file, table,folder } = input;
 
     cloudy.uploader.upload(
       file,
       {
         upload_preset: "ml_default",
-        folder: "logo",
+        folder,
         public_id: id,
         filename_override: id,
       },

@@ -25,18 +25,19 @@ type UploadProps = {
   name?: string;
   id: string;
   props?: object;
-  table:'etablissement'|'utilisateur'
+  table:'etablissement'|'utilisateur',
+  folder?:string
 };
-const Upload = ({ label, url, name, id, props,table }: UploadProps) => {
+const Upload = ({ label, url, name, id, props,table,folder }: UploadProps) => {
   const [uploading, setUploading] = React.useState(false);
   const [fileInfo, setFileInfo] = React.useState(null);
   const {t}=useTranslation()
   const {mutate,isLoading}=trpc.useMutation(['parametreRouter.update image'],{
     onError:(err)=> {
-      toast.success(t("global.toast error"))
+      toast.success(t("global.toast erreur"))
     },
     onSuccess:()=>{
-      toast.success(t("global.toast success"))
+      toast.success(t("global.toast succes"))
     },
     onSettled:()=>setUploading(false)
   })
@@ -60,7 +61,7 @@ const Upload = ({ label, url, name, id, props,table }: UploadProps) => {
           console.log(value);
 
           setFileInfo(value);
-          mutate({file:value,id:id,table})
+          mutate({file:value,id:id,table,folder:folder||""})
         });
       }}
       onSuccess={(response, file) => {

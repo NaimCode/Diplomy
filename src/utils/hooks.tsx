@@ -111,3 +111,11 @@ export const useDimensionFromEl=()=>{
   
   return {ref,dimension,show}
 }
+
+export const useImageOpti=(url:string,quality:number)=>{
+  if(url.includes('res.cloudinary.com')){
+    const urlTemp=url.split('upload/')
+    return urlTemp[0]+`upload/q_${quality}/${urlTemp[1]}`
+  }
+  return url
+}
