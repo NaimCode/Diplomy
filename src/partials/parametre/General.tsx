@@ -4,10 +4,12 @@ import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import Upload from "../../components/Upload";
 import { FullUserContext } from "../../utils/context";
 import { useMyTransition } from "../../utils/hooks";
+import { trpc } from "../../utils/trpc";
 
 type TInput = {
   nom: string;
@@ -50,18 +52,32 @@ const General = () => {
   } = useForm<TInput>({
     defaultValues: initData,
   });
+  const {mutate:update, isLoading}=trpc.useMutation(['parametreRouter.update'],{
+    onError:(err)=>{
+      console.log('err', err)
+      toast.success(t('global.toast erreur'))
+    },
+    onSuccess:(data)=>{
+
+      toast.success(t('global.toast succes'))
+    }
+  })
   const text = (s: string) => t("workspace.parametre." + s);
   const text1 = (s: string) => t("inscription." + s);
 
   const updable = () =>  !_.isEqual(initData,watch()) || nom!=session?.user?.name! ||photo!=session?.user?.image!
   
   const { controls } = useMyTransition({ trigger: updable() });
+  const onSubmit: SubmitHandler<TInput> = (data) =>
+  update({ etablissement: data, user: {name:nom},idEtablissement:etablissement.id,email});
 
   return (
-    <>
+    <form onSubmit={handleSubmit(onSubmit)}>
     
-      <div className="flex flex-row gap-[50px]">
-        <Upload folder="logo" table="etablissement" props={{accept:"image/png"}} url={etablissement.logo} id={etablissement.id} label={text("logo")} />
+      <div className="flex flex-col lg:flex-row gap-[10px] lg:gap-[50px]">
+       <div className="flex justify-center items-center lg:items-start">
+       <Upload folder="logo" table="etablissement" props={{accept:"image/png"}} url={etablissement.logo} id={etablissement.id} label={text("logo")} />
+       </div>
         <div className="flex-grow flex flex-col gap-2 lg:gap-5">
           <Input register={register("nom")} label={text1("nom")} />
           <Input register={register("abrev")} label={text1("abrev")} />
@@ -78,8 +94,11 @@ const General = () => {
         </div>
       </div>
       <div className="divider my-10"></div>
-      <div className="flex flex-row gap-[50px]">
+
+      <div className="flex flex-col lg:flex-row gap-[10px] lg:gap-[50px]">
+       <div className="flex justify-center items-center lg:items-start">
         <Upload folder="profile" table="utilisateur" id={email} url={photo} label={text("photo")} />
+        </div>
         <div className="flex-grow flex flex-col gap-2 lg:gap-5">
           <Input2
             value={nom}
@@ -95,12 +114,13 @@ const General = () => {
         <div className="py-3 lg:py-6">
         <motion.div animate={controls} className=" flex flex-row justify-between items-center">
             <button className="btn btn-outline">{t("global.annuler")}</button>
-            <button className="btn">{text1("valider")}</button>
+            <button type="submit" className="btn">{text1("valider")}</button>
           </motion.div>
         </div>
+        <div className="py-[50px] lg:py-[20px]"></div>
         </div>
       </div>
-    </>
+    </form>
   );
 };
 

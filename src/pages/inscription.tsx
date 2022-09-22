@@ -51,11 +51,9 @@ const SideForm = () => {
     ["auth.inscription"],
     {
       onSuccess: (data) => {
-        console.log("Inscrire success:",data);
         push("/state/success?type=inscription")
       },
       onError: (err) => {
-        console.log("Inscrire error:",err);
         toast.error(t("global.toast erreur"))
       },
     }

@@ -29,7 +29,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
   const t=context.query.tab
-  console.log(t);
   
  if(!context.query.tab){
     return {

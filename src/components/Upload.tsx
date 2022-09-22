@@ -39,7 +39,7 @@ const Upload = ({ label, url, name, id, props,table,folder }: UploadProps) => {
     onSuccess:()=>{
       toast.success(t("global.toast succes"))
     },
-    onSettled:()=>setUploading(false)
+    // onSettled:()=>setUploading(false)
   })
    
   return (
@@ -58,14 +58,18 @@ const Upload = ({ label, url, name, id, props,table,folder }: UploadProps) => {
         setUploading(true);
 
         previewFile(file.blobFile, async (value: any) => {
-          console.log(value);
-
-          setFileInfo(value);
+         
           mutate({file:value,id:id,table,folder:folder||""})
+          setTimeout(() => {
+            
+          }, 2000);
+          setFileInfo(value);
+        
+      
         });
       }}
       onSuccess={(response, file) => {
-        setUploading(false);
+        setUploading(false)
        
       }}
       onError={() => {
