@@ -113,6 +113,10 @@
       "logo": "Logo",
       "photo":"Photo",
       "nom etablissement": "Nom de l'établissement"
+    },
+    "etudiants":{
+      "table nom":"Nom et Prénom",
+      "table formation":"Formation"
     }
   }
 }

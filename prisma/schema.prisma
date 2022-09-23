@@ -187,5 +187,26 @@ model Etudiant{
     formationId String
     formation Formation @relation(fields: [formationId],references: [id],onDelete: Cascade)
 
+    documentId String? @unique
+    document Document? @relation(fields: [documentId],references: [id],onDelete: Cascade)
+
     //extra
+}
+
+model Document{
+    id String @id @default(uuid())
+    createAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+    
+    //field
+    type DocumentType
+    url String
+
+    //extra
+    Etudiant Etudiant?
+}
+
+enum DocumentType{
+    PDF
+    IMAGE
 }

@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import ListInitiale from "../../../partials/etudiants/ListInitiale";
 import Certifies from "../../../partials/etudiants/Certifies";
 import Attente from "../../../partials/etudiants/Attente";
+import { FullUserContext } from "../../../utils/context";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
@@ -26,9 +27,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
-
+const utilisateur=JSON.parse(JSON.stringify(await prisma?.utilisateur.findUnique({
+  where:{
+    email:session.user?.email||""
+  },
+  include:{
+    etablissement:{
+      include:{
+        formations:true
+      }
+    }
+  }
+})))
   return {
     props: {
+      utilisateur,
       ...(await serverSideTranslations(context.locale!, ["common"])),
     },
   };
@@ -68,7 +81,7 @@ const Etablissement = (
   const currentTab = router.query.tab;
 
   return (
-    <>
+    <FullUserContext.Provider value={props.utilisateur}>
       <Workspace breadcrumb={false}>
         <div className="p-3 lg:p-6">
           <div className="hidden lg:block">
@@ -78,7 +91,7 @@ const Etablissement = (
           {tabs.filter((t) => t.route == currentTab)[0]?.content}
         </div>
       </Workspace>
-    </>
+    </FullUserContext.Provider>
   );
 };
 
