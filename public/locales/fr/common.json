@@ -11,7 +11,9 @@
     "voir plus": "voir plus",
     "langue": "langue",
     "detail": "Détail",
-     
+     "supprimer":"supprimer",
+     "modifier":"modifier",
+    
     "ajouter": "Ajouter",
     "diplome": "Diplôme",
     "liste vide": "Aucune donnée",
@@ -116,7 +118,8 @@
     },
     "etudiants":{
       "table nom":"Nom et Prénom",
-      "table formation":"Formation"
+      "table formation":"Formation",
+      "detail formation":"Détail de la formation"
     }
   }
 }

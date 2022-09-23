@@ -9,7 +9,7 @@ import {HiHome,HiChartPie,HiOutlineMenuAlt2, HiOutlineDocumentAdd} from 'react-i
 import {FiSettings} from 'react-icons/fi'
 import {GiDiploma} from "react-icons/gi"
 import {CgSandClock} from "react-icons/cg"
-import {AiOutlineOrderedList} from "react-icons/ai"
+import {AiFillEdit, AiOutlineOrderedList} from "react-icons/ai"
 import {GoSettings} from 'react-icons/go'
 export const FileIcon=RiFileTextLine
 export const LanguageIcon=TbLanguage
@@ -45,3 +45,4 @@ export const ArrayRightIcon=BsArrowRight
 export const SchoolIcon=FaSchool
 export const AdminIcon=MdAdminPanelSettings
 export const AdvanceIcon=GoSettings
+export const EditIcon=AiFillEdit
