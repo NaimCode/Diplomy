@@ -9,7 +9,7 @@ export const etudiantsRouter = createRouter().query("get", {
   async resolve({ input, ctx }) {
     const { etablissemntId, tab } = input;
     const { prisma } = ctx;
-    console.log(etablissemntId);
+
 
     return prisma.etudiant
       .findMany({
@@ -23,4 +23,18 @@ export const etudiantsRouter = createRouter().query("get", {
         if (tab == "certifies") return etudiants;
       });
   },
+}).mutation('add',{
+  input:z.object({
+   email:z.string(),
+   nom:z.string(),
+   prenom:z.string(),
+   formationId:z.string(),
+   etablissemntId:z.string()
+  }),
+  async resolve({input,ctx}){
+  
+    return ctx.prisma.etudiant.create({
+      data:input
+    })
+  }
 });

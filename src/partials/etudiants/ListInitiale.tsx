@@ -8,9 +8,12 @@ import {
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import router from "next/router";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useId, useState } from "react";
+import { useForm } from "react-hook-form";
 import { CgCornerDownRight, CgEditBlackPoint } from "react-icons/cg";
 import { MdUpdate, MdVisibility } from "react-icons/md";
+import { toast } from "react-toastify";
+import InputForm from "../../components/InputForm";
 import { AddIcon, DeleteIcon, EditIcon } from "../../constants/icons";
 import { FullUserContext } from "../../utils/context";
 import { trpc } from "../../utils/trpc";
@@ -20,7 +23,7 @@ const ListInitiale = () => {
   const text = (s: string) => t("workspace.etudiant." + s);
   const utilisateur = useContext(FullUserContext);
 
-  const { data, isLoading } = trpc.useQuery([
+  const { data, isLoading,refetch } = trpc.useQuery([
     "etudiant.get",
     {
       etablissemntId: utilisateur.etablissementId,
@@ -29,35 +32,123 @@ const ListInitiale = () => {
   ]);
 
   return (
-    <div className="py-3 lg:py-8  lg:px-6">
-      <div className="flex flex-row justify-between py-4 lg:py-6">
-        <h1 className="text-xl lg:text-4xl">
-          {t("workspace.sidebar.etudiants")}
-        </h1>
-        <Link href="/workspace/formations/ajouter">
-          <button className="btn  btn-primary gap-2 btn-sm lg:btn-md">
-            <AddIcon className="text-xl" />
-            {t("global.ajouter")}
-          </button>
-        </Link>
+    <>
+      <div className="py-3 lg:py-8  lg:px-6">
+        <div className="flex flex-row justify-between py-4 lg:py-6">
+          <h1 className="text-xl lg:text-4xl">
+            {t("workspace.sidebar.etudiants")}
+          </h1>
+          <a href="#add">
+            <button className="btn  btn-primary gap-2 btn-sm lg:btn-md">
+              <AddIcon className="text-xl" />
+              {t("global.ajouter")}
+            </button>
+          </a>
+        </div>
+        {isLoading ? (
+          <div className="py-6 flex justify-center items-center">
+            <button className="btn btn-ghost loading btn-xl"></button>
+          </div>
+        ) : (
+          <div>
+            <Table
+              data={data || []}
+              formations={utilisateur.etablissement.formations}
+            />
+          </div>
+        )}
       </div>
-      {isLoading ? (
-        <div className="py-6 flex justify-center items-center">
-          <button className="btn btn-ghost loading btn-xl"></button>
-        </div>
-      ) : (
-        <div>
-          <Table
-            data={data || []}
-            formations={utilisateur.etablissement.formations}
-          />
-        </div>
-      )}
-    </div>
+      <DialogAdd refetch={refetch}/>
+    </>
   );
 };
 
 export default ListInitiale;
+
+type EtudiantInputType = {
+  nom: string;
+  prenom: string;
+  email: string;
+  formationId: string;
+};
+const DialogAdd = ({refetch}:{refetch:any}) => {
+  const {
+    register,
+    handleSubmit,
+    watch,reset,
+    formState: { errors },
+  } = useForm<EtudiantInputType>();
+  const {mutate:add}=trpc.useMutation(['etudiant.add'],{
+    onError:(err)=>{
+       toast.error(t('global.toast erreur'))
+       console.log('err', err)
+    },
+    onSuccess:()=>{
+     refetch()
+     toast.success(t('global.toast succes'))
+     reset()
+     router.back()
+   
+    }
+  })
+  
+  const [formation, setformation] = useState<string | undefined>();
+  const { t } = useTranslation();
+  const { etablissement } = useContext(FullUserContext);
+  const text = (s: string) => t("workspace.etudiants." + s);
+  const onSubmit=(data:any)=>add({...data,formationId:formation,etablissemntId:etablissement.id})
+  return (
+    <div className="modal" id="add">
+      <form onSubmit={handleSubmit(onSubmit)} className="modal-box">
+        <h3 className="font-bold text-lg">{text("nouveau etudiant")}</h3>
+        <div className="py-3 lg:py-6 space-y-3">
+          <div className="flex flex-row gap-3">
+            <InputForm
+              register={register("prenom",{required:true})}
+              error={errors.prenom}
+              placeholder={t("workspace.etudiants.prenom")}
+              containerClass="w-full"
+            />
+            <InputForm
+              register={register("nom",{required:true})}
+              error={errors.nom}
+              placeholder={t("workspace.etudiants.nom")}
+              containerClass="w-full"
+            />
+          </div>
+          <InputForm
+              type="email"
+              register={register("email",{required:true})}
+              error={errors.email}
+              placeholder={t("inscription.email")}
+              containerClass="w-full"
+          />
+        </div>
+        <select
+          value={formation}
+          onChange={(e) => setformation(e.target.value)}
+          className="select w-full"
+        >
+          {etablissement.formations.map((e: any, i: number) => {
+            return (
+              <option value={e.id} key={i} className="truncate">
+                {e.intitule}
+              </option>
+            );
+          })}
+        </select>
+        <div className="modal-action">
+          <a href="#" className="btn btn-ghost">
+            {t("global.dialog cancel")}
+          </a>
+          <button type="submit" className="btn">
+            {t("global.ajouter")}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
 
 type EtudiantCardProps = {
   etudiant: Etudiant;
@@ -148,8 +239,7 @@ const Table = ({ data, formations }: TableProps) => {
             const formation = formations.filter(
               (f) => f.id == row.renderValue("formationId")
             )[0];
-            const link =
-              `/workspace/formations/${formation?.intitule!}`;
+            const link = `/workspace/formations/${formation?.intitule!}`;
             return (
               <tr key={row.id} className={"relative group"}>
                 {row.getVisibleCells().map((cell) => (
@@ -157,7 +247,10 @@ const Table = ({ data, formations }: TableProps) => {
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
-                <div className="gap-3 px-2 group-hover:flex flex-row lg:justify-center items-center absolute top-0 left-0 h-full w-full hidden z-30 bg-base-100/80 backdrop-blur-sm translate-x-full group-hover:translate-x-0 transition-all duration-500">
+                <div
+                  key={10000}
+                  className="gap-3 px-2 group-hover:flex flex-row lg:justify-center items-center absolute top-0 left-0 h-full w-full hidden z-30 bg-base-100/80 backdrop-blur-sm translate-x-full group-hover:translate-x-0 transition-all duration-500"
+                >
                   <button className="btn btn-error btn-sm btn-outline gap-2">
                     <DeleteIcon className="text-lg" />
                     {t("global.supprimer")}

@@ -119,7 +119,11 @@
     "etudiants":{
       "table nom":"Nom et Prénom",
       "table formation":"Formation",
-      "detail formation":"Détail de la formation"
+      "detail formation":"Détail de la formation",
+      "nouveau etudiant":"Nouveau etudiant",
+      "prenom":"Prénom",
+      "nom":"Nom",
+      "choisir":"Choisir une formation"
     }
   }
 }
