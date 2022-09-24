@@ -22,8 +22,8 @@ const ListInitiale = () => {
   const { t } = useTranslation();
   const text = (s: string) => t("workspace.etudiant." + s);
   const utilisateur = useContext(FullUserContext);
-
-  const { data, isLoading,refetch } = trpc.useQuery([
+  const [etudiant, setetudiant] = useState();
+  const { data, isLoading, refetch } = trpc.useQuery([
     "etudiant.get",
     {
       etablissemntId: utilisateur.etablissementId,
@@ -52,13 +52,16 @@ const ListInitiale = () => {
         ) : (
           <div>
             <Table
+              refetch={refetch}
+              setEtudiant={setetudiant}
               data={data || []}
               formations={utilisateur.etablissement.formations}
             />
           </div>
         )}
       </div>
-      <DialogAdd refetch={refetch}/>
+      <DialogAdd refetch={refetch} />
+      {etudiant && <DialogUpdate refetch={refetch} etudiant={etudiant} />}
     </>
   );
 };
@@ -71,32 +74,34 @@ type EtudiantInputType = {
   email: string;
   formationId: string;
 };
-const DialogAdd = ({refetch}:{refetch:any}) => {
+const DialogAdd = ({ refetch }: { refetch: any }) => {
   const {
     register,
     handleSubmit,
-    watch,reset,
+    watch,
+    reset,
     formState: { errors },
   } = useForm<EtudiantInputType>();
-  const {mutate:add}=trpc.useMutation(['etudiant.add'],{
-    onError:(err)=>{
-       toast.error(t('global.toast erreur'))
-       console.log('err', err)
+  const { mutate: add } = trpc.useMutation(["etudiant.add"], {
+    onError: (err) => {
+      toast.error(t("global.toast erreur"));
+      console.log("err", err);
     },
-    onSuccess:()=>{
-     refetch()
-     toast.success(t('global.toast succes'))
-     reset()
-     router.back()
-   
-    }
-  })
-  
+    onSuccess: () => {
+      refetch();
+      toast.success(t("global.toast succes"));
+      reset();
+      router.back();
+    },
+  });
+
   const [formation, setformation] = useState<string | undefined>();
   const { t } = useTranslation();
   const { etablissement } = useContext(FullUserContext);
   const text = (s: string) => t("workspace.etudiants." + s);
-  const onSubmit=(data:any)=>add({...data,formationId:formation,etablissemntId:etablissement.id})
+  const onSubmit = (data: any) =>
+    add({ ...data, formationId: formation, etablissemntId: etablissement.id });
+
   return (
     <div className="modal" id="add">
       <form onSubmit={handleSubmit(onSubmit)} className="modal-box">
@@ -104,24 +109,24 @@ const DialogAdd = ({refetch}:{refetch:any}) => {
         <div className="py-3 lg:py-6 space-y-3">
           <div className="flex flex-row gap-3">
             <InputForm
-              register={register("prenom",{required:true})}
+              register={register("prenom", { required: true })}
               error={errors.prenom}
               placeholder={t("workspace.etudiants.prenom")}
               containerClass="w-full"
             />
             <InputForm
-              register={register("nom",{required:true})}
+              register={register("nom", { required: true })}
               error={errors.nom}
               placeholder={t("workspace.etudiants.nom")}
               containerClass="w-full"
             />
           </div>
           <InputForm
-              type="email"
-              register={register("email",{required:true})}
-              error={errors.email}
-              placeholder={t("inscription.email")}
-              containerClass="w-full"
+            type="email"
+            register={register("email", { required: true })}
+            error={errors.email}
+            placeholder={t("inscription.email")}
+            containerClass="w-full"
           />
         </div>
         <select
@@ -150,30 +155,26 @@ const DialogAdd = ({refetch}:{refetch:any}) => {
   );
 };
 
-type EtudiantCardProps = {
-  etudiant: Etudiant;
-};
-const EtudiantCard = ({ etudiant }: EtudiantCardProps) => {
-  return (
-    <div className="rounded-lg shadow-sm p-2 lg:p-6 border-[1px] border-base-300">
-      <div>
-        <h6>
-          {etudiant.prenom} {etudiant.nom}
-        </h6>
-        <p>{etudiant.email}</p>
-      </div>
-    </div>
-  );
-};
-
 type TableProps = {
   data: Array<Etudiant>;
   formations: Array<Formation>;
+  refetch: any;
+  setEtudiant: any;
 };
 
-const Table = ({ data, formations }: TableProps) => {
+const Table = ({ data, formations, refetch, setEtudiant }: TableProps) => {
   const { t } = useTranslation();
   const columnsHelper = createColumnHelper<Etudiant>();
+  const { mutate: deleteEtudiant } = trpc.useMutation(["etudiant.delete"], {
+    onError: (err) => {
+      console.log("err", err);
+      toast.error(t("global.toast erreur"));
+    },
+    onSuccess: () => {
+      refetch();
+      toast.success(t("global.toast succes"));
+    },
+  });
   const columns = [
     columnsHelper.accessor("nom", {
       header: () => t("workspace.etudiants.table nom"),
@@ -182,7 +183,6 @@ const Table = ({ data, formations }: TableProps) => {
         return <h6>{e.prenom + " " + e.nom}</h6>;
       },
     }),
-
     columnsHelper.accessor("email", {
       header: () => t("inscription.email"),
     }),
@@ -193,24 +193,13 @@ const Table = ({ data, formations }: TableProps) => {
         return formations.filter((f) => f.id == e.formationId)[0]?.intitule;
       },
     }),
-    // columnsHelper.accessor("email", {
-    //   header: () => t('workspace.formation.version'),
-
-    //   cell: (formation) => {
-    //     return formation.cell.row.original.versionnage ? (
-    //       <div className="badge badge-warning">{formation.cell.row.original.versions.at(-1)?.numero}</div>
-    //     ) : (
-    //       <div className="badge badge-secondary">{t('workspace.formation.sans version')}</div>
-    //     );
-    //   },
-    // }),
   ];
   const table = useReactTable({
     columns,
     data,
     getCoreRowModel: getCoreRowModel(),
   });
-  //table-compact for small rows
+
 
   return (
     <div className="overflow-x-auto">
@@ -219,10 +208,7 @@ const Table = ({ data, formations }: TableProps) => {
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  // className={header.id == "versionnage" ? "text-center" : ""}
-                >
+                <th key={header.id}>
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -240,6 +226,7 @@ const Table = ({ data, formations }: TableProps) => {
               (f) => f.id == row.renderValue("formationId")
             )[0];
             const link = `/workspace/formations/${formation?.intitule!}`;
+
             return (
               <tr key={row.id} className={"relative group"}>
                 {row.getVisibleCells().map((cell) => (
@@ -251,15 +238,28 @@ const Table = ({ data, formations }: TableProps) => {
                   key={10000}
                   className="gap-3 px-2 group-hover:flex flex-row lg:justify-center items-center absolute top-0 left-0 h-full w-full hidden z-30 bg-base-100/80 backdrop-blur-sm translate-x-full group-hover:translate-x-0 transition-all duration-500"
                 >
-                  <button className="btn btn-error btn-sm btn-outline gap-2">
+                  <button
+                    onClick={() => {
+                      deleteEtudiant(row.original.id);
+                    }}
+                    className="btn btn-error btn-sm btn-outline gap-2"
+                  >
                     <DeleteIcon className="text-lg" />
                     {t("global.supprimer")}
                   </button>
 
-                  <button className="btn btn-info btn-sm btn-outline gap-2">
-                    <EditIcon className="text-lg" />
-                    {t("global.modifier")}
-                  </button>
+               
+                    <a
+                    href="#update"
+                    onClick={() => {
+                      console.log('click');
+                      
+                      setEtudiant(row.original);
+                    }}className="btn btn-info btn-sm btn-outline gap-2">
+                      <EditIcon className="text-lg" />
+                      {t("global.modifier")}
+                    </a>
+                  
                   <div className="divider divider-horizontal py-4"></div>
 
                   <button
@@ -280,6 +280,98 @@ const Table = ({ data, formations }: TableProps) => {
           {t("global.liste vide")}
         </div>
       )}
+    </div>
+  );
+};
+
+const DialogUpdate = ({
+  refetch,
+  etudiant,
+}: {
+  refetch: any;
+  etudiant: Etudiant;
+}) => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<EtudiantInputType>({
+    defaultValues: etudiant,
+  });
+  const { mutate: update } = trpc.useMutation(["etudiant.update"], {
+    onError: (err) => {
+      toast.error(t("global.toast erreur"));
+      console.log("err", err);
+    },
+    onSuccess: () => {
+      refetch();
+      toast.success(t("global.toast succes"));
+      reset();
+      router.back();
+    },
+  });
+
+  const [formation, setformation] = useState(etudiant.formationId);
+  const { t } = useTranslation();
+  const { etablissement } = useContext(FullUserContext);
+  const text = (s: string) => t("workspace.etudiants." + s);
+  const onSubmit = (data: any) =>
+    update({ id: etudiant.id, data: { ...data, formationId: formation } });
+    useEffect(() => {
+      reset(etudiant)
+    }, [etudiant])
+    
+  return (
+    <div className="modal" id="update">
+      <form onSubmit={handleSubmit(onSubmit)} className="modal-box">
+        <h3 className="font-bold text-lg">{text("nouveau etudiant")}</h3>
+        <div className="py-3 lg:py-6 space-y-3">
+          <div className="flex flex-row gap-3">
+            <InputForm
+              register={register("prenom", { required: true })}
+              error={errors.prenom}
+              placeholder={t("workspace.etudiants.prenom")}
+              containerClass="w-full"
+            />
+            <InputForm
+              register={register("nom", { required: true })}
+              error={errors.nom}
+              placeholder={t("workspace.etudiants.nom")}
+              containerClass="w-full"
+            />
+          </div>
+          <InputForm
+            type="email"
+            register={register("email", { required: true })}
+            error={errors.email}
+            placeholder={t("inscription.email")}
+            containerClass="w-full"
+          />
+        </div>
+        <select
+          value={formation}
+          onChange={(e) => setformation(e.target.value)}
+          className="select w-full"
+        >
+          {etablissement.formations.map((e: any, i: number) => {
+            return (
+              <option value={e.id} key={i} className="truncate">
+                {e.intitule}
+              </option>
+            );
+          })}
+        </select>
+        <div className="modal-action">
+          <a href="#" className="btn btn-ghost">
+            {t("global.dialog cancel")}
+          </a>
+          <button type="submit" className="btn">
+            {t("global.ajouter")}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
