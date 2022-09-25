@@ -1,5 +1,17 @@
+import { Etudiant } from "@prisma/client";
 import { z } from "zod";
 import { createRouter } from "../context";
+
+const getInitialEtudiants = (etudiants: Array<any>) => {
+  return etudiants.filter((e) => {
+    if (e.formation.versionnage) {
+      return !e.formation.versions[e.formation.versions.length - 1].diplome
+        .estVirtuel;
+    } else {
+      return !e.formation.diplome.estVirtuel;
+    }
+  });
+};
 
 export const etudiantsRouter = createRouter()
   .query("get", {
@@ -16,9 +28,21 @@ export const etudiantsRouter = createRouter()
           where: {
             etablissemntId,
           },
+          include: {
+            formation: {
+              include: {
+                diplome: true,
+                versions: {
+                  include: {
+                    diplome: true,
+                  },
+                },
+              },
+            },
+          },
         })
-        .then((etudiants) => {
-          if (tab == "initial") return etudiants;
+        .then((etudiants: Array<Etudiant>) => {
+          if (tab == "initial") return getInitialEtudiants(etudiants);
           if (tab == "attente") return etudiants;
           if (tab == "certifies") return etudiants;
         });
@@ -33,6 +57,7 @@ export const etudiantsRouter = createRouter()
       etablissemntId: z.string(),
     }),
     async resolve({ input, ctx }) {
+      
       return ctx.prisma.etudiant.create({
         data: input,
       });
@@ -47,23 +72,24 @@ export const etudiantsRouter = createRouter()
         },
       });
     },
-  }).mutation("update", {
+  })
+  .mutation("update", {
     input: z.object({
-      id:z.string(),
-      data:z.object({
-      email: z.string(),
-      nom: z.string(),
-      prenom: z.string(),
-      formationId: z.string(),
-      etablissemntId: z.string()
-      })
+      id: z.string(),
+      data: z.object({
+        email: z.string(),
+        nom: z.string(),
+        prenom: z.string(),
+        formationId: z.string(),
+        etablissemntId: z.string(),
+      }),
     }),
     async resolve({ input, ctx }) {
       return ctx.prisma.etudiant.update({
-        where:{
-          id:input.id
+        where: {
+          id: input.id,
         },
-        data:input.data 
+        data: input.data,
       });
     },
   });

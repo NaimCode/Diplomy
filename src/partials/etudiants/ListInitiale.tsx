@@ -6,16 +6,15 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useTranslation } from "next-i18next";
-import Link from "next/link";
 import router from "next/router";
 import { useContext, useEffect, useId, useState } from "react";
 import { useForm } from "react-hook-form";
-import { CgCornerDownRight, CgEditBlackPoint } from "react-icons/cg";
 import { MdUpdate, MdVisibility } from "react-icons/md";
 import { toast } from "react-toastify";
 import InputForm from "../../components/InputForm";
 import { AddIcon, DeleteIcon, EditIcon } from "../../constants/icons";
 import { FullUserContext } from "../../utils/context";
+import { isVirtuel } from "../../utils/functions";
 import { trpc } from "../../utils/trpc";
 
 const ListInitiale = () => {
@@ -75,6 +74,8 @@ type EtudiantInputType = {
   formationId: string;
 };
 const DialogAdd = ({ refetch }: { refetch: any }) => {
+  const { etablissement } = useContext(FullUserContext);
+  const [formation, setformation] = useState<string | undefined>();
   const {
     register,
     handleSubmit,
@@ -88,16 +89,27 @@ const DialogAdd = ({ refetch }: { refetch: any }) => {
       console.log("err", err);
     },
     onSuccess: () => {
-      refetch();
-      toast.success(t("global.toast succes"));
-      reset();
+    const {formations}=etablissement
+    const f=formations.filter((e:Formation)=>e.id==formation)[0]
+    const is=isVirtuel(f)
+    console.log(is);
+    
+      if(is){
+        toast.info(t("workspace.etudiants.virtuel formation"));
+      }else{
+        toast.success(t("global.toast succes"));
+      }
+   
       router.back();
+      refetch();
+      reset();
+     
     },
   });
 
-  const [formation, setformation] = useState<string | undefined>();
+
   const { t } = useTranslation();
-  const { etablissement } = useContext(FullUserContext);
+
   const text = (s: string) => t("workspace.etudiants." + s);
   const onSubmit = (data: any) =>
     add({ ...data, formationId: formation, etablissemntId: etablissement.id });
@@ -183,6 +195,7 @@ const Table = ({ data, formations, refetch, setEtudiant }: TableProps) => {
         return <h6>{e.prenom + " " + e.nom}</h6>;
       },
     }),
+
     columnsHelper.accessor("email", {
       header: () => t("inscription.email"),
     }),
@@ -193,6 +206,7 @@ const Table = ({ data, formations, refetch, setEtudiant }: TableProps) => {
         return formations.filter((f) => f.id == e.formationId)[0]?.intitule;
       },
     }),
+  
   ];
   const table = useReactTable({
     columns,
@@ -234,6 +248,7 @@ const Table = ({ data, formations, refetch, setEtudiant }: TableProps) => {
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
+             
                 <div
                   key={10000}
                   className="gap-3 px-2 group-hover:flex flex-row lg:justify-center items-center absolute top-0 left-0 h-full w-full hidden z-30 bg-base-100/80 backdrop-blur-sm translate-x-full group-hover:translate-x-0 transition-all duration-500"
@@ -368,7 +383,7 @@ const DialogUpdate = ({
             {t("global.dialog cancel")}
           </a>
           <button type="submit" className="btn">
-            {t("global.ajouter")}
+            {t("global.modifier")}
           </button>
         </div>
       </form>
