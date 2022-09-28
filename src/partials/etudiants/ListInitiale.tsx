@@ -31,9 +31,24 @@ const ListInitiale = () => {
     },
   ]);
 const [etudiantUpload, setetudiantUpload] = useState<Etudiant|undefined>(undefined)
+const {mutate:addDoc}=trpc.useMutation(['etudiant.add doc'],{
+  onError:(err)=>{
+     toast.error(t('global.toast erreur'))
+  },
+onSuccess:(data)=>{
+  setetudiantUpload(undefined)
+  refetch()
+  toast.success(t('global.toast succes'))
+
+}
+})
+const onValid=(result:any)=>{
+   const hash=result.path
+   addDoc({idEtudiant:etudiantUpload?.id!,type:"IMAGE",hash})
+}
   return (
     <>
-    <UploadToIPFS etudiant={etudiantUpload} close={setetudiantUpload}/>
+    <UploadToIPFS etudiant={etudiantUpload} onValid={onValid} close={setetudiantUpload}/>
       <div className="py-3 lg:py-8  lg:px-6">
         <div className="flex flex-row justify-between py-4 lg:py-6">
           <h1 className="text-xl lg:text-4xl">
@@ -114,7 +129,8 @@ const DialogAdd = ({ refetch }: { refetch: any }) => {
   const text = (s: string) => t("workspace.etudiants." + s);
   const onSubmit = (data: any) =>
     add({ ...data, formationId: formation, etablissemntId: etablissement.id });
-
+  
+  
   return (
     <div className="modal" id="add">
       <form onSubmit={handleSubmit(onSubmit)} className="modal-box">
@@ -214,6 +230,7 @@ const Table = ({ data, formations, refetch, setEtudiant,setEtudiantUpload }: Tab
     data,
     getCoreRowModel: getCoreRowModel(),
   });
+
 
   return (
     <div className="overflow-x-auto">

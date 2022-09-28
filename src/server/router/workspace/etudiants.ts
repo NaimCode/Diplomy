@@ -2,8 +2,13 @@ import { Etudiant } from "@prisma/client";
 import { z } from "zod";
 import { createRouter } from "../context";
 
+
+//TODO: check just if etudian has doc
 const getInitialEtudiants = (etudiants: Array<any>) => {
   return etudiants.filter((e) => {
+    if(e.document){
+      return 
+    }
     if (e.formation.versionnage) {
       return !e.formation.versions[e.formation.versions.length - 1].diplome
         .estVirtuel;
@@ -92,4 +97,26 @@ export const etudiantsRouter = createRouter()
         data: input.data,
       });
     },
+  }).mutation('add doc',{
+    input:z.object({
+      idEtudiant:z.string(),
+      type:z.enum(['IMAGE','PDF']),
+      hash:z.string()
+    }),
+    async resolve({input,ctx}){
+     
+      return await ctx.prisma.etudiant.update({
+        where:{
+          id:input.idEtudiant
+        },
+        data:{
+          document:{
+            create:{
+              type:input.type,
+              hash:input.hash
+            }
+          }
+        }
+      })
+    }
   });

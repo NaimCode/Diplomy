@@ -3,7 +3,9 @@
 import { useAnimationControls } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
+import { NFTStorage } from "nft.storage";
 import { useState, useEffect, useRef } from "react";
+import { env } from "../env/client.mjs";
 type useLocaleType = () => { isAr: boolean };
 export const useLocale: useLocaleType = () => {
   const { locale } = useRouter();
@@ -118,4 +120,35 @@ export const useImageOpti=(url:string,quality:number)=>{
     return urlTemp[0]+`upload/q_${quality}/${urlTemp[1]}`
   }
   return url
+}
+
+
+type useUploadToIPFSProps={
+  file?:File | undefined,
+   name?:string, description?:string
+}
+
+export const GATEWAY_IPFS="https://cloudflare-ipfs.com/ipfs/"
+export const useUploadToIPFS=()=>{
+
+
+  const init=async()=>{
+   const { create } = await import('ipfs-http-client')
+  const projectId = '2FP5zvmKLVbpu94CI3SpaZzdGx1';
+  const projectSecret = 'aacefddd77985325fa409fa103d22623';
+  
+  const auth =
+      'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
+  
+   const infura = create({
+      host: 'ipfs.infura.io',
+      port: 5001,
+      protocol: 'https',
+      headers: {
+          authorization: auth,
+      },
+  });
+  return infura
+}
+return {init}
 }

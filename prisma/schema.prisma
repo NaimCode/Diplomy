@@ -200,7 +200,7 @@ model Document{
     
     //field
     type DocumentType
-    url String
+    hash String
 
     //extra
     Etudiant Etudiant?
