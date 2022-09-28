@@ -1,5 +1,5 @@
 import { RiFileTextLine,RiAddFill, RiLogoutBoxLine, RiNotification2Line} from 'react-icons/ri';
-import {TbLanguage} from 'react-icons/tb'
+import {TbLanguage, TbUpload} from 'react-icons/tb'
 import {MdEmail,MdDeleteOutline,MdOutlineArrowBackIos, MdExpandMore, MdNavigateBefore, MdOutlineShortText, MdSchool, MdAdminPanelSettings} from "react-icons/md"
 import {FaMapSigns,FaMapMarker,FaHandshake, FaRegCheckCircle, FaSchool} from 'react-icons/fa'
 import {BsArrowRight, BsFillPersonFill, BsFillTelephoneFill, BsFillUnlockFill,BsPeopleFill} from 'react-icons/bs'
@@ -46,3 +46,4 @@ export const SchoolIcon=FaSchool
 export const AdminIcon=MdAdminPanelSettings
 export const AdvanceIcon=GoSettings
 export const EditIcon=AiFillEdit
+export const UploadIcon=TbUpload

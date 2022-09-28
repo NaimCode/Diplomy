@@ -34,7 +34,15 @@ const utilisateur=JSON.parse(JSON.stringify(await prisma?.utilisateur.findUnique
   include:{
     etablissement:{
       include:{
-        formations:true
+        formations:{
+          include:{
+            versions:{
+              include:{
+                diplome:true
+              }
+            }
+          }
+        }
       }
     }
   }

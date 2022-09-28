@@ -13,7 +13,7 @@
     "detail": "Détail",
      "supprimer":"supprimer",
      "modifier":"modifier",
-    
+    "click or drag":"Click ou drag le fichier sur cette zone",
     "ajouter": "Ajouter",
     "diplome": "Diplôme",
     "liste vide": "Aucune donnée",
@@ -124,7 +124,8 @@
       "prenom":"Prénom",
       "nom":"Nom",
       "choisir":"Choisir une formation",
-      "virtuel formation": "La formation choisie pour cet étudiant cencerne un diplôme(attestation) virtuel, il sera donc placé à la liste des attentes"
+      "virtuel formation": "La formation choisie pour cet étudiant cencerne un diplôme(attestation) virtuel, il sera donc placé à la liste des attentes",
+      "fichier":"Choisir un fichier"
     }
   }
 }

@@ -16,6 +16,7 @@ import { AddIcon, DeleteIcon, EditIcon } from "../../constants/icons";
 import { FullUserContext } from "../../utils/context";
 import { isVirtuel } from "../../utils/functions";
 import { trpc } from "../../utils/trpc";
+import UploadToIPFS from "../uploadToIPFS";
 
 const ListInitiale = () => {
   const { t } = useTranslation();
@@ -29,9 +30,10 @@ const ListInitiale = () => {
       tab: "initial",
     },
   ]);
-
+const [etudiantUpload, setetudiantUpload] = useState<Etudiant|undefined>(undefined)
   return (
     <>
+    <UploadToIPFS etudiant={etudiantUpload} close={setetudiantUpload}/>
       <div className="py-3 lg:py-8  lg:px-6">
         <div className="flex flex-row justify-between py-4 lg:py-6">
           <h1 className="text-xl lg:text-4xl">
@@ -51,6 +53,7 @@ const ListInitiale = () => {
         ) : (
           <div>
             <Table
+            setEtudiantUpload={setetudiantUpload}
               refetch={refetch}
               setEtudiant={setetudiant}
               data={data || []}
@@ -89,24 +92,22 @@ const DialogAdd = ({ refetch }: { refetch: any }) => {
       console.log("err", err);
     },
     onSuccess: () => {
-    const {formations}=etablissement
-    const f=formations.filter((e:Formation)=>e.id==formation)[0]
-    const is=isVirtuel(f)
-    console.log(is);
-    
-      if(is){
+      const { formations } = etablissement;
+      const f = formations.filter((e: Formation) => e.id == formation)[0];
+      const is = isVirtuel({ formation: f });
+      console.log(is);
+
+      if (is) {
         toast.info(t("workspace.etudiants.virtuel formation"));
-      }else{
+      } else {
         toast.success(t("global.toast succes"));
       }
-   
+
       router.back();
       refetch();
       reset();
-     
     },
   });
-
 
   const { t } = useTranslation();
 
@@ -172,9 +173,10 @@ type TableProps = {
   formations: Array<Formation>;
   refetch: any;
   setEtudiant: any;
+  setEtudiantUpload:Function
 };
 
-const Table = ({ data, formations, refetch, setEtudiant }: TableProps) => {
+const Table = ({ data, formations, refetch, setEtudiant,setEtudiantUpload }: TableProps) => {
   const { t } = useTranslation();
   const columnsHelper = createColumnHelper<Etudiant>();
   const { mutate: deleteEtudiant } = trpc.useMutation(["etudiant.delete"], {
@@ -206,14 +208,12 @@ const Table = ({ data, formations, refetch, setEtudiant }: TableProps) => {
         return formations.filter((f) => f.id == e.formationId)[0]?.intitule;
       },
     }),
-  
   ];
   const table = useReactTable({
     columns,
     data,
     getCoreRowModel: getCoreRowModel(),
   });
-
 
   return (
     <div className="overflow-x-auto">
@@ -248,11 +248,23 @@ const Table = ({ data, formations, refetch, setEtudiant }: TableProps) => {
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
-             
+
                 <div
                   key={10000}
                   className="gap-3 px-2 group-hover:flex flex-row lg:justify-center items-center absolute top-0 left-0 h-full w-full hidden z-30 bg-base-100/80 backdrop-blur-sm translate-x-full group-hover:translate-x-0 transition-all duration-500"
                 >
+                  <button onClick={()=>setEtudiantUpload(row.original) } className="btn btn-sm btn-outline btn-primary gap-2">
+                    <AddIcon className="text-lg" />
+                    {t("workspace.etudiants.fichier")}
+                  </button>
+                  <button
+                    onClick={() => router.push(link)}
+                    className="btn btn-sm btn-outline gap-2"
+                  >
+                    <MdVisibility className="text-lg" />
+                    {t("workspace.etudiants.detail formation")}
+                  </button>
+                  <div className="divider divider-horizontal py-4"></div>
                   <button
                     onClick={() => {
                       deleteEtudiant(row.original.id);
@@ -263,27 +275,18 @@ const Table = ({ data, formations, refetch, setEtudiant }: TableProps) => {
                     {t("global.supprimer")}
                   </button>
 
-               
-                    <a
+                  <a
                     href="#update"
                     onClick={() => {
-                      console.log('click');
-                      
-                      setEtudiant(row.original);
-                    }}className="btn btn-info btn-sm btn-outline gap-2">
-                      <EditIcon className="text-lg" />
-                      {t("global.modifier")}
-                    </a>
-                  
-                  <div className="divider divider-horizontal py-4"></div>
+                      console.log("click");
 
-                  <button
-                    onClick={() => router.push(link)}
-                    className="btn btn-sm btn-outline gap-2"
+                      setEtudiant(row.original);
+                    }}
+                    className="btn btn-info btn-sm btn-outline gap-2"
                   >
-                    <MdVisibility className="text-lg" />
-                    {t("workspace.etudiants.detail formation")}
-                  </button>
+                    <EditIcon className="text-lg" />
+                    {t("global.modifier")}
+                  </a>
                 </div>
               </tr>
             );
@@ -334,10 +337,10 @@ const DialogUpdate = ({
   const text = (s: string) => t("workspace.etudiants." + s);
   const onSubmit = (data: any) =>
     update({ id: etudiant.id, data: { ...data, formationId: formation } });
-    useEffect(() => {
-      reset(etudiant)
-    }, [etudiant])
-    
+  useEffect(() => {
+    reset(etudiant);
+  }, [etudiant]);
+
   return (
     <div className="modal" id="update">
       <form onSubmit={handleSubmit(onSubmit)} className="modal-box">
