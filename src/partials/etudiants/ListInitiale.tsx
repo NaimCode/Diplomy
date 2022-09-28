@@ -127,8 +127,14 @@ const DialogAdd = ({ refetch }: { refetch: any }) => {
   const { t } = useTranslation();
 
   const text = (s: string) => t("workspace.etudiants." + s);
-  const onSubmit = (data: any) =>
-    add({ ...data, formationId: formation, etablissemntId: etablissement.id });
+  const onSubmit = (data: any)=> {
+    const { formations } = etablissement;
+    const f = formations.filter((e: Formation) => e.id == formation)[0];
+    const is = isVirtuel({ formation: f });
+     const temp={ ...data, formationId: formation, etablissemntId: etablissement.id}
+    add({data:temp,isVirtuel:is!})
+  
+  }
   
   
   return (

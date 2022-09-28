@@ -2,19 +2,18 @@ import { Etudiant } from "@prisma/client";
 import { z } from "zod";
 import { createRouter } from "../context";
 
-
 //TODO: check just if etudian has doc
 const getInitialEtudiants = (etudiants: Array<any>) => {
   return etudiants.filter((e) => {
-    if(e.document){
-      return 
+    if (!e.documentId) {
+      return true;
     }
-    if (e.formation.versionnage) {
-      return !e.formation.versions[e.formation.versions.length - 1].diplome
-        .estVirtuel;
-    } else {
-      return !e.formation.diplome.estVirtuel;
-    }
+    // if (e.formation.versionnage) {
+    //   return !e.formation.versions[e.formation.versions.length - 1].diplome
+    //     .estVirtuel;
+    // } else {
+    //   return !e.formation.diplome.estVirtuel;
+    // }
   });
 };
 
@@ -55,17 +54,35 @@ export const etudiantsRouter = createRouter()
   })
   .mutation("add", {
     input: z.object({
-      email: z.string(),
-      nom: z.string(),
-      prenom: z.string(),
-      formationId: z.string(),
-      etablissemntId: z.string(),
+      data: z.object({
+        email: z.string(),
+        nom: z.string(),
+        prenom: z.string(),
+        formationId: z.string(),
+        etablissemntId: z.string(),
+      }),
+      isVirtuel: z.boolean(),
     }),
     async resolve({ input, ctx }) {
-      
-      return ctx.prisma.etudiant.create({
-        data: input,
-      });
+      const hash = "QmUnxr5A8epU3gThy4ZQHrAi9Gqz6eAUCpQfsaoF6pgfx6";
+      if (input.isVirtuel) {
+        const doc = await ctx.prisma.document.create({
+          data: {
+            hash,
+            type: "IMAGE",
+          },
+        });
+        return ctx.prisma.etudiant.create({
+          data: {
+            ...input.data,
+            documentId: doc.id,
+          },
+        });
+      } else {
+        return ctx.prisma.etudiant.create({
+          data: input.data,
+        });
+      }
     },
   })
   .mutation("delete", {
@@ -97,26 +114,26 @@ export const etudiantsRouter = createRouter()
         data: input.data,
       });
     },
-  }).mutation('add doc',{
-    input:z.object({
-      idEtudiant:z.string(),
-      type:z.enum(['IMAGE','PDF']),
-      hash:z.string()
+  })
+  .mutation("add doc", {
+    input: z.object({
+      idEtudiant: z.string(),
+      type: z.enum(["IMAGE", "PDF"]),
+      hash: z.string(),
     }),
-    async resolve({input,ctx}){
-     
+    async resolve({ input, ctx }) {
       return await ctx.prisma.etudiant.update({
-        where:{
-          id:input.idEtudiant
+        where: {
+          id: input.idEtudiant,
         },
-        data:{
-          document:{
-            create:{
-              type:input.type,
-              hash:input.hash
-            }
-          }
-        }
-      })
-    }
+        data: {
+          document: {
+            create: {
+              type: input.type,
+              hash: input.hash,
+            },
+          },
+        },
+      });
+    },
   });
