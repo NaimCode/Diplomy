@@ -10,9 +10,10 @@ import MyLottie from '../../components/MyLottie';
 import animationData from "../../../public/lotties/ether_loading.json"
 import animationData2 from "../../../public/lotties/checkout.json"
 import { useTranslation } from 'next-i18next';
-import { CheckIcon, DiplomaIcon, EmailIcon, PersonIcon } from '../../constants/icons';
+import { BackIcon, CheckIcon, DiplomaIcon, EmailIcon, PersonIcon } from '../../constants/icons';
 import { GATEWAY_IPFS, useMyTransition } from '../../utils/hooks';
 import { motion } from 'framer-motion';
+import router from 'next/router';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await unstable_getServerSession(
@@ -57,6 +58,12 @@ if(web3.isLoading){
   return (
     <div className='w-screen h-screen bg-base-100 flex justify-center'>
       <div className='flex w-full flex-col gap-2 max-w-2xl p-5 lg:p-2 h-[300px]'>
+       <div> <button onClick={()=>{
+        router.back()
+       }} className='btn btn-ghost gap-3'><BackIcon className='text-lg'/>
+        {t('global.retour')}
+       
+       </button></div>
         <div>
         <MyLottie animationData={animationData2}/>
         </div>
@@ -77,7 +84,7 @@ if(web3.isLoading){
          <p>{etudiant.formation.intitule}</p>
          </div>
          <div className='py-3'></div>
-         <img src={GATEWAY_IPFS+etudiant.document.hash} alt="doc"/>
+         <img src={GATEWAY_IPFS+etudiant.document.hash} alt="doc" className='mx-auto'/>
         </div>
         <div className='divider'></div>
         <div className='flex items-center justify-center'>
