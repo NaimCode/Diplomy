@@ -19,6 +19,7 @@ type UploadToIPFSProps = {
   onValid:Function,
 };
 //TODO: mobile for choisir un fichier
+//TODO: limit size of a file
 const UploadToIPFS = ({ close, etudiant,onValid }: UploadToIPFSProps) => {
   const { t } = useTranslation();
   const input = useRef<HTMLInputElement>(null);
