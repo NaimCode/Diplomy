@@ -18,6 +18,7 @@ type UploadToIPFSProps = {
   etudiant: Etudiant | undefined;
   onValid:Function,
 };
+//TODO: mobile for choisir un fichier
 const UploadToIPFS = ({ close, etudiant,onValid }: UploadToIPFSProps) => {
   const { t } = useTranslation();
   const input = useRef<HTMLInputElement>(null);
@@ -47,6 +48,9 @@ const UploadToIPFS = ({ close, etudiant,onValid }: UploadToIPFSProps) => {
     setisLoading(true);
     const result = await (await store.init()).add(file!);
     setisLoading(false);
+    setpreview(undefined)
+    setfile(undefined)
+    settype(undefined)
     onValid(result);
    
   };
@@ -118,7 +122,7 @@ const UploadToIPFS = ({ close, etudiant,onValid }: UploadToIPFSProps) => {
                 className="btn gap-2 btn-sm btn-ghost"
               >
                 <UploadIcon className="icon" />
-                {t("global.click or drag")}
+                {t("global.choisir fichier")}
               </button>
             </div>
           </Drawer.Body>

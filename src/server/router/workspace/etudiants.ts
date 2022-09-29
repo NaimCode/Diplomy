@@ -8,15 +8,16 @@ const getInitialEtudiants = (etudiants: Array<any>) => {
     if (!e.documentId) {
       return true;
     }
-    // if (e.formation.versionnage) {
-    //   return !e.formation.versions[e.formation.versions.length - 1].diplome
-    //     .estVirtuel;
-    // } else {
-    //   return !e.formation.diplome.estVirtuel;
-    // }
   });
 };
 
+const getAttenteEtudiants = (etudiants: Array<any>) => {
+  return etudiants.filter((e) => {
+    if (e.documentId) {
+      return true;
+    }
+  });
+};
 export const etudiantsRouter = createRouter()
   .query("get", {
     input: z.object({
@@ -33,8 +34,10 @@ export const etudiantsRouter = createRouter()
             etablissemntId,
           },
           include: {
+            document:true,
             formation: {
               include: {
+                
                 diplome: true,
                 versions: {
                   include: {
@@ -47,7 +50,7 @@ export const etudiantsRouter = createRouter()
         })
         .then((etudiants: Array<Etudiant>) => {
           if (tab == "initial") return getInitialEtudiants(etudiants);
-          if (tab == "attente") return etudiants;
+          if (tab == "attente") return getAttenteEtudiants(etudiants);
           if (tab == "certifies") return etudiants;
         });
     },

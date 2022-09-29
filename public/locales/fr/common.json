@@ -11,11 +11,14 @@
     "voir plus": "voir plus",
     "langue": "langue",
     "detail": "Détail",
-     "supprimer":"supprimer",
-     "modifier":"modifier",
-    "click or drag":"Click ou drag le fichier sur cette zone",
+    "hash":"Hash",
+    "hash doc":"Hash du document",
+    "supprimer":"supprimer",
+    "modifier":"modifier",
+    "choisir fichier":"Choisir un fichier",
     "ajouter": "Ajouter",
     "diplome": "Diplôme",
+    "finaliser":"Finaliser",
     "liste vide": "Aucune donnée",
     "attestation": "Attestation",
     "enregistrer": "Enregistrer",
@@ -125,7 +128,12 @@
       "nom":"Nom",
       "choisir":"Choisir une formation",
       "virtuel formation": "La formation choisie pour cet étudiant cencerne un diplôme(attestation) virtuel, il sera donc placé à la liste des attentes",
-      "fichier":"Choisir un fichier"
+      "fichier":"Choisir un fichier",
+      "en attente":"En attente de confirmation",
+      "erreur metamask":"Pas de MetaMask détecté",
+      "no meta mask body":"Pour pouvoir signer des documents sur la blockchain, vous avez besoin de télécharger et configurer MetaMask avec votre wallet.",
+      "pour plus d'info":"Pour plus d'information",
+      "telecharger meta mask":"Télécharger MetaMask"
     }
   }
 }

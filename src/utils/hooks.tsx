@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
+import { ethers } from "ethers";
 import { useAnimationControls } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
@@ -151,4 +152,20 @@ export const useUploadToIPFS=()=>{
   return infura
 }
 return {init}
+}
+
+export const useHasMetaMask=()=>{
+  const [hasMetaMask, setnoMetaMask] = useState(false)
+
+ useEffect(()=>{
+  let p
+  try {
+      p = new ethers.providers.Web3Provider((window as any).ethereum)
+   
+      setnoMetaMask(true)
+  } catch (error) {
+      setnoMetaMask(false)
+  }
+ },[window])
+   return hasMetaMask
 }

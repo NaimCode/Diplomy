@@ -132,6 +132,7 @@ const DialogAdd = ({ refetch }: { refetch: any }) => {
     const f = formations.filter((e: Formation) => e.id == formation)[0];
     const is = isVirtuel({ formation: f });
      const temp={ ...data, formationId: formation, etablissemntId: etablissement.id}
+    
     add({data:temp,isVirtuel:is!})
   
   }
