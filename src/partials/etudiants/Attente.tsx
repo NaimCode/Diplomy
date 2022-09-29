@@ -106,7 +106,7 @@ const hasMeta=useHasMetaMask()
       cell:(etudiant:any)=>hasMeta? <button onClick={()=>{
      
        
-       // router.push("/certifier/"+etudiant.cell.row.original.id)
+      router.push("/certifier/"+etudiant.cell.row.original.id)
       }} className="btn btn-sm">{t('global.finaliser')}</button>:<a href="#no_meta_mask" className="btn btn-sm">{t('global.finaliser')}</a>
     },
     columnsHelper.accessor("nom", {
