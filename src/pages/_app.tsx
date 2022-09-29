@@ -11,10 +11,22 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
 import Head from 'next/head'
-import {APP_NAME} from "../constants/global.ts"
-const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
 
+import { Web3ReactProvider } from '@web3-react/core'
+import { Web3Provider } from '@ethersproject/providers'
+
+import {APP_NAME} from "../constants/global"
+import { ReactNode } from "react";
+
+const MyApp = ({ Component, pageProps: { session, ...pageProps } }:any) => {
+  function getLibrary(provider: any): Web3Provider {
+    const library = new Web3Provider(provider)
+    library.pollingInterval = 12000
+    return library
+  }
   return (
+    <Web3ReactProvider getLibrary={getLibrary}>
+
     <SessionProvider session={session}>
       <ThemeProvider defaultTheme="system" enableSystem={true}>
         <Head>
@@ -26,14 +38,16 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
         </App>
       </ThemeProvider>
     </SessionProvider>
+
+    </Web3ReactProvider>
   );
 };
 
-const App = ({children}) => {
+const App = ({children}:{children:ReactNode}) => {
   const router = useRouter();
   const { theme } = useTheme()
 
-  return <CustomProvider  theme={theme}>
+  return <CustomProvider  theme={theme||'light' as any}>
    {children}
     <ToastContainer
       theme={theme=='dark' ? 'dark' : 'light'}

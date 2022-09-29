@@ -1,4 +1,7 @@
 {
+  "web3":{
+    "erreur connexion":"Impossible de se connecter à MetaMask"
+  },
   "global": {
     "onInvalid": "Ce champs est obligatoire",
     "toast erreur": "Un problème un été rencontré",
@@ -6,6 +9,7 @@
     "dialog cancel": "annuler",
     "dialog validate": "valider",
     "retour": "retour",
+    "chargement":"Chargement...",
     "mot de passe": "Mot de passe",
     "theme": "Thème",
     "voir plus": "voir plus",
