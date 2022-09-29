@@ -1,6 +1,10 @@
 {
   "web3":{
-    "erreur connexion":"Impossible de se connecter à MetaMask"
+    "erreur connexion":"Impossible de se connecter à MetaMask",
+    "connexion":"Connection",
+    "deconnexion":"Déconnection",
+    "veuillez connecter":"Pas de compte actif",
+    "actif compte":"Compte actif"
   },
   "global": {
     "onInvalid": "Ce champs est obligatoire",
