@@ -3,6 +3,7 @@ import {
   InferGetServerSidePropsType,
   NextPage,
 } from "next";
+import SyntaxHighlighter from "react-syntax-highlighter";
 import { unstable_getServerSession } from "next-auth";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import React, { Fragment, useEffect, useState } from "react";
@@ -20,23 +21,27 @@ import { useWeb3Connection } from "../../utils/web3";
 import MyLottie from "../../components/MyLottie";
 import animationData from "../../../public/lotties/ether_loading.json";
 import animationData2 from "../../../public/lotties/checkout.json";
-import bravoAnimation from  "../../../public/lotties/bravo.json"
-import checkAnimation from  "../../../public/lotties/check.json"
+import bravoAnimation from "../../../public/lotties/bravo.json";
+import checkAnimation from "../../../public/lotties/check.json";
 import { useTranslation } from "next-i18next";
 import {
   BackIcon,
   CheckIcon,
+  CodeQRIcon,
+  CopyIcon,
   DiplomaIcon,
   EmailIcon,
   PersonIcon,
 } from "../../constants/icons";
-import { GATEWAY_IPFS, useMyTransition } from "../../utils/hooks";
+import { GATEWAY_IPFS, useMyTheme, useMyTransition, useQR } from "../../utils/hooks";
 import { motion } from "framer-motion";
 import router from "next/router";
 import { ethers } from "ethers";
 import CertificationAbi from "../../../web3/build/contracts/Certification.json";
 import { env } from "../../env/client.mjs";
 import { toast } from "react-toastify";
+import dark from "react-syntax-highlighter/dist/esm/styles/hljs/dark";
+import light from "react-syntax-highlighter/dist/esm/light";
 
 type FullEtudiantType = Etudiant & {
   document: Document;
@@ -88,8 +93,8 @@ const Certifier = (
 ) => {
   const web3 = useWeb3Connection();
   const [isWeb3Loading, setisWeb3Loading] = useState(false);
-  const [transactionDone, settransactionDone] = useState();
-
+  const [transactionDone, settransactionDone] = useState<any|undefined>();
+const {isDark}=useMyTheme()
   const etudiant: FullEtudiantType = props.etudiant;
   const { controls } = useMyTransition({
     trigger: web3.active && !web3.isLoading,
@@ -107,9 +112,7 @@ const Certifier = (
     version: string;
   };
   //test
-  useEffect(() => {
-    addMonths(6);
-  }, []);
+
   function addMonths(numOfMonths: number, date = new Date()) {
     date.setMonth(date.getMonth() + numOfMonths);
     console.log("toLocaleDateString", date.toLocaleDateString());
@@ -172,7 +175,7 @@ const Certifier = (
       toast.error(t("web3.rejeter"));
     } else {
       const contractSigner = contract.connect(signer);
-      let hash;
+      let hash=undefined;
       const info = getInfoForContract(etudiant);
       console.log(info);
 
@@ -190,19 +193,29 @@ const Certifier = (
           info.type,
           ethers.utils.getAddress(web3.account!)
         );
-        toast.success(t("global.toast succes"));
+
         console.log("hash", hash);
+    
       } catch (error) {
         console.log("error", error);
         toast.error(t("global.toast erreur"));
       }
+     
+
       setisWeb3Loading(false);
+      settransactionDone(hash);
     }
   };
 
   // if(transactionDone){
   //   return <div></div>
   // }
+  const qr=useQR()
+
+  const toClipboard=(data:string)=>{
+    navigator.clipboard.writeText(data)
+    toast.success(t('global.text copie'))
+  }
   if (web3.isLoading) {
     return <Loading />;
   }
@@ -265,28 +278,43 @@ const Certifier = (
         </motion.div>
       </div>
 
-   {transactionDone&&  <div className="modal modal-open">
-       <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
-     <MyLottie animationData={bravoAnimation}/>
-       </div>
-        <div className="modal-box">
-        <div className="flex flex-row gap-3 items-center">
-            <div className="w-[50px]">
-              <MyLottie animationData={checkAnimation}/>
+      {transactionDone && (
+        <div className="modal modal-open bg-base-200">
+          <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
+            <MyLottie animationData={bravoAnimation} />
+          </div>
+          <div className="modal-box">
+            <div className="flex flex-row gap-3 items-center">
+              <div className="w-[50px]">
+                <MyLottie animationData={checkAnimation} />
+              </div>
+              <h3 className="font-bold text-lg">
+                {t("web3.transaction reussie")}
+              </h3>
             </div>
-            <h3 className="font-bold text-lg">
-            {t('web3.transaction reussi')}
-          </h3></div>
-          <p className="py-4">
-            {t("web3.on s'en charge")}
-          </p>
-          <div className="modal-action">
-            <a href="#" className="btn">
-              Yay!
-            </a>
+            <p className="py-4">{t("web3.on s'ecn charge")}</p>
+           
+           <SyntaxHighlighter language="javascript" wrapLines wrapLongLines>
+              {transactionDone.hash}
+            </SyntaxHighlighter>
+          
+            <div className="modal-action flex flex-wrap gap-2">
+              <button onClick={()=>toClipboard(transactionDone.hash)} className="btn btn-ghost gap-2">
+                <CopyIcon className="text-lg"/>
+                {t('web3.copier le hash')}</button>
+                <a target={"_blank"} href={qr.generate(transactionDone.hash)} className="btn btn-ghost gap-2 no-underline">
+                <CodeQRIcon className="text-lg"/>
+                {t('web3.QR code')}</a>
+          
+              <button onClick={()=>{
+                router.push("/workspace/etudiants/attente")
+              }} className="btn">
+                {t('global.ok')}
+              </button>
+            </div>
           </div>
         </div>
-      </div>}
+      )}
     </div>
   );
 };
