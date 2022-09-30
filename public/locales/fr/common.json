@@ -5,7 +5,11 @@
     "deconnexion":"Déconnection",
     "veuillez connecter":"Pas de compte actif",
     "actif compte":"Compte actif",
-    "rejeter":"Opération rejetée"
+    "rejeter":"Opération rejetée",
+    "transaction reussie":"Transaction réussie",
+    "on s'ecn charge":"Nous nous en chargons pour notifier l'étudiant",
+    "hash":"Hash",
+    "QR code":"QR code"
   },
   "global": {
     "onInvalid": "Ce champs est obligatoire",
