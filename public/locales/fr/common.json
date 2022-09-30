@@ -9,7 +9,8 @@
     "transaction reussie":"Transaction réussie",
     "on s'ecn charge":"Nous nous en chargons pour notifier l'étudiant",
     "hash":"Hash",
-    "QR code":"QR code"
+    "QR code":"QR code",
+    "copier le hash":"Copier le hash"
   },
   "global": {
     "onInvalid": "Ce champs est obligatoire",
@@ -18,6 +19,7 @@
     "dialog cancel": "annuler",
     "dialog validate": "valider",
     "retour": "retour",
+    "text copie":"Text copié",
     "chargement":"Chargement...",
     "mot de passe": "Mot de passe",
     "theme": "Thème",
@@ -38,6 +40,7 @@
     "annuler": "Annuler",
     "version": "Version",
     "saisir": "Saisir",
+    "ok":"Ok",
     "confirmer": "Confirmer",
     "confirmation": "Veuillez confirmer l'opération",
     "diplome/attestation": "Diplôme / Attestation"

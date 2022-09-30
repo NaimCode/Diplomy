@@ -103,6 +103,7 @@ model Etablissement {
     membres          Utilisateur[]
     formations       Formation[]
     etudiants Etudiant[]
+    transaction Transaction[]
 }
 
 model Formation {
@@ -189,8 +190,9 @@ model Etudiant{
 
     documentId String? @unique
     document Document? @relation(fields: [documentId],references: [id],onDelete: Cascade)
-
+      
     //extra
+    transaction Transaction?
 }
 
 model Document{
@@ -206,7 +208,33 @@ model Document{
     Etudiant Etudiant?
 }
 
+
+model Transaction{
+    id String @id @default(uuid())
+    createAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+    //field
+    hash String @unique
+    blockNumber Int
+    blockHash String
+    signataire String
+    chainId Int
+    type TransactionType
+
+    //extre
+    etablissementId String
+    etablissement Etablissement @relation(fields: [etablissementId],references: [id],onDelete: Cascade) 
+    etudiantId String @unique
+    etudiant Etudiant @relation(fields: [etudiantId],references: [id],onDelete: Cascade)
+
+ 
+}
+
 enum DocumentType{
     PDF
     IMAGE
+}
+enum TransactionType{
+   CERTIFICATION
+   CONTRACT
 }

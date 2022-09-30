@@ -1,11 +1,11 @@
 import { RiFileTextLine,RiAddFill, RiLogoutBoxLine, RiNotification2Line} from 'react-icons/ri';
 import {TbLanguage, TbUpload} from 'react-icons/tb'
-import {MdEmail,MdDeleteOutline,MdOutlineArrowBackIos, MdExpandMore, MdNavigateBefore, MdOutlineShortText, MdSchool, MdAdminPanelSettings} from "react-icons/md"
+import {MdEmail,MdDeleteOutline,MdOutlineArrowBackIos, MdExpandMore, MdNavigateBefore, MdOutlineShortText, MdSchool, MdAdminPanelSettings, MdQrCode2} from "react-icons/md"
 import {FaMapSigns,FaMapMarker,FaHandshake, FaRegCheckCircle, FaSchool} from 'react-icons/fa'
 import {BsArrowRight, BsFillPersonFill, BsFillTelephoneFill, BsFillUnlockFill,BsPeopleFill} from 'react-icons/bs'
 import {IoMdClose} from 'react-icons/io'
 import {GrGoogle} from 'react-icons/gr'
-import {HiHome,HiChartPie,HiOutlineMenuAlt2, HiOutlineDocumentAdd} from 'react-icons/hi'
+import {HiHome,HiChartPie,HiOutlineMenuAlt2, HiOutlineDocumentAdd, HiOutlineClipboardCopy} from 'react-icons/hi'
 import {FiSettings} from 'react-icons/fi'
 import {GiDiploma} from "react-icons/gi"
 import {CgSandClock} from "react-icons/cg"
@@ -47,3 +47,5 @@ export const AdminIcon=MdAdminPanelSettings
 export const AdvanceIcon=GoSettings
 export const EditIcon=AiFillEdit
 export const UploadIcon=TbUpload
+export const CopyIcon=HiOutlineClipboardCopy
+export const CodeQRIcon=MdQrCode2

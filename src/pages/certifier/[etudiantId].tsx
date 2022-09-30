@@ -42,6 +42,7 @@ import { env } from "../../env/client.mjs";
 import { toast } from "react-toastify";
 import dark from "react-syntax-highlighter/dist/esm/styles/hljs/dark";
 import light from "react-syntax-highlighter/dist/esm/light";
+import { trpc } from "../../utils/trpc";
 
 type FullEtudiantType = Etudiant & {
   document: Document;
@@ -193,17 +194,24 @@ const {isDark}=useMyTheme()
           info.type,
           ethers.utils.getAddress(web3.account!)
         );
-
-        console.log("hash", hash);
-    
+    certifier({
+      transaction:{
+        hash:hash.hash,
+        blockNumber:hash.blockNumber,
+        blockHash:hash.blockHash,
+        signataire:hash.from,
+        type:"CERTIFICATION",
+        chainId:hash.chainId
+      },
+      etablissementId:etudiant.etablissemntId,
+      etudiantId:etudiant.id
+    })
       } catch (error) {
         console.log("error", error);
         toast.error(t("global.toast erreur"));
+        setisWeb3Loading(false)
       }
      
-
-      setisWeb3Loading(false);
-      settransactionDone(hash);
     }
   };
 
@@ -216,6 +224,18 @@ const {isDark}=useMyTheme()
     navigator.clipboard.writeText(data)
     toast.success(t('global.text copie'))
   }
+  const {mutate:certifier}=trpc.useMutation(['transaction.certifier'],{
+    onError:(err)=>{
+      console.log("error", err);
+      toast.error(t("global.toast erreur"));
+      setisWeb3Loading(false)
+    },
+    onSuccess:(data)=>{
+      settransactionDone(data);
+      setisWeb3Loading(false);
+    }
+
+  })
   if (web3.isLoading) {
     return <Loading />;
   }

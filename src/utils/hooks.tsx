@@ -169,3 +169,11 @@ export const useHasMetaMask=()=>{
  },[window])
    return hasMetaMask
 }
+
+export const useQR=()=>{
+  const generate=(data:string,size:number|undefined=300)=>{
+    return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${data}`
+  }
+
+  return {generate}
+}

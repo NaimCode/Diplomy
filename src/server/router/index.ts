@@ -5,6 +5,7 @@ import { authRouter } from "./auth";
 import { formationRouter } from "./workspace/formation";
 import { parametreRouter } from "./workspace/parametre";
 import { etudiantsRouter } from "./workspace/etudiants";
+import { transactionRouter } from "./workspace/transaction";
 
 
 export const appRouter = createRouter()
@@ -13,6 +14,7 @@ export const appRouter = createRouter()
   .merge("formation.",formationRouter)
   .merge('parametreRouter.',parametreRouter)
   .merge('etudiant.',etudiantsRouter)
+  .merge('transaction.',transactionRouter)
 
 // export type definition of API
 export type AppRouter = typeof appRouter;
