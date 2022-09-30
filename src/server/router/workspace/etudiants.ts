@@ -13,7 +13,15 @@ const getInitialEtudiants = (etudiants: Array<any>) => {
 
 const getAttenteEtudiants = (etudiants: Array<any>) => {
   return etudiants.filter((e) => {
-    if (e.documentId) {
+    if (e.documentId && !e.transaction) {
+      return true;
+    }
+  });
+};
+
+const getCertifiesEtudiants = (etudiants: Array<any>) => {
+  return etudiants.filter((e) => {
+    if (e.transaction) {
       return true;
     }
   });
@@ -34,7 +42,9 @@ export const etudiantsRouter = createRouter()
             etablissemntId,
           },
           include: {
+            
             document:true,
+            transaction:true,
             formation: {
               include: {
                 
@@ -51,7 +61,7 @@ export const etudiantsRouter = createRouter()
         .then((etudiants: Array<Etudiant>) => {
           if (tab == "initial") return getInitialEtudiants(etudiants);
           if (tab == "attente") return getAttenteEtudiants(etudiants);
-          if (tab == "certifies") return etudiants;
+          if (tab == "certifies") return getCertifiesEtudiants(etudiants);
         });
     },
   })
