@@ -39,7 +39,7 @@ import { toast } from "react-toastify";
 type FullEtudiantType = Etudiant & {
   document: Document;
   etablissement: Etablissement;
-  formation: Formation & { versions: Array<Version & { diplome: Diplome }> };
+  formation: Formation & { versions: Array<Version & { diplome: Diplome }>,diplome:Diplome };
 };
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
@@ -59,6 +59,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         document: true,
         formation: {
           include: {
+            diplome:true,
             versions: {
               include: {
                 diplome: true,
@@ -94,9 +95,20 @@ const Certifier = (
     nom: string;
     etablissementHash: string;
     prenom: string;
+    expiration:string,
+    type:string,
     version: string;
   };
-
+  //test
+useEffect(()=>{
+  addMonths(6)
+},[])
+  function addMonths(numOfMonths:number, date = new Date()) {
+    date.setMonth(date.getMonth() + numOfMonths);
+  console.log('toLocaleDateString', date.toLocaleDateString())
+ 
+    return date.toLocaleDateString();
+  }
   const getInfoForContract = (e: FullEtudiantType): CertificationProps => {
     const documentHash = e.document.hash;
     const nom = e.nom;
@@ -104,39 +116,68 @@ const Certifier = (
     const etablissementHash = e.etablissemntId;
     //
     const formation = e.formation;
-
+    const versions=formation.versions
     const intitule =
-      formation.versionnage && formation.versions[-1]?.diplome.intituleDiff
-        ? formation.versions[-1]?.diplome.intitule!
+      formation.versionnage && versions[versions.length-1]?.diplome.intituleDiff
+        ? versions[versions.length-1]?.diplome.intitule!
         : formation.intitule;
 
     const version = formation.versionnage
       ? formation.versions[-1]?.numero.toString()!
       : "";
-
-    return { intitule, etablissementHash, nom, prenom, version, documentHash };
+ 
+      console.log('formation.versions[-1]', formation.versions[-1])
+       const diplome:Diplome=formation.versionnage?versions[versions.length-1]?.diplome!:formation.diplome
+   console.log("diplome",diplome);
+   
+       //TODO: change type according to language
+      const type=diplome.estVirtuel?"Virtuel":"Physique"
+     const months=diplome.expiration?diplome.dureeExpiration:undefined
+    
+      const expiration=months? addMonths(months):"";
+    return { intitule, etablissementHash, nom, prenom, version, documentHash,type,expiration };
   };
 
   const onSign = async () => {
     const provider = new ethers.providers.Web3Provider(
       (window as any).ethereum
     );
+    
     const contract = new ethers.Contract(
-      env.CERTIFICATION_ADDRESS,
+      ethers.utils.getAddress("0x687488cb2195059D4AE1966E48C4a95346C5BC05"),
       CertificationAbi.abi,
-      provider
+    web3.provider
     );
-    const signer = provider.getSigner();
+    const signer = web3.provider!.getSigner();
     if (!signer) {
       toast.error(t("web3.rejeter"));
     } else {
       const contractSigner = contract.connect(signer);
       let hash;
-      setisWeb3Loading(true);
-      try {
-        hash = await contractSigner.NouveauDiplome();
-      } catch (error) {}
-      setisWeb3Loading(false);
+      const info=getInfoForContract(etudiant)
+        
+     // setisWeb3Loading(true);
+
+      // try {
+    hash=await contractSigner.Test()
+      // hash = await contractSigner.NouveauDiplome(
+      //   info.intitule,
+      //   info.documentHash,
+      //   info.nom,
+      //   info.etablissementHash,
+      //   info.prenom,
+      //   info.version,
+      //   info.expiration,
+      //   info.type,
+      //   web3.account!
+      // );
+      toast.success(t('global.toast succes'))
+      console.log('hash', hash)
+     // } catch (error) {
+        // console.log('error', error)
+        // toast.error(t('global.toast erreur'))
+     // }
+     // setisWeb3Loading(false);
     }
   };
   if (web3.isLoading) {
@@ -188,7 +229,7 @@ const Certifier = (
           </div>
           <div className="divider"></div>
           <div className="flex items-center justify-center">
-            <button className="btn btn-primary btn-wide">
+            <button onClick={()=>onSign()} className={`btn btn-primary btn-wide ${isWeb3Loading&& "loading"}`}>
               {t("global.dialog validate")}
             </button>
           </div>

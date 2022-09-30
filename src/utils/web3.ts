@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { useTranslation } from "next-i18next";
 import { ethers } from "ethers";
 
-export   const injectedConnector = new InjectedConnector({supportedChainIds: [1,3, 4, 5, 42, ],})
+export   const injectedConnector = new InjectedConnector({supportedChainIds: [1,3, 4, 5, 42, 1337 ],})
 
 
 export const useWeb3Connection=()=>{
@@ -40,7 +40,7 @@ export const useWeb3Connection=()=>{
     
       },[active]);
 
-return {connect,disconnect,account,active,isLoading}  
+return {connect,disconnect,account,active,isLoading,provider:library}  
 }
 
 

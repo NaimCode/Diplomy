@@ -11,9 +11,10 @@ contract Certification {
         string version;
         string expiration;
         string diplomeType;
-        address signataire;
+        string signataire;
 
     }
+    function Test()public{}
     function NouveauDiplome(
         string memory _intitule,
         string memory _documentHash,
@@ -23,7 +24,7 @@ contract Certification {
         string memory _version,
         string memory _expiration,
         string memory _diplomeType,
-        address  _signataire
+        string memory  _signataire
     ) public {
         // diplomes_keys.push(_etudiantHash);
         // Diplomes[_etudiantHash] = Diplome({
@@ -58,7 +59,7 @@ contract Certification {
         string DocumentHash,
         string Expiration,
         string Type,
-        address Signataire
+        string Signataire
     );
 
     // function ObtenirDiplome(string memory _hash)
