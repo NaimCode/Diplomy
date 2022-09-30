@@ -4,7 +4,8 @@
     "connexion":"Connection",
     "deconnexion":"Déconnection",
     "veuillez connecter":"Pas de compte actif",
-    "actif compte":"Compte actif"
+    "actif compte":"Compte actif",
+    "rejeter":"Opération rejetée"
   },
   "global": {
     "onInvalid": "Ce champs est obligatoire",

@@ -6,8 +6,11 @@ contract Certification {
         string nom;
         string prenom;
         string intitule;
+        string etablissementHash;
         string documentHash;
         string version;
+        string expiration;
+        string diplomeType;
         address signataire;
 
     }
@@ -15,8 +18,11 @@ contract Certification {
         string memory _intitule,
         string memory _documentHash,
         string memory _nom,
+        string memory _etablissementHash,
         string memory _prenom,
         string memory _version,
+        string memory _expiration,
+        string memory _diplomeType,
         address  _signataire
     ) public {
         // diplomes_keys.push(_etudiantHash);
@@ -35,7 +41,10 @@ contract Certification {
             _prenom,
             _intitule,
             _version,
+            _etablissementHash,
             _documentHash,
+            _expiration,
+            _diplomeType,
             _signataire
         );
     }
@@ -45,7 +54,10 @@ contract Certification {
         string Prenom,
         string Intitule,
         string Version,
+        string EtablissementHash,
         string DocumentHash,
+        string Expiration,
+        string Type,
         address Signataire
     );
 
