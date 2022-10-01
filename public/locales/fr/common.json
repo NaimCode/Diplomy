@@ -34,6 +34,7 @@
     "choisir fichier":"Choisir un fichier",
     "ajouter": "Ajouter",
     "diplome": "Diplôme",
+    "action":"Action",
     "finaliser":"Finaliser",
     "liste vide": "Aucune donnée",
     "attestation": "Attestation",
@@ -150,7 +151,8 @@
       "erreur metamask":"Pas de MetaMask détecté",
       "no meta mask body":"Pour pouvoir signer des documents sur la blockchain, vous avez besoin de télécharger et configurer MetaMask avec votre wallet.",
       "pour plus d'info":"Pour plus d'information",
-      "telecharger meta mask":"Télécharger MetaMask"
+      "telecharger meta mask":"Télécharger MetaMask",
+      "table hash":"Hash de la transaction"
     }
   }
 }

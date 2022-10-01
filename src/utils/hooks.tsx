@@ -2,10 +2,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ethers } from "ethers";
 import { useAnimationControls } from "framer-motion";
+import { useTranslation } from "next-i18next";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { NFTStorage } from "nft.storage";
 import { useState, useEffect, useRef } from "react";
+import { toast } from "react-toastify";
 import { env } from "../env/client.mjs";
 type useLocaleType = () => { isAr: boolean };
 export const useLocale: useLocaleType = () => {
@@ -171,9 +173,14 @@ export const useHasMetaMask=()=>{
 }
 
 export const useQR=()=>{
+  const {t}=useTranslation()
   const generate=(data:string,size:number|undefined=300)=>{
     return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${data}`
   }
-
-  return {generate}
+  const toClipboardHash=(data:string)=>{
+  
+    navigator.clipboard.writeText(data)
+    toast.success(t('global.text copie'))
+  }
+  return {generate,toClipboardHash}
 }
