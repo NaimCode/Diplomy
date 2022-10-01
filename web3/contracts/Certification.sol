@@ -2,6 +2,19 @@
 pragma solidity 0.8.17;
 
 contract Certification {
+    address public owner;
+    uint public price;
+
+    constructor(uint _price) {
+        owner = msg.sender;
+        price=_price;
+
+    }
+    function ChangePrice(uint _price) public{
+        require(msg.sender==owner,"Not Authorized");
+        price=_price;
+    }
+
     struct Diplome {
         string nom;
         string prenom;
@@ -25,8 +38,14 @@ contract Certification {
         string memory _expiration,
         string memory _diplomeType,
         address  _signataire
-    ) public {
+    ) public payable {
+       
+        require(msg.value >= price, "Value");
+        bool sent =  payable(owner).send(msg.value);
+        require(sent, "Failed to send Ether");
+
         // diplomes_keys.push(_etudiantHash);
+
         // Diplomes[_etudiantHash] = Diplome({
         //     intitule: _intitule,
         //     etablissement: _etablissement,
@@ -61,7 +80,7 @@ contract Certification {
         string Type,
         address Signataire
     );
-
+ 
     // function ObtenirDiplome(string memory _hash)
     //     public
     //     view

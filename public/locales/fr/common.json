@@ -10,6 +10,7 @@
     "on s'ecn charge":"Nous nous en chargons pour notifier l'étudiant",
     "hash":"Hash",
     "QR code":"QR code",
+    "montant insuffisant":"Montant proposé est insuffisant",
     "copier le hash":"Copier le hash"
   },
   "global": {

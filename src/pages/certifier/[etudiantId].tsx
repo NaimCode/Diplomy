@@ -162,12 +162,13 @@ const {isDark}=useMyTheme()
   };
 
   const onSign = async () => {
+    //TODO: auto convertion
     const provider = new ethers.providers.Web3Provider(
       (window as any).ethereum
     );
-
+     console.log('price', env.NEXT_PUBLIC_PRICE)
     const contract = new ethers.Contract(
-      ethers.utils.getAddress("0x08F9ab58a3c7D8A606827d7c25d9C9cC979AE448"),
+      ethers.utils.getAddress("0xC70a55F912b25092b552Dd488C16fD8d7929cf2e"),
       CertificationAbi.abi,
       web3.provider
     );
@@ -192,7 +193,8 @@ const {isDark}=useMyTheme()
           info.version,
           info.expiration,
           info.type,
-          ethers.utils.getAddress(web3.account!)
+          ethers.utils.getAddress(web3.account!),
+          {value:env.NEXT_PUBLIC_PRICE}
         );
     certifier({
       transaction:{
@@ -206,10 +208,17 @@ const {isDark}=useMyTheme()
       etablissementId:etudiant.etablissemntId,
       etudiantId:etudiant.id
     })
-      } catch (error) {
-        console.log("error", error);
-        toast.error(t("global.toast erreur"));
-        setisWeb3Loading(false)
+      } catch (error:any) {
+        if(error.code= -32000){
+          console.log("error", error);
+          toast.error(t("web3.montant insuffisant"));
+          setisWeb3Loading(false)
+        }else{
+          console.log("error", error);
+          toast.error(t("global.toast erreur"));
+          setisWeb3Loading(false)
+        }
+      
       }
      
     }
