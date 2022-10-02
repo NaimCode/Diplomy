@@ -24,6 +24,7 @@
     "chargement":"Chargement...",
     "mot de passe": "Mot de passe",
     "theme": "Thème",
+    "choisir":"Choisir",
     "effacer":"Effacer",
     "voir plus": "voir plus",
     "langue": "langue",
@@ -76,6 +77,15 @@
     "valider": "valider"
   },
   "workspace": {
+    "relation":{
+      "mes contrats":"Mes contrats",
+      "step 1":"Demande de parténariat",
+      "step 2":"Conditions",
+      "step 3":"Aboutissement",
+      "step 4":"Conclusion",
+      "sans partenaire":"Sans parténaire",
+      "step 1 exp":"Dans cette étape vous devez choisir votre (vos) parténaire(s), vous pouvez également établir un contract avec vous même"
+    },
     "global": {
       "nouveau": "Nouveau"
     },
@@ -128,9 +138,7 @@
       "certifie": "Liste des certifiés",
       "init list etudiants": "La Liste intiale des étudiants"
     },
-    "relation": {
-      "recent": "Les récents contrats"
-    },
+ 
     "parametre": {
       "general": "Général",
       "membres et roles": "Membres et rôles",

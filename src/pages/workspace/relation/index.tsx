@@ -4,8 +4,12 @@ import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import Workspace from "../../../components/Workspace";
 import { useTranslation } from "next-i18next";
-import { ArrayRightIcon } from "../../../constants/icons";
+import { AddIcon, ArrayRightIcon, ArrowDownIcon, ArrowUpIcon } from "../../../constants/icons";
 import VoirPlus from "../../../components/VoidPlus";
+import { useEffect, useState } from "react";
+import { motion, useAnimationControls } from "framer-motion";
+import { useMyTransition } from "../../../utils/hooks";
+import router from "next/router";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
@@ -37,40 +41,58 @@ const Relation = (
   return (
     <>
       <Workspace>
-        <div className="w-full flex flex-col justify-around h-[300px] bg-base-200/50 p-3">
-          <div className="flex flex-row justify-between items-center">
-            <h3>{text("recent")}</h3>
-            <VoirPlus link="/workspace/relation/contracts" />
-          </div>
-          <div className="carousel  space-x-8">
-            <ContractCard title="Contract 1" color="bg-pink-200"/>
-            <ContractCard title="Contract 1" color="bg-purple-200"/>
-            <ContractCard title="Contract 1" color="bg-orange-200"/>
-            <ContractCard title="Contract 1" color="bg-red-200"/>
-            <ContractCard title="Contract 1" color="bg-blue-200"/>
-            <ContractCard title="Contract 1" color="bg-pink-200"/>
-            <ContractCard title="Contract 1" color="bg-amber-200"/>
-            <ContractCard title="Contract 1" color="bg-purple-200"/>
-            <ContractCard title="Contract 1" color="bg-pink-200"/>
-          </div>
+        <div className="p-6">
+        <div className="flex flex-row justify-between items-center">
+        <h3>{text('mes contrats')}</h3>
+        <button onClick={()=>{
+          router.push("/contract")
+        }} className="btn btn-primary gap-2">
+          <AddIcon className="icon"/>
+          {t('global.ajouter')}
+        </button>
         </div>
+        </div>
+        <PartenaireSection/>
       </Workspace>
     </>
   );
 };
 
-type ContractCardProps = {
-  color: string;
-  title: string;
-};
-const ContractCard = ({ color, title }: ContractCardProps) => {
-    const {t}=useTranslation()
-  return (
-    <div className="group rounded-sm carousel-item w-[180px] h-[200px] bg-base-100 transition-all duration-300 shadow-sm hover:shadow-md relative">
-        <div className={`absolute rounded-sm  bottom-0 left-0 w-full h-2 ${color} flex justify-center items-center transition-all duration-300 group-hover:h-full`}>
-    <span className="btn btn-sm dark:text-white glass opacity-0 delay-100 transition-all duration-300 group-hover:opacity-100"> {t('global.detail')}</span>
-        </div>
+const PartenaireSection=()=>{
+  const [up, setup] = useState(false)
+  const controls = useAnimationControls();
+  useEffect(() => {
+    if (up) {
+      controls.start({
+        opacity: 1,
+     
+        height: 700,
+      });
+    } else {
+      controls.start({
+        opacity: 0,
+      
+        height: 0,
+      });
+    }
+  }, [up]);
+  return <div className="absolute bottom-5 right-5 max-h-[70%] w-[300px] bg-base-300 rounded-lg flex flex-col">
+    <div onClick={()=>setup(!up)} className="btn btn-primary flex flex-row justify-between items-center shadow-sm">
+    <h6>Parténariat</h6>
+  
+    {up?  <ArrowDownIcon className="swap-on icon"/>:<ArrowUpIcon className="swap-off icon"/> }
+
+  
     </div>
-  );
-};
+    <motion.div animate={controls}>
+    <div className="">
+
+    </div>
+    </motion.div>
+
+    <motion.div animate={controls} className="mx-auto">
+  
+    </motion.div>
+  </div>
+}
 export default Relation;

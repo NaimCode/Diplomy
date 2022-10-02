@@ -230,6 +230,8 @@ model Transaction{
  
 }
 
+
+
 enum DocumentType{
     PDF
     IMAGE

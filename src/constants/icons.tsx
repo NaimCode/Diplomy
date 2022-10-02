@@ -3,7 +3,7 @@ import {TbLanguage, TbUpload} from 'react-icons/tb'
 import {MdEmail,MdDeleteOutline,MdOutlineArrowBackIos, MdExpandMore, MdNavigateBefore, MdOutlineShortText, MdSchool, MdAdminPanelSettings, MdQrCode2} from "react-icons/md"
 import {FaMapSigns,FaMapMarker,FaHandshake, FaRegCheckCircle, FaSchool} from 'react-icons/fa'
 import {BsArrowRight, BsFillPersonFill, BsFillTelephoneFill, BsFillUnlockFill,BsPeopleFill} from 'react-icons/bs'
-import {IoMdClose} from 'react-icons/io'
+import {IoIosArrowDown, IoIosArrowUp, IoMdClose} from 'react-icons/io'
 import {GrGoogle} from 'react-icons/gr'
 import {HiHome,HiChartPie,HiOutlineMenuAlt2, HiOutlineDocumentAdd, HiOutlineClipboardCopy} from 'react-icons/hi'
 import {FiSettings} from 'react-icons/fi'
@@ -49,3 +49,5 @@ export const EditIcon=AiFillEdit
 export const UploadIcon=TbUpload
 export const CopyIcon=HiOutlineClipboardCopy
 export const CodeQRIcon=MdQrCode2
+export const ArrowDownIcon=IoIosArrowDown
+export const ArrowUpIcon=IoIosArrowUp
