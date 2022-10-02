@@ -83,7 +83,8 @@
       "step 2":"Conditions",
       "step 3":"Aboutissement",
       "step 4":"Conclusion",
-      "sans partenaire":"Sans parténaire",
+      "ajouter":"Ajouter un parténaire",
+      "sans partenaire":"Parténariat avec ",
       "step 1 exp":"Dans cette étape vous devez choisir votre (vos) parténaire(s), vous pouvez également établir un contract avec vous même"
     },
     "global": {
