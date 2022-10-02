@@ -24,6 +24,7 @@
     "chargement":"Chargement...",
     "mot de passe": "Mot de passe",
     "theme": "Thème",
+    "effacer":"Effacer",
     "voir plus": "voir plus",
     "langue": "langue",
     "detail": "Détail",
@@ -46,6 +47,7 @@
     "confirmer": "Confirmer",
     "confirmation": "Veuillez confirmer l'opération",
     "diplome/attestation": "Diplôme / Attestation"
+    
   },
   "state": {
     "Success inscription": "Demande d'inscription envoyé avec succès, vous récevrez un mail de confirmation une fois la demande est acceptée."

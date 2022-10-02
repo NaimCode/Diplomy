@@ -180,7 +180,7 @@ model Etudiant{
     nom String
     prenom String
     email String
-    
+    removed Boolean?
     
     //Foreign
     etablissemntId String

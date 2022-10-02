@@ -12,6 +12,7 @@ import { useContext, useEffect, useId, useState } from "react";
 import { useForm } from "react-hook-form";
 import { MdUpdate, MdVisibility } from "react-icons/md";
 import { toast } from "react-toastify";
+import DialogConfirmation from "../../components/DialogConfirmationDelete";
 import InputForm from "../../components/InputForm";
 import {
   AddIcon,
@@ -39,15 +40,40 @@ const Certifies = () => {
     },
   ]);
 
+  const {mutate:removed,isLoading:removedLoading}=trpc.useMutation(['etudiant.removed certifies'],{
+    onError:(err)=>{
+      console.log('err', err)
+    },
+    onSuccess:()=>{
+      refetch()
+      toast.success(t('global.toast succes'))
+    }
+  })
+
+  const onRemovedEtudiant=()=>{
+    console.log('removed click');
+    
+    removed(utilisateur.etablissementId)
+    
+  }
+
   return (
     <>
       <div className="py-3 lg:py-8  lg:px-6">
-        <div className="flex flex-row justify-between py-4 lg:py-6">
+
+          <div className="flex flex-row justify-between py-4 lg:py-6">
           <h1 className="text-xl lg:text-4xl">
             {t("workspace.etudiant.certifie")}
           </h1>
+          
+            <a href="#confirmation_red" className="btn  btn-error gap-2 btn-sm lg:btn-md no-underline">
+              <DeleteIcon className="text-xl" />
+              {t("global.effacer")}
+            </a>
+          
+      
         </div>
-        {isLoading ? (
+        {isLoading||removedLoading ? (
           <div className="py-6 flex justify-center items-center">
             <button className="btn btn-ghost loading btn-xl"></button>
           </div>
@@ -62,6 +88,7 @@ const Certifies = () => {
           </div>
         )}
       </div>
+      <DialogConfirmation onConfirm={onRemovedEtudiant}/>
     </>
   );
 };
@@ -91,6 +118,7 @@ const Table = ({ data, formations, refetch, setEtudiant }: TableProps) => {
   const columns = [
     columnsHelper.accessor("id", {
       header: () => t("global.action"),
+      
       cell: (etudiant) => {
         const e = etudiant.cell.row.original;
         return (

@@ -205,8 +205,9 @@ const {isDark}=useMyTheme()
         type:"CERTIFICATION",
         chainId:hash.chainId
       },
-      etablissementId:etudiant.etablissemntId,
-      etudiantId:etudiant.id
+    
+      etudiant:etudiant,
+      codeQR:qr.generate(hash.hash,160)
     })
       } catch (error:any) {
         if(error.code= -32000){

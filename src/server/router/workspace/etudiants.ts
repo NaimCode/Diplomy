@@ -21,7 +21,7 @@ const getAttenteEtudiants = (etudiants: Array<any>) => {
 
 const getCertifiesEtudiants = (etudiants: Array<any>) => {
   return etudiants.filter((e) => {
-    if (e.transaction) {
+    if (e.transaction && !e.removed) {
       return true;
     }
   });
@@ -149,4 +149,18 @@ export const etudiantsRouter = createRouter()
         },
       });
     },
+  }).mutation('removed certifies',{
+    input:z.string(),
+    async resolve({input,ctx}){
+      const {prisma}=ctx
+
+      return await prisma.etudiant.updateMany({
+        where:{
+          etablissemntId:input
+        },
+        data:{
+            removed:true
+        }
+      })
+    }
   });
