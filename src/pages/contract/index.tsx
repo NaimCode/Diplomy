@@ -13,6 +13,8 @@ import { useMyTheme } from "../../utils/hooks";
 import { authOptions } from "../api/auth/[...nextauth]";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import router from "next/router";
+import { trpc } from "../../utils/trpc";
+import { toast } from "react-toastify";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
@@ -63,6 +65,20 @@ const Contract = (
   const [partenaires, setpartenaires] = useState([]);
   const getEta = (s: string) => etablissements.filter((p: any) => p.id == s)[0];
   const [parent] = useAutoAnimate(/* optional config */);
+  const {mutate,isLoading}=trpc.useMutation(['contract.new contract'],{
+    onError:(err)=>{
+     console.log('err', err)
+     toast.error('global.toast erreur')
+    },
+    onSuccess:(data)=>{
+        if(data.etape!=1){
+            router.replace("/contract/"+data.id)
+        }else{
+            toast('workspace.relation.init')
+            router.push("/workspace/relation")
+        }
+    }
+  })
   return (
     <Layout
       open={open}
@@ -126,7 +142,12 @@ const Contract = (
             <button onClick={()=>{
                 router.back()
             }} className="btn btn-ghost">{t("global.retour")}</button>
-            <button className="btn btn-primary">{t("inscription.valider")}</button>
+            <button onClick={()=>mutate({
+                membres:[etablissementId,...partenaires].map((e)=>({
+                    etablissementId:e,
+                    accept:e==etablissementId?true:false
+                }))
+            })} className={`btn btn-primary ${isLoading&& "loading"}`}>{t("global.suivant")}</button>
           </div>
         </div>
       </div>
@@ -134,7 +155,7 @@ const Contract = (
   );
 };
 
-const Steps = ({ t }: { t: any }) => {
+ const Steps = ({ t }: { t: any }) => {
   const text = (s: string) => t("workspace.relation." + s);
   return (
     <ul className="steps w-full">

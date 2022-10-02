@@ -25,6 +25,7 @@
     "mot de passe": "Mot de passe",
     "theme": "Thème",
     "choisir":"Choisir",
+    "suivant":"Suivant",
     "effacer":"Effacer",
     "voir plus": "voir plus",
     "langue": "langue",
@@ -85,7 +86,9 @@
       "step 4":"Conclusion",
       "ajouter":"Ajouter un parténaire",
       "sans partenaire":"Parténariat avec ",
-      "step 1 exp":"Dans cette étape vous devez choisir votre (vos) parténaire(s), vous pouvez également établir un contract avec vous même"
+      "step 1 exp":"Dans cette étape vous devez choisir votre (vos) parténaire(s), vous pouvez également établir un contract avec vous même",
+      "init":"Le contract a été initialisé, une fois les tous les membres ont accepté, vous pourrez continuer l'étape suivante"
+      
     },
     "global": {
       "nouveau": "Nouveau"
