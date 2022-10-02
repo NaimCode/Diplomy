@@ -104,6 +104,7 @@ model Etablissement {
     formations       Formation[]
     etudiants Etudiant[]
     transaction Transaction[]
+    contracts ContractMembre[]
 }
 
 model Formation {
@@ -230,8 +231,32 @@ model Transaction{
  
 }
 
+model Contract{
+    id String @id @default(uuid())
+    createAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+  
+  //field 
+  etape Int @default(1)
 
 
+    //extra
+    membres ContractMembre[]
+}
+
+model ContractMembre{
+    id String @id @default(uuid())
+    createAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+    //field
+    accept Boolean @default(false)
+
+    contractId String @unique
+    Contract Contract @relation(fields: [contractId],references: [id],onDelete: Cascade)
+
+    etablissementId String
+    etablissement Etablissement @relation(fields: [etablissementId],references: [id],onDelete: Cascade)
+}
 enum DocumentType{
     PDF
     IMAGE
@@ -240,3 +265,4 @@ enum TransactionType{
    CERTIFICATION
    CONTRACT
 }
+

@@ -12,6 +12,7 @@ import { AddIcon, CheckIcon, DeleteIcon } from "../../constants/icons";
 import { useMyTheme } from "../../utils/hooks";
 import { authOptions } from "../api/auth/[...nextauth]";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import router from "next/router";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
@@ -38,7 +39,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     )
   );
   const etablissements = JSON.parse(
-    JSON.stringify(await prisma?.etablissement.findMany())
+    JSON.stringify(await prisma?.etablissement.findMany({where:{
+       NOT:{
+        logo:null
+       }
+    }}))
   );
   return {
     props: {
@@ -72,7 +77,7 @@ const Contract = (
             {text("step 1 exp")}
           </p>
           <Steps t={t} />
-          <div ref={parent as any} className="space-y-2">
+          <div ref={parent as any} className="space-y-2  px-4">
             {[etablissementId, ...partenaires].map((et, i) => {
               const e: Etablissement = getEta(et);
               const isMine = e.id == etablissementId;
@@ -81,7 +86,7 @@ const Contract = (
                   key={i}
                   className="flex group flex-row gap-4 items-center bg-base-100 rounded-md p-2 border-[1px]"
                 >
-                  <div className="w-[70px]">
+                  <div className="min-w-[70px] max-w-[70px]">
                     <img src={e.logo!} alt="logo" className="object-cover" />
                   </div>
 
@@ -107,7 +112,7 @@ const Contract = (
               );
             })}
           </div>
-          <div className="flex flex-row justify-center">
+          <div className="flex flex-row justify-center  px-4">
             <button
               onClick={() => setOpen(true)}
               className="btn  gap-2 btn-outline btn-sm"
@@ -116,10 +121,12 @@ const Contract = (
               {text("ajouter")}
             </button>
           </div>
-          <div className="divider"></div>
-          <div className="flex flex-row justify-between items-center">
-            <button className="btn btn-ghost">{t("global.retour")}</button>
-            <button className="btn btn-primary">{t("global.valider")}</button>
+          <div className="divider  px-2"></div>
+          <div className="flex flex-row justify-between items-center  px-2">
+            <button onClick={()=>{
+                router.back()
+            }} className="btn btn-ghost">{t("global.retour")}</button>
+            <button className="btn btn-primary">{t("inscription.valider")}</button>
           </div>
         </div>
       </div>
