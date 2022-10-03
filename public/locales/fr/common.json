@@ -92,7 +92,11 @@
       "step 4 exp":"Finaliser votre contrat en validant, tous les membres doivent confirmer",
       "step 3 exp":"Dans cette étape vous devez choisir la formation aboutissante",
       "step 1 exp":"Dans cette étape vous devez choisir votre (vos) parténaire(s), vous pouvez également établir un contract avec vous même",
-      "init":"Le contract a été initialisé, une fois les tous les membres ont accepté, vous pourrez continuer l'étape suivante"
+      "init":"Le contract a été initialisé, une fois les tous les membres ont accepté, vous pourrez continuer l'étape suivante",
+      "demande":"Demande en attente",
+      "entre":"Parténariat entre :",
+      "refuser":"Refuser",
+      "accepter":"Accepter"
       
     },
     "global": {
