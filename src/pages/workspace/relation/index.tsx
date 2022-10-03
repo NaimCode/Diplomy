@@ -16,6 +16,7 @@ import { motion, useAnimationControls } from "framer-motion";
 import { useMyTransition } from "../../../utils/hooks";
 import router from "next/router";
 import { Contract, ContractMembre, Etablissement } from "@prisma/client";
+import { toast } from "react-toastify";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
@@ -95,9 +96,13 @@ const Relation = (
           </div>
           <div className="py-6">
            {contracts.map((c,i)=>{
-            return <div key={i} className="rounded-lg border-[1px] h-[100px] w-full">
+            return <button onClick={()=>{
+            
+                router.push("/contract/"+c.contractId)
+           
+            }} key={i} className="rounded-lg border-[1px] h-[100px] w-full">
                 
-            </div>
+            </button>
            })}
           </div>
         </div>
