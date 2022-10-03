@@ -40,22 +40,36 @@ export const contractRouter = createRouter()
       });
     },
   })
-  .mutation("step 2", {
+  .mutation("finalisation", {
     input: z.object({
       formations: z.array(z.string()),
+      aboutissement:z.string(),
       id: z.string(),
+      membreId:z.string()
     }),
     async resolve({ input, ctx }) {
       const { prisma } = ctx;
 
-      return await prisma.contract.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          etape: 3,
-          conditionsId: input.formations,
-        },
-      });
-    },
+      return   await prisma.$transaction([
+        prisma.contract.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            etape: 4,
+            conditionsId: input.formations,
+            aboutissementId:input.aboutissement
+          },
+        }),
+        prisma.contractMembre.update({
+          where:{
+           id:input.membreId
+          },
+          data:{
+            confirm:true
+          }
+        })
+      ])
+    
+    }
   });

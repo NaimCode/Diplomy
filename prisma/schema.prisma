@@ -262,6 +262,7 @@ model ContractMembre{
     updateAt DateTime @updatedAt
     //field
     accept Boolean @default(false)
+    confirm Boolean @default(false)
 
     contractId String 
     Contract Contract @relation(fields: [contractId],references: [id],onDelete: Cascade)

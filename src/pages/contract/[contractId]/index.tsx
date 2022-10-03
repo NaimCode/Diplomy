@@ -12,7 +12,7 @@ import { unstable_getServerSession } from "next-auth";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import router from "next/router";
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { AddIcon, DeleteIcon, SchoolIcon } from "../../../constants/icons";
 import { trpc } from "../../../utils/trpc";
@@ -82,13 +82,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       })
     )
   );
-
+  const utilisateur=JSON.parse(JSON.stringify(await prisma?.utilisateur.findUnique({
+    where:{
+      email:session.user?.email||""
+    },
+    include:{
+      etablissement:true
+          
+       
+    }})))
   console.log(contract);
 
   return {
     props: {
       id,
       contract,
+      utilisateur,
       ...(await serverSideTranslations(context.locale!, ["common"])),
     },
   };
@@ -112,81 +121,43 @@ const ContractItem = (
 ) => {
   const { t } = useTranslation();
   const { id } = props;
-  const contract: FullContract = props.contract;
-  const formations: Array<
-    Formation & {
-      versions: Array<Version & { diplome: Diplome }>;
-      diplome: Diplome;
-    }
-  > = contract.membres
-    .map((m) => m.etablissement.formations)
-    .reduce((a, b) => [...a, ...b]);
+  const [contract, setcontract] = useState<FullContract|undefined>()
+
+  const [formations, setformationsX] = useState<Array<
+  Formation & {
+    versions: Array<Version & { diplome: Diplome }>;
+    diplome: Diplome;
+  }
+>>([])
+  useEffect(()=>{
+    const t:FullContract=  props.contract;
+
+    setcontract(t)
+    setformations(t.conditionsId);
+    setformationsX(t.membres
+      .map((m) => m.etablissement.formations)
+      .reduce((a, b) => [...a, ...b]))
+    setAboutissement(t.aboutissementId)
+  },[])
 
   const [step, setstep] = useState(2);
   const [open, setOpen] = React.useState(false);
   const text = (s: string) => t("workspace.relation." + s);
-  const [selectedFormations, setformations] = useState(contract.conditionsId);
-  const [selectedAboutissement, setAboutissement] = useState(
-    contract.aboutissementId
-  );
+  const [selectedFormations, setformations] = useState<Array<string>>([]);
+  const [selectedAboutissement, setAboutissement] = useState<string|null>();
   const [parent] = useAutoAnimate(/* optional config */);
 
-  // const {mutate:toStep3,isLoading}=trpc.useMutation(['contract.step 2'],{
-  //   onError:(err)=>{
-  //       console.log('err', err)
-  //       toast.error('global.toast erreur')
-  //   },
-  //   onSuccess:(data)=>{
-  //       getStep.refetch()
-  //   }
-  // })
-  const layoutData = (): LayoutProps => {
-    if (step == 2) {
-      return {
-        open,
-        setOpen,
-        data: formations.map((f) => ({
-          label: f.intitule,
-          id: f.id,
-          parentId: f.etablissementId,
-        })),
-        selectedList: selectedFormations,
-        oneValue: false,
-        onSelectedList: setformations,
-        subtitle: contract.membres.map((c) => ({
-          label: c.etablissement.nom,
-          id: c.etablissementId,
-        })),
-      };
-    } else {
-      if (step == 3) {
-        return {
-          open,
-          setOpen,
-          data: formations.map((f) => ({
-            label: f.intitule,
-            id: f.id,
-            parentId: f.etablissementId,
-          })),
-          selectedList: selectedAboutissement ? [selectedAboutissement] : [],
-
-          onSelectedList: setAboutissement,
-          subtitle: contract.membres.map((c) => ({
-            label: c.etablissement.nom,
-            id: c.etablissementId,
-          })),
-        };
-      }
+  const {mutate,isLoading}=trpc.useMutation(['contract.finalisation'],{
+    onError:(err)=>{
+        console.log('err', err)
+        toast.error('global.toast erreur')
+    },
+    onSuccess:(data)=>{
+      toast.success('workspace.relation.finaliser')
+       router.push("/workspace/relation")
     }
-    return {
-      open,
-      setOpen,
-      data: [],
-      selectedList: [],
-      onSelectedList: setformations,
-    };
-  };
-
+  })
+ 
   return (
     <Layout
       open={open}
@@ -226,10 +197,10 @@ const ContractItem = (
       }
       oneValue={step == 2 ? false : true}
       onSelectedList={step == 2 ? setformations : setAboutissement}
-      subtitle={contract.membres.map((c) => ({
+      subtitle={contract?contract.membres.map((c) => ({
         label: c.etablissement.nom,
         id: c.etablissementId,
-      }))}
+      })):[]}
     >
       <div className="flex justify-center items-center h-screen">
         <div className="w-[700px]  py-6 space-y-10">
@@ -238,7 +209,9 @@ const ContractItem = (
           </p>
           {step == 2 && <Steps2 t={t} />}
           {step == 3 && <Steps3 t={t} />}
-          <div ref={parent as any} className="space-y-2  px-4">
+          
+          {step>=4 ? <Steps4 t={t} />:<>
+         <div ref={parent as any} className="space-y-2  px-4">
             {(step == 2
               ? selectedFormations
               : step == 3
@@ -291,6 +264,7 @@ const ContractItem = (
               {text("ajouter formation")}
             </button>
           </div>
+         </>}
           <div className="divider  px-2"></div>
           <div className="flex flex-row justify-between items-center  px-2">
             <button
@@ -306,16 +280,25 @@ const ContractItem = (
               {t("global.retour")}
             </button>
             <button
+            disabled={step==4?(!selectedAboutissement&&selectedFormations.length==0):false}
               onClick={
-                () => setstep(step + 1)
-                //   toStep3({
-                //    formations:selectedFormations,
-                //    id
-                // })
+                () => {
+                  if(step>=4){
+               mutate({
+                formations:selectedFormations,
+                aboutissement:selectedAboutissement as string,
+                id:contract?.id!,
+                membreId:contract?.membres.filter((c)=>c.etablissementId==props.utilisateur.etablissementId)[0]?.id!
+               })
+                  }else{
+                    setstep(step + 1)
+                  }
+                }
+              
               }
-              className={`btn btn-primary btn-outline`}
+              className={`btn btn-primary ${isLoading&&"loading"} ${step<=3&&"btn-outline"}`}
             >
-              {t("global.suivant")}
+              {step==4?t('inscription.valider'): t("global.suivant")}
             </button>
           </div>
         </div>
@@ -343,6 +326,18 @@ const Steps3 = ({ t }: { t: any }) => {
       <li className="step step-primary text-primary">{text("step 2")}</li>
       <li className="step step-primary text-primary">{text("step 3")}</li>
       <li className="step">{text("step 4")}</li>
+    </ul>
+  );
+};
+
+const Steps4 = ({ t }: { t: any }) => {
+  const text = (s: string) => t("workspace.relation." + s);
+  return (
+    <ul className="steps w-full">
+      <li className="step step-primary text-primary">{text("step 1")}</li>
+      <li className="step step-primary text-primary">{text("step 2")}</li>
+      <li className="step step-primary text-primary">{text("step 3")}</li>
+      <li className="step step-primary text-primary">{text("step 4")}</li>
     </ul>
   );
 };
