@@ -123,8 +123,13 @@ model Formation {
     etablissement   Etablissement @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
     
     //extra
-    versions Version[]
+     versions Version[]
      etudiants Etudiant[]
+
+     contractsAboutissement Contract[] 
+
+   
+
 }
 
 model Version {
@@ -238,7 +243,14 @@ model Contract{
   
     //field 
      etape Int @default(1)
+     conditionsId String[]
+    
+      aboutissementId String?
+      aboutissement Formation? @relation(references: [id],fields: [ aboutissementId],onDelete: Cascade) 
+   
 
+
+     
 
     //extra
     membres ContractMembre[]
