@@ -10,6 +10,12 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import router from "next/router";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { ArrayRightIcon, PlusIcon, SchoolIcon } from "../../../constants/icons";
+import { MContract, MContractMembre, MEtablissement, MFormation } from "../../../models/types";
+import { trpc } from "../../../utils/trpc";
 import { authOptions } from "../../api/auth/[...nextauth]";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -56,6 +62,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         include: {
           aboutissement: {
             include: {
+              etablissement: true,
               versions: {
                 include: {
                   diplome: true,
@@ -82,6 +89,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             in: contract.conditionsId,
           },
         },
+        include: {
+          etablissement: true,
+        },
       })
     )
   );
@@ -91,13 +101,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         where: {
           email: session.user?.email || "",
         },
-        include: {
-          etablissement: true,
-        },
       })
     )
   );
-  console.log(contract);
 
   return {
     props: {
@@ -110,20 +116,100 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-
 const Confirmation = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
-    const {t}=useTranslation()
-    const text=(s:string)=>t('workspace.relation.'+s)
-      return <div className="h-screen w-screen flex flex-row items-center justify-center">
-<div>
-    <h6>{text('step 2')}</h6>
-</div>
-<div>
-<h6>{text('step 3')}</h6>
-</div>
-  </div>;
+  const { t } = useTranslation();
+
+  const [confirm, setconfirm] = useState(false);
+  useEffect(() => {
+    const contract: MContract = props.contract;
+    const c = contract.membres.filter(
+      (m) => m.etablissementId == props.utilisateur.etablissementId
+    )[0]?.confirm;
+
+    setconfirm(c!);
+    toast.warning(text("tous refuser"));
+  }, []);
+
+  const text = (s: string) => t("workspace.relation." + s);
+
+  const {mutate:onConfirm,isLoading} = trpc.useMutation(["contract.confirmation"], {
+    onError: (err) => {
+      toast.error(t("global.toast erreur"));
+      console.log("err", err);
+    },
+    onSuccess(data, variables, context) {
+      if (variables.confirmation) {
+        toast.success("workspace.relation.vous avez confirme");
+      } else {
+        toast.success("workspace.relation.vous avez refuse");
+      }
+      router.push("/workspace/relation");
+    },
+  });
+  return (
+    <div className="relative h-screen w-screen flex flex-col items-center justify-center px-3">
+      <div className="flex flex-col lg:flex-row items-center justify-center">
+        <div className="flex flex-col items-center">
+          {(props.conditions as Array<MFormation>).map((f, i) => {
+            return (
+              <div key={i} className="">
+                {i != 0 && <PlusIcon className="mx-auto my-[20px] icon" />}
+                <FormationItem item={f} />
+              </div>
+            );
+          })}
+        </div>
+        <ArrayRightIcon className="icon m-5 text-primary  rotate-90 lg:rotate-0" />
+        <FormationItem
+          item={props.contract.aboutissement}
+          classCard="text-primary shadow-md"
+        />
+      </div>
+
+      <div className="flex flex-row gap-10 py-10 fixed bottom-5 left-[50%] -translate-x-[50%]">
+        <button
+          disabled={!confirm}
+          onClick={() => {
+            const id=props.contract.membres.filter((f:MContractMembre)=>f.etablissementId==props.utilisateur.etablissementId)[0].id
+            onConfirm({confirmation:false,id})
+          }}
+         className= {`btn btn-outline btn-error ${isLoading&&"loading"}`}
+        >
+          {text("refuser")}
+        </button>
+        <button
+          disabled={confirm}
+          onClick={() => {
+            const id=props.contract.membres.filter((f:MContractMembre)=>f.etablissementId==props.utilisateur.etablissementId)[0].id
+            onConfirm({confirmation:true,id})
+          }}
+          className={`btn btn-outline btn-primary ${isLoading&&"loading"}`}
+        >
+          {text("accepter")}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const FormationItem = ({
+  item,
+  classCard,
+}: {
+  item: MFormation;
+  classCard?: string;
+}) => {
+  return (
+    <div className={`border p-4 ${classCard}`}>
+      <h6>{item.intitule}</h6>
+      <div className="flex flex-row gap-2">
+        <SchoolIcon />
+        <p>{item.etablissement.nom}</p>
+      </div>
+    </div>
+  );
 };
 
 export default Confirmation;

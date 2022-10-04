@@ -7,19 +7,20 @@ export type MVersion = Version & {
   export type MFormation = Formation & {
     diplome: Diplome;
     versions: Array<MVersion>;
+    etablissement:MEtablissement
   };
   
   export type MEtablissement = Etablissement & {
     formations: Array<MFormation>;
   };
   
-  export  type MContractMembre = Array<
+  export  type MContractMembre =
     ContractMembre & {
       etablissement: MEtablissement;
     }
-  >;
+  ;
   
   export type MContract = Contract & {
     aboutissement: MFormation;
-    membres: MContractMembre;
+    membres: Array<MContractMembre>;
   };

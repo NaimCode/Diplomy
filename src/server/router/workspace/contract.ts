@@ -8,28 +8,25 @@ const ZContractMembre = z.array(
   z.object({
     etablissementId: z.string(),
     accept: z.boolean(),
-   
   })
 );
 export const contractRouter = createRouter()
   .mutation("new contract", {
     input: z.object({
       membres: ZContractMembre,
-      etablissements:z.array(z.any())
+      etablissements: z.array(z.any()),
     }),
     async resolve({ input, ctx }) {
       const { prisma } = ctx;
       const allTrue = input.membres.every((m) => m.accept == true);
       const etape = allTrue ? 2 : 1;
-      if(etape==1){
-       
+      if (etape == 1) {
         // console.log('ids');
         // const ids=input.membres.filter((f,i)=>i!=0).map(m=>m.etablissementId)
         // // console.log('ids', ids)
         // console.log('list');
         // const listEmail=input.etablissements.filter((f:Etablissement)=>ids.includes(f.id)).map((e)=>e.membresAutorises[0])
         // console.log('before');
-
         // await Transporter.sendMail({
         //   to: listEmail[0],
         //   from: process.env.ADMINS_EMAIL,
@@ -131,7 +128,7 @@ export const contractRouter = createRouter()
     async resolve({ ctx, input }) {
       const { prisma } = ctx;
       if (input.action == "accept") {
-         await prisma.contractMembre.update({
+        await prisma.contractMembre.update({
           where: {
             id: input.idMembre,
           },
@@ -139,14 +136,33 @@ export const contractRouter = createRouter()
             accept: true,
           },
         });
-        
       } else {
-         await prisma.contract.delete({
+        await prisma.contract.delete({
           where: {
             id: input.id,
           },
         });
       }
-      return input.action
+      return input.action;
+    },
+  })
+  .mutation("confirmation", {
+    input: z.object({
+      confirmation: z.boolean(),
+      id: z.string(),
+    }),
+    async resolve({ input, ctx }) {
+      const { prisma } = ctx;
+      const { id, confirmation } = input;
+      console.log(id);
+      
+      return await prisma.contractMembre.update({
+        where: {
+          id,
+        },
+        data: {
+          confirm: confirmation,
+        },
+      });
     },
   });

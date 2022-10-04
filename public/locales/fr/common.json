@@ -97,6 +97,7 @@
       "entre":"Parténariat entre :",
       "refuser":"Refuser",
       "accepter":"Accepter",
+      "tous refuser":"Si tous les membres ont refusé, le contrat de parténariat sera retiré pour toujours",
       "toast accepter":"Demande acceptée",
       "toast refuser":"Demande refusée",
       "status incomplet":"Besoin d'être compléter",
@@ -104,7 +105,9 @@
       "status signer":"En attente de signature",
       "dialog incomplet":"Certains membres n'ont pas encore accepté le parténariat",
       "confirme":"a confirmé",
-      "en attente":"en attente"
+      "en attente":"en attente",
+      "vous avez refuse":"Vous avez refusé les termes",
+      "vous avez confirme":"Vous avez confirmé les termes"
       
     },
     "global": {

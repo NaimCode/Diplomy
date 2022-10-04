@@ -172,7 +172,7 @@ const Relation = (
                       router.push("/contract/" + c.id);
                     }
                     if(status=='finalisation'){
-
+                      router.push("/contract/" + c.id+"/confirmation");
                     }
                     if(status=='signer'){
                       

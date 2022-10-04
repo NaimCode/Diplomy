@@ -152,9 +152,10 @@ const ContractItem = (
         console.log('err', err)
         toast.error('global.toast erreur')
     },
-    onSuccess:(data)=>{
+    onSuccess:()=>{
       toast.success('workspace.relation.finaliser')
        router.push("/workspace/relation")
+       
     }
   })
  
