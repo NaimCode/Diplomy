@@ -74,7 +74,7 @@ const Contract = (
         if(data.etape!=1){
             router.replace("/contract/"+data.id)
         }else{
-            toast('workspace.relation.init')
+            toast(t('workspace.relation.init'))
             router.push("/workspace/relation")
         }
     }
@@ -142,12 +142,16 @@ const Contract = (
             <button onClick={()=>{
                 router.back()
             }} className="btn btn-ghost">{t("global.retour")}</button>
-            <button onClick={()=>mutate({
+            <button onClick={()=>{
+              mutate({
                 membres:[etablissementId,...partenaires].map((e)=>({
                     etablissementId:e,
-                    accept:e==etablissementId?true:false
-                }))
-            })} className={`btn btn-primary ${isLoading&& "loading"}`}>{t("global.suivant")}</button>
+                    accept:e==etablissementId?true:false,
+                    
+                })),
+                etablissements
+            })
+            }} className={`btn btn-primary ${isLoading&& "loading"}`}>{t("global.suivant")}</button>
           </div>
         </div>
       </div>

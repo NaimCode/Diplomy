@@ -96,7 +96,9 @@
       "demande":"Demande en attente",
       "entre":"Parténariat entre :",
       "refuser":"Refuser",
-      "accepter":"Accepter"
+      "accepter":"Accepter",
+      "toast accepter":"Demande acceptée",
+      "toast refuser":"Demande refusée"
       
     },
     "global": {

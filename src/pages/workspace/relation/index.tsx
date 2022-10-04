@@ -17,7 +17,12 @@ import { useEffect, useState } from "react";
 import { motion, useAnimationControls } from "framer-motion";
 import { useMyTransition } from "../../../utils/hooks";
 import router from "next/router";
-import { Contract, ContractMembre, Etablissement } from "@prisma/client";
+import {
+  Contract,
+  ContractMembre,
+  Etablissement,
+  Utilisateur,
+} from "@prisma/client";
 import { toast } from "react-toastify";
 import { trpc } from "../../../utils/trpc";
 
@@ -36,39 +41,49 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
-  const utilisateur = JSON.parse(
-    JSON.stringify(
-      await prisma?.utilisateur.findUnique({
-        where: {
-          email: session.user?.email || "",
-        
-        },
-        include: {
-          etablissement: {
-            include: {
-              contracts: {
-                include: {
-                  Contract: {
-                    include: {
-                      membres: {
-                    
-                        include: {
-                          etablissement: true,
-                        },
-                      },
-                    },
-                  },
-                },
+
+  const [contracts, utilisateur] = (await prisma?.$transaction([
+    prisma.contract.findMany({
+      where: {
+        membres: {
+          every:{
+            accept:true
+          },
+          some: {
+            etablissement: {
+              membresAutorises: {
+                has: session.user?.email || "",
               },
             },
           },
         },
-      })
-    )
-  );
+      },
+      include: {
+        membres: {
+          include: {
+            etablissement: true,
+          },
+        },
+      },
+    }),
+    prisma.utilisateur.findUnique({
+      where: {
+        email: session.user?.email || "",
+      },
+      include: {
+        etablissement: true,
+      },
+    }),
+  ])) as [
+    Contract[],
+    Utilisateur & {
+      etablissement: Etablissement;
+    }
+  ];
   return {
     props: {
-      utilisateur,
+      utilisateur: JSON.parse(JSON.stringify(utilisateur)),
+      contracts: JSON.parse(JSON.stringify(contracts)),
       ...(await serverSideTranslations(context.locale!, ["common"])),
     },
   };
@@ -89,7 +104,11 @@ const Relation = (
   const { t } = useTranslation();
   const text = (s: string) => t("workspace.relation." + s);
   const etablissement: FullEtablissement = props.utilisateur.etablissement;
-  const { contracts } = etablissement;
+  const contracts: Array<
+    Contract & {
+      membres: Array<ContractMembre & { etablissement: Etablissement }>;
+    }
+  > = props.contracts;
   return (
     <>
       <Workspace>
@@ -107,29 +126,59 @@ const Relation = (
             </button>
           </div>
           <div className="py-6">
-            {contracts.map((f=>f.Contract)).map((c, i) => {
+            {contracts.map((c, i) => {
               return (
-                <button
+                <div
                   onClick={() => {
                     router.push("/contract/" + c.id);
                   }}
                   key={i}
-                  className="rounded-lg border-[1px] h-[100px] w-full"
+                  className="p-5 rounded-lg border-[1px] w-full"
                 >
-                  {c.createAt.toString()}
-                </button>
+                  <p className="badge">{t("workspace.relation.status")}</p>
+                  <p className="text-[10px] italic">
+                    {t("workspace.relation.entre")}
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    {c.membres.map((m, i) => (
+                      <div
+                        key={i}
+                        className="w-[40%] lg:w-[350px] flex flex-row items-center gap-2  p-1"
+                      >
+                        <div className="w-[50px] object-center">
+                          <img
+                            src={m.etablissement.logo!}
+                            alt="logo"
+                            className="object-cover"
+                          />
+                        </div>
+                        <div>
+                        <p>{m.etablissement.nom}</p>
+                        <h6>{m.etablissement.abrev}</h6>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="w-full flex justify-end">
+                    {" "}
+                    {c.createAt.toString()}
+                  </div>
+                </div>
               );
             })}
           </div>
         </div>
-        <PartenaireSection etablissementId={etablissement.id}/>
+        <PartenaireSection etablissementId={etablissement.id} />
       </Workspace>
     </>
   );
 };
 
-
-const PartenaireSection = ({etablissementId}:{etablissementId:string}) => {
+const PartenaireSection = ({
+  etablissementId,
+}: {
+  etablissementId: string;
+}) => {
   const [up, setup] = useState(false);
   const controls = useAnimationControls();
   const [demande, setdemande] = useState<
@@ -162,23 +211,34 @@ const PartenaireSection = ({etablissementId}:{etablissementId:string}) => {
     }
   }, [up]);
   const { t } = useTranslation();
-  const {mutate,isLoading}=trpc.useMutation('contract.demande action',{
-    onError:(err)=>{
-    console.log('err', err)
-    toast.error(t('global.toast erreur'))
+  const { mutate, isLoading } = trpc.useMutation("contract.demande action", {
+    onError: (err) => {
+      console.log("err", err);
+      toast.error(t("global.toast erreur"));
     },
-    onSuccess:(data)=>{
-      getDemande.refetch()
-      toast.success(t('global.toast succes'))
-    }
-  })
+    onSuccess: (data) => {
+      getDemande.refetch();
+      if (data == "accept")
+        toast.success(t("workspace.relation.toast accepter"));
+      else {
+        toast.success(t("workspace.relation.toast refuser"));
+      }
+    },
+  });
   return (
     <div className="absolute bottom-5 right-5 max-h-[70%] w-[300px] bg-base-200 rounded-lg flex flex-col drop-shadow-md">
       <div
         onClick={() => setup(!up)}
         className="btn btn-primary flex flex-row justify-between items-center shadow-sm"
       >
-        <h6 className="flex items-center flex-row gap-2">{t("workspace.relation.demande")} <div className="badge badge-success">{demande.length}</div></h6>
+        <h6 className="flex items-center flex-row gap-2">
+          {t("workspace.relation.demande")}{" "}
+          {getDemande.isLoading ? (
+            <button className="btn loading btn-ghost"></button>
+          ) : (
+            <div className="badge badge-success">{demande.length}</div>
+          )}{" "}
+        </h6>
 
         {up ? (
           <ArrowDownIcon className="swap-on icon" />
@@ -198,28 +258,38 @@ const PartenaireSection = ({etablissementId}:{etablissementId:string}) => {
                   className="bg-base-100 p-2 w-full rounded-md space-y-2 relative group"
                 >
                   <div className="hidden group-hover:flex flex-col w-full h-full absolute top-0 left-0 bg-base-100/30 backdrop-blur-sm justify-center items-center gap-3">
-                    <button onClick={()=>{
-                      mutate({
-                        id:d.id,
-                        idMembre:d.membres.filter(f=>f.etablissementId==etablissementId)[0]?.id!,
-                        action:'refuse'
-                      })
-                    }} className={`btn btn-ghost btn-sm gap-2  ${isLoading &&'loading'}`}>
-                      <CloseIcon className="text-lg"/>
-                      {t('workspace.relation.refuser')}
+                    <button
+                      onClick={() => {
+                        mutate({
+                          id: d.id,
+                          idMembre: d.membres.filter(
+                            (f) => f.etablissementId == etablissementId
+                          )[0]?.id!,
+                          action: "refuse",
+                        });
+                      }}
+                      className={`btn btn-ghost btn-sm gap-2  ${
+                        isLoading && "loading"
+                      }`}
+                    >
+                      <CloseIcon className="text-lg" />
+                      {t("workspace.relation.refuser")}
                     </button>
-                   
-                    <button 
-                    onClick={()=>{
-                      mutate({
-                        id:d.id,
-                        idMembre:d.membres.filter(f=>f.etablissementId==etablissementId)[0]?.id!,
-                        action:'accept'
-                      })
-                    }}
-                    className={`btn btn-sm gap-2 ${isLoading &&'loading'}`}>
-                      <CheckIcon className="text-lg"/>
-                      {t('workspace.relation.accepter')}
+
+                    <button
+                      onClick={() => {
+                        mutate({
+                          id: d.id,
+                          idMembre: d.membres.filter(
+                            (f) => f.etablissementId == etablissementId
+                          )[0]?.id!,
+                          action: "accept",
+                        });
+                      }}
+                      className={`btn btn-sm gap-2 ${isLoading && "loading"}`}
+                    >
+                      <CheckIcon className="text-lg" />
+                      {t("workspace.relation.accepter")}
                     </button>
                   </div>
                   <p className="text-[10px] italic">
