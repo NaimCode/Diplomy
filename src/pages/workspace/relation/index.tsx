@@ -11,11 +11,13 @@ import {
   ArrowUpIcon,
   CheckIcon,
   CloseIcon,
+  RadioActiveIcon,
+  RadioDisabledIcon,
 } from "../../../constants/icons";
 import VoirPlus from "../../../components/VoidPlus";
 import { useEffect, useState } from "react";
 import { motion, useAnimationControls } from "framer-motion";
-import { useMyTransition } from "../../../utils/hooks";
+import { useLocale, useMyTransition } from "../../../utils/hooks";
 import router from "next/router";
 import {
   Contract,
@@ -25,6 +27,7 @@ import {
 } from "@prisma/client";
 import { toast } from "react-toastify";
 import { trpc } from "../../../utils/trpc";
+import { DialogOk } from "../../../components/Dialog";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
@@ -46,8 +49,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     prisma.contract.findMany({
       where: {
         membres: {
-          every:{
-            accept:true
+          every: {
+            accept: true,
           },
           some: {
             etablissement: {
@@ -109,6 +112,22 @@ const Relation = (
       membres: Array<ContractMembre & { etablissement: Etablissement }>;
     }
   > = props.contracts;
+
+  const getStatus = (
+    c: Contract & {
+      membres: Array<ContractMembre & { etablissement: Etablissement }>;
+    }
+  ): "incomplet" | "finalisation" | "signer" => {
+    if (c.aboutissementId && c.conditionsId.length >= 1) {
+      if (c.membres.every((m) => m.confirm == true)) {
+        return "signer";
+      } else {
+        return "finalisation";
+      }
+    }
+    return "incomplet";
+  };
+  const [incompletDialog, setincompletDialog] = useState(false)
   return (
     <>
       <Workspace>
@@ -125,17 +144,47 @@ const Relation = (
               {t("global.ajouter")}
             </button>
           </div>
-          <div className="py-6">
+          <div className="py-6 space-y-4">
             {contracts.map((c, i) => {
+              const status = getStatus(c);
+
+              const badge =
+                status == "finalisation"
+                  ? "badge-secondary"
+                  : status == "signer"
+                  ? "badge-primary"
+                  : "";
+              
+                  const border =
+                  status == "finalisation"
+                    ? "border-secondary"
+                    : status == "signer"
+                    ? "border-primary"
+                    : "border-base-200";
+              //TODO: date to locale
+              const date = new Date(c.createAt.toString()).toLocaleDateString();
+           
               return (
                 <div
                   onClick={() => {
-                    router.push("/contract/" + c.id);
+                    if(status=='incomplet'){
+                    //  setincompletDialog(true)
+                      router.push("/contract/" + c.id);
+                    }
+                    if(status=='finalisation'){
+
+                    }
+                    if(status=='signer'){
+                      
+                    }
+                  
                   }}
                   key={i}
-                  className="p-5 rounded-lg border-[1px] w-full"
+                  className={`p-5  w-full  rounded-lg cursor-pointer hover:shadow-md transition-all duration-300 bg-base-200`}
                 >
-                  <p className="badge">{t("workspace.relation.status")}</p>
+                  <p className={`badge ${badge}`}>
+                    {t("workspace.relation.status " + status)}
+                  </p>
                   <p className="text-[10px] italic">
                     {t("workspace.relation.entre")}
                   </p>
@@ -143,9 +192,9 @@ const Relation = (
                     {c.membres.map((m, i) => (
                       <div
                         key={i}
-                        className="w-[40%] lg:w-[350px] flex flex-row items-center gap-2  p-1"
+                        className="w-full lg:w-[350px] flex flex-row items-center gap-2  p-1 "
                       >
-                        <div className="w-[50px] object-center">
+                        <div className="min-w-[50px] max-w-[50px] object-center">
                           <img
                             src={m.etablissement.logo!}
                             alt="logo"
@@ -153,15 +202,15 @@ const Relation = (
                           />
                         </div>
                         <div>
-                        <p>{m.etablissement.nom}</p>
-                        <h6>{m.etablissement.abrev}</h6>
+                          <p>{m.etablissement.nom}</p>
+                          <h6>{m.etablissement.abrev}</h6>
+                         {status!='incomplet'&& <p className={`flex flex-row gap-3 items-center ${m.confirm?"text-primary":"opacity-40"}`}>{m.confirm?<RadioActiveIcon/>:<RadioDisabledIcon/>} {m.confirm?text('confirme'):text('en attente')}</p>}
                         </div>
                       </div>
                     ))}
                   </div>
                   <div className="w-full flex justify-end">
-                    {" "}
-                    {c.createAt.toString()}
+                    <p className="label-text text-[12px] opacity-40"> {date}</p>
                   </div>
                 </div>
               );
@@ -170,6 +219,7 @@ const Relation = (
         </div>
         <PartenaireSection etablissementId={etablissement.id} />
       </Workspace>
+      <DialogOk open={incompletDialog} setOpen={setincompletDialog} text="workspace.relation.dialog incomplet"/>
     </>
   );
 };
@@ -210,6 +260,7 @@ const PartenaireSection = ({
       });
     }
   }, [up]);
+
   const { t } = useTranslation();
   const { mutate, isLoading } = trpc.useMutation("contract.demande action", {
     onError: (err) => {
@@ -225,8 +276,9 @@ const PartenaireSection = ({
       }
     },
   });
+  const {isAr}=useLocale()
   return (
-    <div className="absolute bottom-5 right-5 max-h-[70%] w-[300px] bg-base-200 rounded-lg flex flex-col drop-shadow-md">
+    <div className={`fixed bottom-5  ${isAr?"left-5":"right-5"} max-h-[70%] w-[300px] bg-base-200 rounded-lg flex flex-col drop-shadow-lg  overflow-scroll`}>
       <div
         onClick={() => setup(!up)}
         className="btn btn-primary flex flex-row justify-between items-center shadow-sm"
@@ -246,8 +298,9 @@ const PartenaireSection = ({
           <ArrowUpIcon className="swap-off icon" />
         )}
       </div>
-      <motion.div animate={controls}>
-        <div className="flex flex-col gap-3 p-2">
+
+      <motion.div animate={controls} className="">
+        <div className="flex flex-col gap-3 p-2 ">
           {demande.length == 0 ? (
             <div></div>
           ) : (
