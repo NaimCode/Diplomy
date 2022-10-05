@@ -194,7 +194,7 @@ const Confirmation = (
   );
 };
 
-const FormationItem = ({
+export const FormationItem = ({
   item,
   classCard,
 }: {
