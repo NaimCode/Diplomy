@@ -1,27 +1,29 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
-import "./Certification";
 
 contract Partenariat {
-    string[] public partenaires;
-    string[] public formations_requises;
-    string public formation_aboutissante;
+    string[] internal  partenaires;
+    string[] internal formations_requises;
+    string internal formation_aboutissante;
+    uint price;
 
-   
-    uint public price;
-
-  
-
-
-    constructor(string[] memory _partenaires,string[] memory _formations_requises,string memory _formation_aboutissante,uint _price){
+    constructor(string[] memory _partenaires,string[] memory _formations_requises,string memory _formation_aboutissante,string[] memory _partenaires_name,string[] memory _formations_requises_name,string memory _formation_aboutissante_name,uint _price){
        partenaires=_partenaires;
        formations_requises=_formations_requises;
        formation_aboutissante=_formation_aboutissante;
        price=_price;
-    
+       
+       emit EventPartenariat(
+        _partenaires_name,
+        _formations_requises_name,
+        _formation_aboutissante_name
+       );
 
     }
 
+// function getInfo()public view returns(string[] memory,string[] memory,string memory){
+//   return (partenaires,formations_requises,formation_aboutissante);
+// }
   function comparingString(string memory _s1,string memory _s2)pure internal returns(bool){
       if (keccak256(abi.encodePacked(_s1)) == keccak256(abi.encodePacked(_s2))) {
         return true;
@@ -69,4 +71,9 @@ contract Partenariat {
 
   }
 
+    event EventPartenariat(
+     string[] Partenaires,
+     string[] FormationsRequises,
+     string  FormationAboutissante
+    );
 }

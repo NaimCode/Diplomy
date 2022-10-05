@@ -228,11 +228,13 @@ model Transaction{
     type TransactionType
 
     //extre
-    etablissementId String
-    etablissement Etablissement @relation(fields: [etablissementId],references: [id],onDelete: Cascade) 
-    etudiantId String @unique
-    etudiant Etudiant @relation(fields: [etudiantId],references: [id],onDelete: Cascade)
+    etablissementId String?
+    etablissement Etablissement? @relation(fields: [etablissementId],references: [id],onDelete: Cascade) 
+    etudiantId String? @unique
+    etudiant Etudiant? @relation(fields: [etudiantId],references: [id],onDelete: Cascade)
 
+    //
+    contract Contract?
  
 }
 
@@ -249,9 +251,10 @@ model Contract{
       aboutissement Formation? @relation(references: [id],fields: [ aboutissementId],onDelete: Cascade) 
    
 
-    hash String?
-     
-
+    address String?
+     transactionId String? @unique
+     transaction Transaction? @relation(fields: [transactionId],references: [id],onDelete: Cascade)
+    
     //extra
     membres ContractMembre[]
 }

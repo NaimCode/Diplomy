@@ -5,7 +5,7 @@ import {
   Formation,
   Version,
 } from "@prisma/client";
-import { ethers } from "ethers";
+import { ContractFactory, ethers } from "ethers";
 import { motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { unstable_getServerSession } from "next-auth";
@@ -42,6 +42,7 @@ import bravoAnimation from "../../../../public/lotties/bravo.json";
 import checkAnimation from "../../../../public/lotties/check.json";
 import { MContract, MFormation } from "../../../models/types";
 import { FormationItem } from "../../contract/[contractId]/confirmation";
+import Partenariat from "../../../../web3/build/contracts/Partenariat.json";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
     context.req,
@@ -57,9 +58,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
       include: {
         aboutissement: {
-          include:{
-            etablissement:true
-          }
+          include: {
+            etablissement: true,
+          },
         },
         membres: {
           include: {
@@ -124,138 +125,94 @@ const Certifier = (
     version: string;
   };
   //test
-
+  const { mutate: certifier } = trpc.useMutation(
+    ["transaction.certifier contract"],
+    {
+      onError: (err) => {
+        console.log("error", err);
+        toast.error(t("global.toast erreur"));
+        setisWeb3Loading(false);
+      },
+      onSuccess: (data) => {
+        settransactionDone(data.transaction);
+        setisWeb3Loading(false);
+      },
+    }
+  );
   function addMonths(numOfMonths: number, date = new Date()) {
     date.setMonth(date.getMonth() + numOfMonths);
     console.log("toLocaleDateString", date.toLocaleDateString());
 
     return date.toLocaleDateString();
   }
-  // const getInfoForContract = (e: FullEtudiantType): CertificationProps => {
-  //   const documentHash = e.document.hash;
-  //   const nom = e.nom;
-  //   const prenom = e.prenom;
-  //   const etablissementHash = e.etablissemntId;
-  //   //
-  //   const formation = e.formation;
-  //   const versions = formation.versions;
-  //   const intitule =
-  //     formation.versionnage &&
-  //     versions[versions.length - 1]?.diplome.intituleDiff
-  //       ? versions[versions.length - 1]?.diplome.intitule!
-  //       : formation.intitule;
 
-  //   const version = formation.versionnage
-  //     ? versions[versions.length - 1]?.numero.toString()!
-  //     : "";
+  const onSign = async () => {
+    const signer = web3.provider!.getSigner();
+    const factory = new ContractFactory(
+      Partenariat.abi,
+      Partenariat.bytecode,
+      signer
+    );
+  
+    // If your contract requires constructor args, you can specify them here
+    const c: MContract = props.contract;
+    const partenaires: Array<string> = c.membres.map((m) => m.etablissementId);
+    const formation_requises: Array<string> = props.formations.map(
+      (f: MFormation) => f.id
+    );
+    const formation_aboutissante = c.aboutissementId;
 
-  //   console.log("formation.versions[-1]", formation.versions[-1]);
-  //   const diplome: Diplome = formation.versionnage
-  //     ? versions[versions.length - 1]?.diplome!
-  //     : formation.diplome;
-  //   console.log("diplome", diplome);
+    const partenaires_name: Array<string> = c.membres.map(
+      (m) => m.etablissement.nom
+    );
+    const formation_requises_name: Array<string> = props.formations.map(
+      (f: MFormation) => f.intitule
+    );
+    const formation_aboutissante_name = c.aboutissement.intitule;
+   // try {
+    const contractSigner = await factory.deploy(
+      partenaires,
+      formation_requises,
+      formation_aboutissante,
+      partenaires_name,
+      formation_requises_name,
+      formation_aboutissante_name,
+      env.NEXT_PUBLIC_PRICE
+    );
+    await contractSigner.deployed();
 
-  //   //TODO: change type according to language
-  //   const type = diplome.estVirtuel ? "Virtuel" : "Physique";
-  //   const months = diplome.expiration ? diplome.dureeExpiration : undefined;
 
-  //   const expiration = months ? addMonths(months) : "";
-  //   return {
-  //     intitule,
-  //     etablissementHash,
-  //     nom,
-  //     prenom,
-  //     version,
-  //     documentHash,
-  //     type,
-  //     expiration,
-  //   };
-  // };
-
-  // const onSign = async () => {
-  //   //TODO: auto convertion
-  //   const provider = new ethers.providers.Web3Provider(
-  //     (window as any).ethereum
-  //   );
-  //    console.log('price', env.NEXT_PUBLIC_PRICE)
-  //   const contract = new ethers.Contract(
-  //     ethers.utils.getAddress("0xC70a55F912b25092b552Dd488C16fD8d7929cf2e"),
-  //     CertificationAbi.abi,
-  //     web3.provider
-  //   );
-  //   const signer = web3.provider!.getSigner();
-  //   if (!signer) {
-  //     toast.error(t("web3.rejeter"));
-  //   } else {
-  //     const contractSigner = contract.connect(signer);
-  //     let hash=undefined;
-  //     const info = getInfoForContract(etudiant);
-  //     console.log(info);
-
-  //     setisWeb3Loading(true);
-
-  //     try {
-  //       hash = await contractSigner.NouveauDiplome(
-  //         info.intitule,
-  //         info.documentHash,
-  //         info.nom,
-  //         info.etablissementHash,
-  //         info.prenom,
-  //         info.version,
-  //         info.expiration,
-  //         info.type,
-  //         ethers.utils.getAddress(web3.account!),
-  //         {value:env.NEXT_PUBLIC_PRICE}
-  //       );
-  //   certifier({
-  //     transaction:{
-  //       hash:hash.hash,
-  //       blockNumber:hash.blockNumber,
-  //       blockHash:hash.blockHash,
-  //       signataire:hash.from,
-  //       type:"CERTIFICATION",
-  //       chainId:hash.chainId
-  //     },
-
-  //     etudiant:etudiant,
-  //     codeQR:qr.generate(hash.hash,160)
-  //   })
-  //     } catch (error:any) {
-  //       if(error.code= -32000){
-  //         console.log("error", error);
-  //         toast.error(t("web3.montant insuffisant"));
-  //         setisWeb3Loading(false)
-  //       }else{
-  //         console.log("error", error);
-  //         toast.error(t("global.toast erreur"));
-  //         setisWeb3Loading(false)
-  //       }
-
-  //     }
-
+    certifier({
+      address: contractSigner.address,
+      id: c.id,
+      transaction: {
+        hash: contractSigner.deployTransaction.hash,
+        blockNumber: contractSigner.deployTransaction.blockNumber,
+        blockHash: contractSigner.deployTransaction.blockHash,
+        signataire: contractSigner.deployTransaction.from,
+        type: "CONTRACT",
+        chainId: contractSigner.deployTransaction.chainId,
+      },
+    });
+  // } catch (error:any) {
+  //   if(error.code= -32000){
+  //     console.log("error", error);
+  //     toast.error(t("web3.montant insuffisant"));
+  //     setisWeb3Loading(false)
+  //   }else{
+  //     console.log("error", error);
+  //     toast.error(t("global.toast erreur"));
+  //     setisWeb3Loading(false)
   //   }
-  // };
-
-  // if(transactionDone){
-  //   return <div></div>
+  
   // }
-  const qr = useQR();
+  };
 
   const toClipboard = (data: string) => {
     navigator.clipboard.writeText(data);
     toast.success(t("global.text copie"));
   };
-  const { mutate: certifier } = trpc.useMutation(["transaction.certifier"], {
-    onError: (err) => {
-      console.log("error", err);
-      toast.error(t("global.toast erreur"));
-      setisWeb3Loading(false);
-    },
-    onSuccess: (data) => {
-      settransactionDone(data);
-      setisWeb3Loading(false);
-    },
-  });
+
   if (web3.isLoading) {
     return <Loading />;
   }
@@ -300,28 +257,25 @@ const Certifier = (
             </div>
           ))}
 
-          <div className="divider">
-           
-            </div>
-            <div>
-              <h6 className="my-3">{t("workspace.relation.step 2")}</h6>
+          <div className="divider"></div>
+          <div>
+            <h6 className="my-3">{t("workspace.relation.step 2")}</h6>
 
-              {formations.map((m, i) => (
-                <FormationItem item={m}  classCard="rounded-md"/>
-              ))}
+            {formations.map((m, i) => (
+              <FormationItem item={m} classCard="rounded-md" />
+            ))}
           </div>
-          <div className="divider">
-        
-           </div>
-           <h6 className="my-3">{t("workspace.relation.step 3")}</h6>
-           <FormationItem item={contract.aboutissement} classCard="text-primary rounded-md"/>
-           <div className="divider">
-        
-        </div>
-           <div className="flex items-center justify-center">
+          <div className="divider"></div>
+          <h6 className="my-3">{t("workspace.relation.step 3")}</h6>
+          <FormationItem
+            item={contract.aboutissement}
+            classCard="text-primary rounded-md"
+          />
+          <div className="divider"></div>
+          <div className="flex items-center justify-center">
             <button
               onClick={() => {
-                //onVallid
+                onSign();
               }}
               className={`btn btn-primary btn-wide ${
                 isWeb3Loading && "loading"
@@ -330,7 +284,7 @@ const Certifier = (
               {t("global.dialog validate")}
             </button>
           </div>
-           <div className="py-10"></div>
+          <div className="py-10"></div>
         </motion.div>
       </div>
 
@@ -362,18 +316,11 @@ const Certifier = (
                 <CopyIcon className="text-lg" />
                 {t("web3.copier le hash")}
               </button>
-              <a
-                target={"_blank"}
-                href={qr.generate(transactionDone.hash)}
-                className="btn btn-ghost gap-2 no-underline"
-              >
-                <CodeQRIcon className="text-lg" />
-                {t("web3.QR code")}
-              </a>
+           
 
               <button
                 onClick={() => {
-                  router.push("/workspace/etudiants/attente");
+                  router.push("/workspace/relation");
                 }}
                 className="btn"
               >
