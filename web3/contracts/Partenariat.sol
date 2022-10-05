@@ -1,18 +1,24 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
-
+import "./Certification";
 
 contract Partenariat {
     string[] public partenaires;
     string[] public formations_requises;
     string public formation_aboutissante;
+
    
+    uint public price;
+
+  
 
 
-    constructor(string[] memory _partenaires,string[] memory _formations_requises,string memory _formation_aboutissante){
+    constructor(string[] memory _partenaires,string[] memory _formations_requises,string memory _formation_aboutissante,uint _price){
        partenaires=_partenaires;
        formations_requises=_formations_requises;
        formation_aboutissante=_formation_aboutissante;
+       price=_price;
+    
 
     }
 

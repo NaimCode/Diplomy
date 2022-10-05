@@ -27,7 +27,6 @@ contract Certification {
         address signataire;
 
     }
-    function Test()public{}
     function NouveauDiplome(
         string memory _intitule,
         string memory _documentHash,
