@@ -152,6 +152,7 @@ export const contractRouter = createRouter()
       id: z.string(),
     }),
     async resolve({ input, ctx }) {
+      //TODO: delete when all confirmation=false
       const { prisma } = ctx;
       const { id, confirmation } = input;
       console.log(id);

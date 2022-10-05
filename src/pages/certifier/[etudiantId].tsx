@@ -349,7 +349,7 @@ const {isDark}=useMyTheme()
   );
 };
 
-const Loading = () => {
+export const Loading = () => {
   const { t } = useTranslation();
   return (
     <motion.div
@@ -365,7 +365,7 @@ const Loading = () => {
     </motion.div>
   );
 };
-const Message = ({
+export const Message = ({
   web3,
 }: {
   web3: {

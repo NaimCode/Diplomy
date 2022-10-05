@@ -1,5 +1,5 @@
-import { Version, Diplome, Formation, Etablissement, ContractMembre } from "@prisma/client";
-import { Contract } from "ethers";
+import { Version, Diplome, Formation, Etablissement, ContractMembre, Contract } from "@prisma/client";
+
 
 export type MVersion = Version & {
     diplome: Diplome;

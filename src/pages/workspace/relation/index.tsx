@@ -17,7 +17,7 @@ import {
 import VoirPlus from "../../../components/VoidPlus";
 import { useEffect, useState } from "react";
 import { motion, useAnimationControls } from "framer-motion";
-import { useLocale, useMyTransition } from "../../../utils/hooks";
+import { useHasMetaMask, useLocale, useMyTransition } from "../../../utils/hooks";
 import router from "next/router";
 import {
   Contract,
@@ -28,6 +28,7 @@ import {
 import { toast } from "react-toastify";
 import { trpc } from "../../../utils/trpc";
 import { DialogOk } from "../../../components/Dialog";
+import { DialogNoMetaMask } from "../../../partials/etudiants/Attente";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
@@ -175,7 +176,13 @@ const Relation = (
                       router.push("/contract/" + c.id+"/confirmation");
                     }
                     if(status=='signer'){
-                      
+                      if((window as any).ethereum){
+                            router.push("/certifier/contract/"+c.id)
+                      }else{
+                       const link=document.createElement('a')
+                       link.href='#no_meta_mask'
+                        link.click()
+                      }
                     }
                   
                   }}
@@ -217,9 +224,10 @@ const Relation = (
             })}
           </div>
         </div>
-        <PartenaireSection etablissementId={etablissement.id} />
+      <PartenaireSection etablissementId={etablissement.id} />
       </Workspace>
       <DialogOk open={incompletDialog} setOpen={setincompletDialog} text="workspace.relation.dialog incomplet"/>
+     <DialogNoMetaMask/>
     </>
   );
 };

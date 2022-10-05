@@ -249,7 +249,7 @@ model Contract{
       aboutissement Formation? @relation(references: [id],fields: [ aboutissementId],onDelete: Cascade) 
    
 
-
+    hash String?
      
 
     //extra
