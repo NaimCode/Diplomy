@@ -81,34 +81,4 @@ contract Certification {
         address Signataire
     );
  
-    // function ObtenirDiplome(string memory _hash)
-    //     public
-    //     view
-    //     returns (Diplome memory)
-    // {
-    //     return Diplomes[_hash];
-    // }
-
-    // function NombreTotalDeDiplome() public view returns (uint256) {
-    //     return diplomes_keys.length;
-    // }
-
-    // function NombreDeDiplomeParEtablissement(string memory _etablissementHash)
-    //     public
-    //     view
-    //     returns (uint256)
-    // {
-    //     uint256 nombre = 0;
-    //     for (uint256 i = 0; i < diplomes_keys.length; i++) {
-    //         if (
-    //             keccak256(
-    //                 bytes(Diplomes[diplomes_keys[i]].etablissementHash)
-    //             ) == keccak256(bytes(_etablissementHash))
-    //         ) {
-    //             nombre++;
-    //         }
-    //     }
-
-    //     return nombre;
-    // }
 }
