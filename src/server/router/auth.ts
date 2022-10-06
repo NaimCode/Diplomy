@@ -66,7 +66,7 @@ export const authRouter = createRouter().mutation("inscription", {
     ])
     await Transporter.sendMail({
       to: email,
-      from: process.env.ADMINS_EMAIL,
+      from: {name:'Eternum',address:process.env.ADMINS_EMAIL!},
       subject: `Félicitation`,
       html: `<div><h3>Votre demande d'inscription pour <b>ETERNUM</b> est acceptée 🎉</h3> <a href="${getBaseUrl()}">Mon compte</a></div>`
     })

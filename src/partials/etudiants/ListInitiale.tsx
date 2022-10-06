@@ -93,7 +93,8 @@ type EtudiantInputType = {
 };
 const DialogAdd = ({ refetch }: { refetch: any }) => {
   const { etablissement } = useContext(FullUserContext);
-  const [formation, setformation] = useState<string | undefined>();
+  //TODO: fix first formation get error
+  const [formation, setformation] = useState<string | undefined>(etablissement.formations[0].id!);
   const {
     register,
     handleSubmit,

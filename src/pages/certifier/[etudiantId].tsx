@@ -33,7 +33,12 @@ import {
   EmailIcon,
   PersonIcon,
 } from "../../constants/icons";
-import { GATEWAY_IPFS, useMyTheme, useMyTransition, useQR } from "../../utils/hooks";
+import {
+  GATEWAY_IPFS,
+  useMyTheme,
+  useMyTransition,
+  useQR,
+} from "../../utils/hooks";
 import { motion } from "framer-motion";
 import router from "next/router";
 import { ethers } from "ethers";
@@ -43,6 +48,7 @@ import { toast } from "react-toastify";
 import dark from "react-syntax-highlighter/dist/esm/styles/hljs/dark";
 import light from "react-syntax-highlighter/dist/esm/light";
 import { trpc } from "../../utils/trpc";
+import { MContract, MFormation } from "../../models/types";
 
 type FullEtudiantType = Etudiant & {
   document: Document;
@@ -81,9 +87,66 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     })
     .then((data) => JSON.parse(JSON.stringify(data)));
+  const contracts: Array<MContract> = await prisma.contract
+    .findMany({
+      where: {
+        NOT: {
+          transaction: null,
+          address: null,
+        },
+        membres: {
+          some: {
+            etablissementId: etudiant.etablissemntId,
+          },
+        },
+      },
+      include: {
+        aboutissement: true,
+        membres: {
+          include: {
+            etablissement: {
+              include: {
+                etudiants: {
+                  where: {
+                    NOT: {
+                      transaction: null,
+                    },
+                  },
+                  include: {
+                    formation: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    })
+    .then((data) => JSON.parse(JSON.stringify(data)));
+
+  const formations_aboutissantes: Array<MFormation> = [];
+
+// console.log(contracts);
+
+  for (let c of contracts) {
+    const etudiants: Array<Etudiant> = c.membres
+      .map((m) =>
+        m.etablissement.etudiants.filter((e) => e.email == etudiant.email)
+      )
+      .reduce((a, b) => [...a, ...b]);
+    const conditions = c.conditionsId.filter((c) => c != etudiant.formationId);
+    // console.log('conditions', conditions)
+    // console.log('formation etudiant', etudiant.formationId)
+    if (conditions.length==0||etudiants.some((e) => conditions.includes(e.formationId))) {
+      formations_aboutissantes.push(c.aboutissement);
+    }
+  }
+
+
   return {
     props: {
       etudiant,
+      formations_aboutissantes,
       ...(await serverSideTranslations(context.locale!, ["common"])),
     },
   };
@@ -94,8 +157,9 @@ const Certifier = (
 ) => {
   const web3 = useWeb3Connection();
   const [isWeb3Loading, setisWeb3Loading] = useState(false);
-  const [transactionDone, settransactionDone] = useState<any|undefined>();
-const {isDark}=useMyTheme()
+  const [transactionDone, settransactionDone] = useState<any | undefined>();
+  const { isDark } = useMyTheme();
+
   const etudiant: FullEtudiantType = props.etudiant;
   const { controls } = useMyTransition({
     trigger: web3.active && !web3.isLoading,
@@ -116,7 +180,6 @@ const {isDark}=useMyTheme()
 
   function addMonths(numOfMonths: number, date = new Date()) {
     date.setMonth(date.getMonth() + numOfMonths);
-    console.log("toLocaleDateString", date.toLocaleDateString());
 
     return date.toLocaleDateString();
   }
@@ -126,6 +189,7 @@ const {isDark}=useMyTheme()
     const prenom = e.prenom;
     const etablissementHash = e.etablissemntId;
     //
+
     const formation = e.formation;
     const versions = formation.versions;
     const intitule =
@@ -166,7 +230,7 @@ const {isDark}=useMyTheme()
     const provider = new ethers.providers.Web3Provider(
       (window as any).ethereum
     );
-     console.log('price', env.NEXT_PUBLIC_PRICE)
+    console.log("price", env.NEXT_PUBLIC_PRICE);
     const contract = new ethers.Contract(
       ethers.utils.getAddress("0xC70a55F912b25092b552Dd488C16fD8d7929cf2e"),
       CertificationAbi.abi,
@@ -177,7 +241,7 @@ const {isDark}=useMyTheme()
       toast.error(t("web3.rejeter"));
     } else {
       const contractSigner = contract.connect(signer);
-      let hash=undefined;
+      let hash = undefined;
       const info = getInfoForContract(etudiant);
       console.log(info);
 
@@ -194,58 +258,62 @@ const {isDark}=useMyTheme()
           info.expiration,
           info.type,
           ethers.utils.getAddress(web3.account!),
-          {value:env.NEXT_PUBLIC_PRICE}
+          { value: env.NEXT_PUBLIC_PRICE }
         );
-    certifier({
-      transaction:{
-        hash:hash.hash,
-        blockNumber:hash.blockNumber,
-        blockHash:hash.blockHash,
-        signataire:hash.from,
-        type:"CERTIFICATION",
-        chainId:hash.chainId
-      },
-    
-      etudiant:etudiant,
-      codeQR:qr.generate(hash.hash,160)
-    })
-      } catch (error:any) {
-        if(error.code= -32000){
+        if(props.formations_aboutissantes.length==0){
+        certifier({
+          transaction: {
+            hash: hash.hash,
+            blockNumber: hash.blockNumber,
+            blockHash: hash.blockHash,
+            signataire: hash.from,
+            type: "CERTIFICATION",
+            chainId: hash.chainId,
+          },
+
+          etudiant: etudiant,
+          codeQR: qr.generate(hash.hash, 160),
+        });}else{
+          for(let f of props.formations_aboutissantes){
+
+          }
+        }
+     
+      } catch (error: any) {
+        if ((error.code = -32000)) {
           console.log("error", error);
           toast.error(t("web3.montant insuffisant"));
-          setisWeb3Loading(false)
-        }else{
+          setisWeb3Loading(false);
+        } else {
           console.log("error", error);
           toast.error(t("global.toast erreur"));
-          setisWeb3Loading(false)
+          setisWeb3Loading(false);
         }
-      
       }
-     
     }
   };
 
   // if(transactionDone){
   //   return <div></div>
   // }
-  const qr=useQR()
+  const qr = useQR();
 
-  const toClipboard=(data:string)=>{
-    navigator.clipboard.writeText(data)
-    toast.success(t('global.text copie'))
-  }
-  const {mutate:certifier}=trpc.useMutation(['transaction.certifier'],{
-    onError:(err)=>{
+  const toClipboard = (data: string) => {
+    navigator.clipboard.writeText(data);
+    toast.success(t("global.text copie"));
+  };
+  const { mutate: certifier } = trpc.useMutation(["transaction.certifier"], {
+    onError: (err) => {
       console.log("error", err);
       toast.error(t("global.toast erreur"));
-      setisWeb3Loading(false)
+      setisWeb3Loading(false);
     },
-    onSuccess:(data)=>{
+    onSuccess: (data,variable) => {
+     
       settransactionDone(data);
       setisWeb3Loading(false);
-    }
-
-  })
+    },
+  });
   if (web3.isLoading) {
     return <Loading />;
   }
@@ -271,6 +339,10 @@ const {isDark}=useMyTheme()
         <Message web3={web3} />
         <motion.div animate={controls}>
           <div className="divider"></div>
+         {props.formations_aboutissantes.length!=0&& 
+         <div className="bg-warning p-4 my-6 bg-opacity-60 border-warning">
+          L'etudiant a rempli les conditions pour {props.formations_aboutissantes.length} contrat(s) 
+          </div>}
           <div className="w-full space-y-3">
             <div className="flex flex-row gap-4 items-center">
               <PersonIcon className="text-lg" />
@@ -323,23 +395,35 @@ const {isDark}=useMyTheme()
               </h3>
             </div>
             <p className="py-4">{t("web3.on s'ecn charge")}</p>
-           
-           <SyntaxHighlighter language="javascript" wrapLines wrapLongLines>
+
+            <SyntaxHighlighter language="javascript" wrapLines wrapLongLines>
               {transactionDone.hash}
             </SyntaxHighlighter>
-          
+
             <div className="modal-action flex flex-wrap gap-2">
-              <button onClick={()=>toClipboard(transactionDone.hash)} className="btn btn-ghost gap-2">
-                <CopyIcon className="text-lg"/>
-                {t('web3.copier le hash')}</button>
-                <a target={"_blank"} href={qr.generate(transactionDone.hash)} className="btn btn-ghost gap-2 no-underline">
-                <CodeQRIcon className="text-lg"/>
-                {t('web3.QR code')}</a>
-          
-              <button onClick={()=>{
-                router.push("/workspace/etudiants/attente")
-              }} className="btn">
-                {t('global.ok')}
+              <button
+                onClick={() => toClipboard(transactionDone.hash)}
+                className="btn btn-ghost gap-2"
+              >
+                <CopyIcon className="text-lg" />
+                {t("web3.copier le hash")}
+              </button>
+              <a
+                target={"_blank"}
+                href={qr.generate(transactionDone.hash)}
+                className="btn btn-ghost gap-2 no-underline"
+              >
+                <CodeQRIcon className="text-lg" />
+                {t("web3.QR code")}
+              </a>
+
+              <button
+                onClick={() => {
+                  router.push("/workspace/etudiants/attente");
+                }}
+                className="btn"
+              >
+                {t("global.ok")}
               </button>
             </div>
           </div>

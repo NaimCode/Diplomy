@@ -11,13 +11,15 @@ import {
   ArrowUpIcon,
   CheckIcon,
   CloseIcon,
+  CodeQRIcon,
+  CopyIcon,
   RadioActiveIcon,
   RadioDisabledIcon,
 } from "../../../constants/icons";
 import VoirPlus from "../../../components/VoidPlus";
 import { useEffect, useState } from "react";
 import { motion, useAnimationControls } from "framer-motion";
-import { useHasMetaMask, useLocale, useMyTransition } from "../../../utils/hooks";
+import { useHasMetaMask, useLocale, useMyTransition, useQR } from "../../../utils/hooks";
 import router from "next/router";
 import {
   Contract,
@@ -29,6 +31,7 @@ import { toast } from "react-toastify";
 import { trpc } from "../../../utils/trpc";
 import { DialogOk } from "../../../components/Dialog";
 import { DialogNoMetaMask } from "../../../partials/etudiants/Attente";
+import { MContract } from "../../../models/types";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
@@ -63,6 +66,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         },
       },
       include: {
+        transaction:true,
         membres: {
           include: {
             etablissement: true,
@@ -108,10 +112,7 @@ const Relation = (
   const { t } = useTranslation();
   const text = (s: string) => t("workspace.relation." + s);
   const etablissement: FullEtablissement = props.utilisateur.etablissement;
-  const contracts: Array<
-    Contract & {
-      membres: Array<ContractMembre & { etablissement: Etablissement }>;
-    }
+  const contracts: Array<MContract
   > = props.contracts;
 
   const getStatus = (
@@ -129,6 +130,7 @@ const Relation = (
     return "incomplet";
   };
   const [incompletDialog, setincompletDialog] = useState(false)
+  const qr=useQR()
   return (
     <>
       <Workspace>
@@ -227,57 +229,75 @@ const Relation = (
               {t('workspace.relation.contrats actifs')}
           </div>
 
+          <div className="space-y-4">
           {contracts.filter(c=>c.transactionId).map((c, i) => {
             
-              const date = new Date(c.createAt.toString()).toLocaleDateString();
-           
-              return (
-                <div
-                  
-                  key={i}
-                  className={`p-5  w-full  rounded-lg  transition-all duration-300 bg-base-200 opacity-80`}
-                >
-                  <p className={`badge badge-warning`}>
-                    {t("workspace.relation.actif")}
-                  </p>
-                  <p className="text-[10px] italic">
-                    {t("workspace.relation.entre")}
-                  </p>
-                  <div className="flex flex-wrap gap-3">
-                    {c.membres.map((m, i) => (
-                      <div
-                        key={i}
-                        className="w-full lg:w-[350px] flex flex-row items-center gap-2  p-1 "
-                      >
-                        <div className="min-w-[50px] max-w-[50px] object-center">
-                          <img
-                            src={m.etablissement.logo!}
-                            alt="logo"
-                            className="object-cover"
-                          />
-                        </div>
-                        <div>
-                          <p>{m.etablissement.nom}</p>
-                          <h6>{m.etablissement.abrev}</h6>
-                        
-                        </div>
-                        
-                      </div>
+            const date = new Date(c.createAt.toString()).toLocaleDateString();
+         
+            return (
+              <div
                 
-                  
-                    ))}
-                  </div>
-                  
-                   <div>
-                      <p>{c.address}</p>
+                key={i}
+                className={`p-5  w-full  rounded-lg  transition-all duration-300 bg-base-100 opacity-80 my-5 border border-base-300`}
+              >
+                <p className={`badge badge-warning`}>
+                  {t("workspace.relation.actif")}
+                </p>
+                <p className="text-[10px] italic">
+                  {t("workspace.relation.entre")}
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {c.membres.map((m, i) => (
+                    <div
+                      key={i}
+                      className="w-full lg:w-[350px] flex flex-row items-center gap-2  p-1 "
+                    >
+                      <div className="min-w-[50px] max-w-[50px] object-center">
+                        <img
+                          src={m.etablissement.logo!}
+                          alt="logo"
+                          className="object-cover"
+                        />
+                      </div>
+                      <div>
+                        <p>{m.etablissement.nom}</p>
+                        <h6>{m.etablissement.abrev}</h6>
+                      
+                      </div>
+                      
                     </div>
-                  <div className="w-full flex justify-end">
-                    <p className="label-text text-[12px] opacity-40"> {date}</p>
-                  </div>
-                  
+              
+                
+                  ))}
                 </div>
-              );
-            })}
+                <div className="flex-wrap justify-center lg:justify-end gap-3 items-center flex">
+                <button onClick={()=>qr.toClipboardHash(c.address!)} className="btn btn-ghost btn-sm lg:btn-sm gap-2 ">
+            <CopyIcon className="text-lg"/>
+            {t('workspace.relation.adresse')}
+          </button>
+          <button onClick={()=>qr.toClipboardHash(c.transaction.hash)} className="btn btn-ghost btn-sm lg:btn-sm gap-2 no-underline">
+            <CopyIcon className="text-lg"/>
+            {t('workspace.relation.hash')}
+          </button>
+       
+          <a
+            target={"_blank"}
+            href={qr.generate(c.transaction.hash)}
+            className="btn btn-outline btn-sm lg:btn-sm gap-2 no-underline"
+          >
+            <CodeQRIcon className="text-lg" />
+            {t('workspace.relation.obtenir qr')}
+          </a>
+        </div>
+                
+                <div className="w-full flex justify-end">
+                  <p className="label-text text-[12px] opacity-40"> {date}</p>
+                </div>
+                
+              </div>
+            );
+          })}
+          </div>
             <div className="py-6"></div>
         </div>
       <PartenaireSection etablissementId={etablissement.id} />

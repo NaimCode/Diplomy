@@ -21,21 +21,21 @@ export const contractRouter = createRouter()
       const allTrue = input.membres.every((m) => m.accept == true);
       const etape = allTrue ? 2 : 1;
       if (etape == 1) {
-        // console.log('ids');
-        // const ids=input.membres.filter((f,i)=>i!=0).map(m=>m.etablissementId)
-        // // console.log('ids', ids)
-        // console.log('list');
-        // const listEmail=input.etablissements.filter((f:Etablissement)=>ids.includes(f.id)).map((e)=>e.membresAutorises[0])
-        // console.log('before');
-        // await Transporter.sendMail({
-        //   to: listEmail[0],
-        //   from: process.env.ADMINS_EMAIL,
-        //   subject: `Demande de parténariat`,
-        //   html: `<div><h3>Vous venez de recevoir une demande de parténariat, veuillez vous connectez pour l'accepter ou refuser</h3> <a href="${getBaseUrl()}/workspace/relation">Mon space de relation</a></div>`
-        // }).catch((err)=>{
-        //   console.log('error sending email new contract', err)
-        // })
-        // console.log('after');
+        console.log('ids');
+        const ids=input.membres.filter((f,i)=>i!=0).map(m=>m.etablissementId)
+        // console.log('ids', ids)
+        console.log('list');
+        const listEmail=input.etablissements.filter((f:Etablissement)=>ids.includes(f.id)).map((e)=>e.membresAutorises[0])
+        console.log('before');
+        await Transporter.sendMail({
+          to: listEmail,
+          from: {name:'Eternum',address:process.env.ADMINS_EMAIL!},
+          subject: `Demande de parténariat`,
+          html: `<div><h3>Vous venez de recevoir une demande de parténariat, veuillez vous connectez pour l'accepter ou refuser</h3> <a href="${getBaseUrl()}/workspace/relation">Mon space de relation</a></div>`
+        }).catch((err)=>{
+          console.log('error sending email new contract', err)
+        })
+        console.log('after');
       }
       return await prisma.contract.create({
         data: {

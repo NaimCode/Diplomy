@@ -1,4 +1,4 @@
-import { Version, Diplome, Formation, Etablissement, ContractMembre, Contract } from "@prisma/client";
+import { Version, Diplome, Formation, Etablissement, ContractMembre, Contract, Transaction, Etudiant } from "@prisma/client";
 
 
 export type MVersion = Version & {
@@ -12,6 +12,7 @@ export type MVersion = Version & {
   
   export type MEtablissement = Etablissement & {
     formations: Array<MFormation>;
+    etudiants:Array<Etudiant>
   };
   
   export  type MContractMembre =
@@ -22,5 +23,6 @@ export type MVersion = Version & {
   
   export type MContract = Contract & {
     aboutissement: MFormation;
+    transaction:Transaction,
     membres: Array<MContractMembre>;
   };

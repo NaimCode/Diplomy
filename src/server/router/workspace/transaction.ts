@@ -53,27 +53,22 @@ export const transactionRouter = createRouter()
       transaction: z.any(),
       id: z.string(),
       address: z.string(),
+      emails:z.array(z.string()),
+      codeQR:z.string()
     }),
     async resolve({ input, ctx }) {
       const { prisma } = ctx;
-      const { transaction, id, address } = input;
+      const { transaction, id, address,codeQR } = input;
 
-      // if(exist==0){
-      //   await Transporter.sendMail({
-      //     to: email,
-      //     from: process.env.ADMINS_EMAIL,
-      //     subject: `Félicitation`,
-      //     html: `<div><h3>Votre compte étudiant <b>ETERNUM</b> est créé, veuillez-vous connecter </h3> <a href="${getBaseUrl()}">Mon compte</a></div>`
-      //   })
-      // }
-      //   await Transporter.sendMail({
-      //     to: email,
-      //     from: process.env.ADMINS_EMAIL,
-      //     subject: `Document certifié`,
-      //     html: `<div><h3>Vous avez un nouveau document certifié par <b>${etudiant.etablissement.nom}</b></h3> <p>${transaction.hash}</p>
-      //     <a href="${codeQR}">optenir code QR</a>
-      //     </div>`
-      //   })
+ 
+        await Transporter.sendMail({
+          to: input.emails,
+          from: {name:"Eternum",address:process.env.ADMINS_EMAI!},
+          subject: `Document certifié`,
+          html: `<div><h3>Un contract dont vous faites partie a été signé avec succès</h3> <p>${transaction.hash}</p>
+          <a href="${codeQR}">optenir code QR</a>
+          </div>`
+        })
 
       return await prisma.contract.update({
         where: {

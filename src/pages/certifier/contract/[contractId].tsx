@@ -145,7 +145,7 @@ const Certifier = (
 
     return date.toLocaleDateString();
   }
-
+  const qr=useQR()
   const onSign = async () => {
     const signer = web3.provider!.getSigner();
     const factory = new ContractFactory(
@@ -168,6 +168,7 @@ const Certifier = (
     const formation_requises_name: Array<string> = props.formations.map(
       (f: MFormation) => f.intitule
     );
+
     const formation_aboutissante_name = c.aboutissement.intitule;
    // try {
     const contractSigner = await factory.deploy(
@@ -183,6 +184,8 @@ const Certifier = (
 
 
     certifier({
+      codeQR:qr.generate(contractSigner.deployTransaction.hash,160),
+      emails:formations.map((e)=>e.etablissement.membresAutorises[0]!),
       address: contractSigner.address,
       id: c.id,
       transaction: {
@@ -316,7 +319,9 @@ const Certifier = (
                 <CopyIcon className="text-lg" />
                 {t("web3.copier le hash")}
               </button>
-           
+              <a target={"_blank"} href={qr.generate(transactionDone.hash)} className="btn btn-ghost gap-2 no-underline">
+                <CodeQRIcon className="text-lg"/>
+                {t('web3.QR code')}</a>
 
               <button
                 onClick={() => {
