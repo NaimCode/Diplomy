@@ -146,7 +146,7 @@ const Relation = (
             </button>
           </div>
           <div className="py-6 space-y-4">
-            {contracts.map((c, i) => {
+            {contracts.filter(c=>!c.transactionId).map((c, i) => {
               const status = getStatus(c);
 
               const badge =
@@ -223,6 +223,62 @@ const Relation = (
               );
             })}
           </div>
+          <div className="divider">
+              {t('workspace.relation.contrats actifs')}
+          </div>
+
+          {contracts.filter(c=>c.transactionId).map((c, i) => {
+            
+              const date = new Date(c.createAt.toString()).toLocaleDateString();
+           
+              return (
+                <div
+                  
+                  key={i}
+                  className={`p-5  w-full  rounded-lg  transition-all duration-300 bg-base-200 opacity-80`}
+                >
+                  <p className={`badge badge-warning`}>
+                    {t("workspace.relation.actif")}
+                  </p>
+                  <p className="text-[10px] italic">
+                    {t("workspace.relation.entre")}
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    {c.membres.map((m, i) => (
+                      <div
+                        key={i}
+                        className="w-full lg:w-[350px] flex flex-row items-center gap-2  p-1 "
+                      >
+                        <div className="min-w-[50px] max-w-[50px] object-center">
+                          <img
+                            src={m.etablissement.logo!}
+                            alt="logo"
+                            className="object-cover"
+                          />
+                        </div>
+                        <div>
+                          <p>{m.etablissement.nom}</p>
+                          <h6>{m.etablissement.abrev}</h6>
+                        
+                        </div>
+                        
+                      </div>
+                
+                  
+                    ))}
+                  </div>
+                  
+                   <div>
+                      <p>{c.address}</p>
+                    </div>
+                  <div className="w-full flex justify-end">
+                    <p className="label-text text-[12px] opacity-40"> {date}</p>
+                  </div>
+                  
+                </div>
+              );
+            })}
+            <div className="py-6"></div>
         </div>
       <PartenaireSection etablissementId={etablissement.id} />
       </Workspace>
