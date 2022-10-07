@@ -101,7 +101,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         },
       },
       include: {
-        aboutissement: true,
+        aboutissement: {
+          include:{
+            etablissement:true,
+            diplome:true,
+            versions:{
+              include:{
+                diplome:true
+              }
+            }
+          }
+        },
         membres: {
           include: {
             etablissement: {
@@ -165,7 +175,7 @@ const Certifier = (
     trigger: web3.active && !web3.isLoading,
   });
   const { t } = useTranslation();
-
+  const qr = useQR();
   type CertificationProps = {
     intitule: string;
     documentHash: string;
@@ -224,6 +234,46 @@ const Certifier = (
       expiration,
     };
   };
+  const getInfoForContractMulti = (e: FullEtudiantType,f:MFormation): CertificationProps => {
+    //TODO: create virtuel doc
+    const documentHash = "QmUnxr5A8epU3gThy4ZQHrAi9Gqz6eAUCpQfsaoF6pgfx6";
+    const nom = e.nom;
+    const prenom = e.prenom;
+    const etablissementHash =f.etablissementId;
+    //
+
+    const formation = f;
+    const versions = formation.versions;
+    const intitule =
+      formation.versionnage &&
+      versions[versions.length - 1]?.diplome.intituleDiff
+        ? versions[versions.length - 1]?.diplome.intitule!
+        : formation.intitule;
+
+    const version = formation.versionnage
+      ? versions[versions.length - 1]?.numero.toString()!
+      : "";
+
+    const diplome: Diplome = formation.versionnage
+      ? versions[versions.length - 1]?.diplome!
+      : formation.diplome;
+
+    //TODO: change type according to language
+    const type = diplome.estVirtuel ? "Virtuel" : "Physique";
+    const months = diplome.expiration ? diplome.dureeExpiration : undefined;
+
+    const expiration = months ? addMonths(months) : "";
+    return {
+      intitule,
+      etablissementHash,
+      nom,
+      prenom,
+      version,
+      documentHash,
+      type,
+      expiration,
+    };
+  };
 
   const onSign = async () => {
     //TODO: auto convertion
@@ -231,8 +281,9 @@ const Certifier = (
       (window as any).ethereum
     );
     console.log("price", env.NEXT_PUBLIC_PRICE);
+    const hashs:Array<{transaction:object,codeQR:string,etudiant:any}>=[]
     const contract = new ethers.Contract(
-      ethers.utils.getAddress("0xC70a55F912b25092b552Dd488C16fD8d7929cf2e"),
+      ethers.utils.getAddress("0xba47b24Ce8c1c14bb68dC6E0af23a050c11424a1"),
       CertificationAbi.abi,
       web3.provider
     );
@@ -260,8 +311,7 @@ const Certifier = (
           ethers.utils.getAddress(web3.account!),
           { value: env.NEXT_PUBLIC_PRICE }
         );
-        if(props.formations_aboutissantes.length==0){
-        certifier({
+        const input={
           transaction: {
             hash: hash.hash,
             blockNumber: hash.blockNumber,
@@ -273,12 +323,46 @@ const Certifier = (
 
           etudiant: etudiant,
           codeQR: qr.generate(hash.hash, 160),
-        });}else{
-          for(let f of props.formations_aboutissantes){
-
-          }
         }
-     
+        hashs.push(input)
+        if(props.formations_aboutissantes.length==0){
+        certifier(input)
+        }else{
+         
+          for(let f of props.formations_aboutissantes){
+            const info = getInfoForContractMulti(etudiant,f);
+           const hash = await contractSigner.NouveauDiplome(
+              info.intitule,
+              info.documentHash,
+              info.nom,
+              info.etablissementHash,
+              info.prenom,
+              info.version,
+              info.expiration,
+              info.type,
+              ethers.utils.getAddress(web3.account!),
+              { value: env.NEXT_PUBLIC_PRICE }
+            );
+
+            hashs.push({
+              transaction: {
+                hash: hash.hash,
+                blockNumber: hash.blockNumber,
+                blockHash: hash.blockHash,
+                signataire: hash.from,
+                type: "CERTIFICATION",
+                chainId: hash.chainId,
+              },
+              etudiant: etudiant,
+              codeQR: qr.generate(hash.hash, 160),
+            })
+          }
+          console.log(hashs);
+          
+       certifierMultiple(hashs)
+        }
+
+          
       } catch (error: any) {
         if ((error.code = -32000)) {
           console.log("error", error);
@@ -296,7 +380,7 @@ const Certifier = (
   // if(transactionDone){
   //   return <div></div>
   // }
-  const qr = useQR();
+
 
   const toClipboard = (data: string) => {
     navigator.clipboard.writeText(data);
@@ -310,6 +394,17 @@ const Certifier = (
     },
     onSuccess: (data,variable) => {
      
+      settransactionDone(data);
+      setisWeb3Loading(false);
+    },
+  });
+  const { mutate: certifierMultiple } = trpc.useMutation(["transaction.certifier multiple"], {
+    onError: (err) => {
+      console.log("error", err);
+      toast.error(t("global.toast erreur"));
+      setisWeb3Loading(false);
+    },
+    onSuccess: (data) => {
       settransactionDone(data);
       setisWeb3Loading(false);
     },

@@ -86,4 +86,40 @@ export const transactionRouter = createRouter()
         }
       });
     },
+  }).mutation("certifier multiple", {
+    input: z.array(z.object({
+      transaction: z.any(),
+      etudiant: z.any(),
+      
+      codeQR: z.string(),
+      
+    })),
+    async resolve({ input, ctx }) {
+      const { prisma } = ctx;
+      const trs:Array<Transaction>=[]
+    
+      for(let i of input){
+        const { transaction, codeQR, etudiant } = i;
+        const email = etudiant.email;
+        const etablissementId = etudiant.etablissemntId;
+        const etudiantId = etudiant.id;
+
+        await Transporter.sendMail({
+          to: email,
+          from: process.env.ADMINS_EMAIL,
+          subject: `Document certifié`,
+          html: `<div><h3>Vous avez un nouveau document certifié par <b>${etudiant.etablissement.nom}</b></h3> <p>${transaction.hash}</p>
+        <a href="${codeQR}">optenir code QR</a>
+        </div>`,
+        });
+
+      }
+      const { transaction, codeQR, etudiant } = input[0]!;
+    return await prisma.transaction.create({
+      data: {
+        ...transaction,
+        etablissementId:etudiant.etablissementId
+      },
+    })
+    },
   });
