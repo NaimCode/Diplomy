@@ -21,6 +21,7 @@
     "dialog validate": "valider",
     "retour": "retour",
     "text copie":"Copié",
+    
     "chargement":"Chargement...",
     "mot de passe": "Mot de passe",
     "theme": "Thème",
@@ -59,7 +60,11 @@
     "Header description": "Diplome assuré sur la blockchain",
     "Button inscription": "demande d'inscription",
     "Button workspace": "espace de travail",
-    "Dialog title": "Vous devez vous connecter"
+     "rechercher":"Rechercher",
+    "Dialog title": "Vous devez vous connecter",
+    "hero title":"DIPLÔMES, MICRO-CERTIFICATIONS ET ATTESTATION SUR LA BLOCKCHAIN",
+    "hero description":"Donnez la chance à vos étudiants de faire valoir l'authenticité de leur réussite d'un simple clic : un gage de confiance pour toutes les étapes de la vie professionnelle. Les étudiants disposent à vie d'attestations en ligne, partageables sur tous supports. C'estla fin des demandes intempestives de vérification ou de duplicata."
+    
   },
   "inscription": {
     "SideContent title": "Lancez-vous sur la blockchain avec nous.",

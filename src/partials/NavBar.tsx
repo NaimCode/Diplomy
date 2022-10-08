@@ -27,7 +27,7 @@ const NavBar = () => {
   };
   const { t } = useTranslation();
   return (
-    <div className="navbar  sticky top-0 left-0 drop-shadow-sm">
+    <div className="navbar z-50 backdrop-blur-md  bg-base-100/60  fixed top-0 left-0">
       <div
         className={`container max-w-7xl mx-auto h-full flex flex-row items-center justify-between gap-3`}
       >
@@ -35,12 +35,7 @@ const NavBar = () => {
         <div className="flex-grow"></div>
         <ThemeSwitcher/>
         <LanguageChanger />
-        <Link href="/inscription">
-          <button className="btn btn-outline gap-2">
-            <FileIcon className="icon" />
-            {t("home.Button inscription")}
-          </button>
-        </Link>
+       
         <button onClick={handleSignIn} className="btn btn-primary">
           {t("home.Button workspace")}
         </button>
