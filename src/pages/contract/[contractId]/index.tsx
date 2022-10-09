@@ -19,7 +19,7 @@ import { toast } from "react-toastify";
 import { AddIcon, DeleteIcon, SchoolIcon } from "../../../constants/icons";
 import { trpc } from "../../../utils/trpc";
 import { authOptions } from "../../api/auth/[...nextauth]";
-
+import {prisma} from "../../../server/db/client"
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
     context.req,

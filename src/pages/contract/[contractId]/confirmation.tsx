@@ -11,7 +11,7 @@ import { ArrayRightIcon, PlusIcon, SchoolIcon } from "../../../constants/icons";
 import { MContract, MContractMembre, MFormation } from "../../../models/types";
 import { trpc } from "../../../utils/trpc";
 import { authOptions } from "../../api/auth/[...nextauth]";
-
+import {prisma} from "../../../server/db/client"
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
     context.req,
@@ -28,15 +28,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
   const id = context.query.contractId as string;
-  // const utilisateur = JSON.parse(
-  //   JSON.stringify(
-  //     await prisma?.utilisateur.findUnique({
-  //       where: {
-  //         email: session.user?.email || "",
-  //       },
-  //     })
-  //   )
-  // );
+
   console.log(id);
 
   console.log("equal", id == "93c7a937-d916-412a-bd20-f2950d24ca16");

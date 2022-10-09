@@ -120,7 +120,8 @@ export const transactionRouter = createRouter()
     return await prisma.transaction.create({
       data: {
         ...transaction,
-        etablissementId:etudiant.etablissementId
+        etablissementId:etudiant.etablissementId,
+        etudiantId:etudiant.id
       },
     })
     },

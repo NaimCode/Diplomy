@@ -33,8 +33,9 @@ import checkAnimation from "../../../../public/lotties/check.json";
 import { MContract, MFormation } from "../../../models/types";
 import { FormationItem } from "../../contract/[contractId]/confirmation";
 import Partenariat from "../../../../web3/build/contracts/Partenariat.json";
+import {prisma} from "../../../server/db/client"
 export const getServerSideProps: GetServerSideProps = async (context) => {
-
+ 
 
   const id = context.query.contractId as string;
   const contract: MContract = await prisma?.contract

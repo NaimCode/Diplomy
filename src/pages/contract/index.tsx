@@ -15,7 +15,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import router from "next/router";
 import { trpc } from "../../utils/trpc";
 import { toast } from "react-toastify";
-
+import {prisma} from "../../server/db/client"
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
     context.req,

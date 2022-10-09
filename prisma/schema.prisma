@@ -186,7 +186,7 @@ model Etudiant{
     nom String
     prenom String
     email String
-    removed Boolean?
+    removed Boolean? @default(false)
     
     //Foreign
     etablissemntId String
