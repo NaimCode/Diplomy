@@ -9,7 +9,7 @@ import Link from "next/link";
 import { FileIcon, SearchIcon } from "../constants/icons";
 import { useLocale } from "../utils/hooks";
 import { motion } from "framer-motion";
-
+///dsds
 const Home = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { t } = useTranslation();
   const {isAr}=useLocale()
