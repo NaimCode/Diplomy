@@ -19,7 +19,7 @@ import { prisma } from "../../server/db/client";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 //TODO: implementing language for admins
-//
+////
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const qId = ctx.query.id as string;
   const id = qId as string;
