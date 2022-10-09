@@ -1,6 +1,5 @@
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { ButtonToolbar, Button, Drawer, Placeholder } from "rsuite";
 import { MenuIcon } from "../constants/icons";
 
 const DrawerMenu = () => {

@@ -1,9 +1,7 @@
 import { useTranslation } from "next-i18next";
-import { useRouter } from "next/router";
 import { ReactNode, useState } from "react";
 import { Modal, ButtonToolbar } from "rsuite";
 import { CloseIcon } from "../constants/icons";
-import { useLocale } from "../utils/hooks";
 
 export type DialogProps = {
   trigger?: (fn: () => void) => ReactNode;
@@ -39,7 +37,6 @@ const Dialog = ({
       <ButtonToolbar>{trigger?.(handleOpen)}</ButtonToolbar>
 
       <Modal
- 
         dialogClassName="translate-y-[25%] bg-green-400"
         backdropClassName="backdrop-blur-sm "
         open={open}
@@ -79,41 +76,67 @@ const Dialog = ({
   );
 };
 
+export const DialogConfirmation = ({
+  children,
+  classButton,
+  onClick,
+}: {
+  children: ReactNode;
+  classButton: string;
+  onClick: ()=>void;
+}) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <label htmlFor="di" className={`modal-button ${classButton}`}>
+        {children}
+      </label>
 
-export const DialogConfirmation=({children,classButton,onClick}:{children:ReactNode,classButton:string,onClick:Function})=>{
-  const {t}=useTranslation()
-  return <>
-  <label htmlFor="di" className={`modal-button ${classButton}`}>{children}</label>
+      <input type="checkbox" id="di" className="modal-toggle" />
+      <div className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">{t("global.confirmation")}</h3>
+          <div className="modal-action">
+            <label htmlFor="di" className="btn btn-ghost">
+              {t("global.annuler")}
+            </label>
+            <label htmlFor="di" onClick={() => onClick()} className="btn">
+              {t("global.confirmer")}
+            </label>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
 
+export const DialogOk = ({
+  setOpen,
+  open,
+  text,
+  head,
+}: {
+  text: string;
+  head?: string;
+  open: boolean;
+  setOpen: (s:boolean)=>void;
+}) => {
+  const { t } = useTranslation();
 
-<input type="checkbox" id="di" className="modal-toggle" />
-<div className="modal">
-  <div className="modal-box">
-    <h3 className="font-bold text-lg">{t("global.confirmation")}</h3>
-    <div className="modal-action">
-    <label htmlFor="di" className="btn btn-ghost">{t('global.annuler')}</label>
-      <label htmlFor="di" onClick={()=>onClick()} className="btn">{t('global.confirmer')}</label>
-    </div>
-  </div>
-</div>
-  </>
-}
-
-export const DialogOk=({setOpen,open,text,head}:{text:string,head?:string,open:boolean,setOpen:Function})=>{
-  const {t}=useTranslation()
-  
-  return <>
-
-<div className={`modal ${open&&"modal-open"}`}>
-  <div className="modal-box">
-    <h3 className="font-bold text-lg">{t(head||"")}</h3>
-    <p>{t(text)}</p>
-    <div className="modal-action">
-        
-      <button onClick={()=>setOpen(false)} className="btn">{t('global.ok')}</button>
-    </div>
-  </div>
-</div>
-  </>
-}
+  return (
+    <>
+      <div className={`modal ${open && "modal-open"}`}>
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">{t(head || "")}</h3>
+          <p>{t(text)}</p>
+          <div className="modal-action">
+            <button onClick={() => setOpen(false)} className="btn">
+              {t("global.ok")}
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
 export default Dialog;

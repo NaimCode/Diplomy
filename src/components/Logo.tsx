@@ -1,5 +1,4 @@
 
-import { useTheme } from "next-themes";
 import { APP_NAME } from "../constants/global";
 import { useRouter } from "next/router";
 import { useMyTheme } from "../utils/hooks";

@@ -61,6 +61,7 @@
     "Button inscription": "demande d'inscription",
     "Button workspace": "espace de travail",
      "rechercher":"Rechercher",
+     "connexion":"Connexion",
     "Dialog title": "Vous devez vous connecter",
     "hero title":"DIPLÔMES, MICRO-CERTIFICATIONS ET ATTESTATION SUR LA BLOCKCHAIN",
     "hero description":"Donnez la chance à vos étudiants de faire valoir l'authenticité de leur réussite d'un simple clic : un gage de confiance pour toutes les étapes de la vie professionnelle. Les étudiants disposent à vie d'attestations en ligne, partageables sur tous supports. C'estla fin des demandes intempestives de vérification ou de duplicata."
@@ -117,6 +118,8 @@
       "dialog incomplet":"Certains membres n'ont pas encore accepté le parténariat",
       "confirme":"a confirmé",
       "en attente":"en attente",
+      "contract(s)":"constrat(s)",
+      "coonditons remplis":"L'etudiant a rempli les conditions pou",
       "vous avez refuse":"Vous avez refusé les termes",
       "vous avez confirme":"Vous avez confirmé les termes"
       

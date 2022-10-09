@@ -1,17 +1,14 @@
-import { Uploader, Message, Loader, useToaster } from "rsuite";
-import AvatarIcon from "@rsuite/icons/legacy/Avatar";
-import React, { useEffect, useId, useRef, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Uploader, Loader } from "rsuite";
+import React, { SetStateAction } from "react";
 import { toast } from "react-toastify";
-import { AddIcon } from "../constants/icons";
-import { setTimeout } from "timers";
-import axios from "axios";
-import { getDownloadURL, ref } from "firebase/storage";
-import { Storage } from "../utils/firebase";
+
+
 import { trpc } from "../utils/trpc";
 import Image from "next/image";
 import { useTranslation } from "next-i18next";
 
-function previewFile(file: any, callback: any) {
+function previewFile(file:any, callback: (s:unknown)=>void) {
   const reader = new FileReader();
   reader.onloadend = () => {
     callback(reader.result);
@@ -28,12 +25,12 @@ type UploadProps = {
   table:'etablissement'|'utilisateur',
   folder?:string
 };
-const Upload = ({ label, url, name, id, props,table,folder }: UploadProps) => {
+const Upload = ({ label, url,  id, props,table,folder }: UploadProps) => {
   const [uploading, setUploading] = React.useState(false);
   const [fileInfo, setFileInfo] = React.useState(null);
   const {t}=useTranslation()
-  const {mutate,isLoading}=trpc.useMutation(['parametreRouter.update image'],{
-    onError:(err)=> {
+  const {mutate}=trpc.useMutation(['parametreRouter.update image'],{
+    onError:()=> {
       toast.success(t("global.toast erreur"))
     },
     onSuccess:()=>{
@@ -57,18 +54,16 @@ const Upload = ({ label, url, name, id, props,table,folder }: UploadProps) => {
       onUpload={(file) => {
         setUploading(true);
 
-        previewFile(file.blobFile, async (value: any) => {
+        previewFile(file.blobFile, async (value) => {
          
-          mutate({file:value,id:id,table,folder:folder||""})
-          setTimeout(() => {
-            
-          }, 2000);
-          setFileInfo(value);
+          mutate({file:value as string,id:id,table,folder:folder||""})
+      
+          setFileInfo(value as SetStateAction<null>);
         
       
         });
       }}
-      onSuccess={(response, file) => {
+      onSuccess={() => {
         setUploading(false)
        
       }}
@@ -84,9 +79,9 @@ const Upload = ({ label, url, name, id, props,table,folder }: UploadProps) => {
       >
         {uploading && <Loader backdrop center />}
         {fileInfo ? (
-          <Image src={fileInfo} layout="fill"  className="object-cover w-full"/>
+          <Image src={fileInfo} alt="image" layout="fill"  className="object-cover w-full"/>
         ) : url ? (
-          <Image src={url} layout="fill"  className="object-cover w-full" />
+          <Image src={url} layout="fill" alt="image"  className="object-cover w-full" />
         ) : (
           <label>{label}</label>
         )}

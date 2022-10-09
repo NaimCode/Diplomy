@@ -26,18 +26,19 @@ const NavBar = () => {
     }
   };
   const { t } = useTranslation();
+
   return (
     <div className="navbar z-50 backdrop-blur-md  bg-base-100/60  fixed top-0 left-0">
       <div
         className={`container max-w-7xl mx-auto h-full flex flex-row items-center justify-between gap-3`}
       >
-     <LogoBrand/>
+       <LogoBrand/>
         <div className="flex-grow"></div>
         <ThemeSwitcher/>
         <LanguageChanger />
        
-        <button onClick={handleSignIn} className="btn btn-primary">
-          {t("home.Button workspace")}
+        <button onClick={handleSignIn} className="btn btn-primary lg:btn-md btn-sm">
+          {t(session? "home.Button workspace":"home.connexion")}
         </button>
       </div>
     </div>

@@ -12,7 +12,7 @@ const  ThemeSwitcher=()=>{
     return (
       <div className="tooltip  tooltip-bottom" data-tip={t("global.theme")}>
 
-      <label className="swap swap-rotate btn btn-ghost">
+      <label className="swap swap-rotate btn btn-ghost btn-sm lg:btn-md">
         <input
           checked={theme == "dark"}
           type="checkbox"

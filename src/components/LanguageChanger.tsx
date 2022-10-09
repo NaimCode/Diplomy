@@ -41,7 +41,7 @@ const LanguageChanger = () => {
       <div className="tooltip  tooltip-bottom" data-tip={t("global.langue")}>
 
       <div className="dropdown dropdown-end font-semibold">
-        <label tabIndex={0} className="btn btn-ghost m-1 ">
+        <label tabIndex={0} className="btn btn-ghost m-1 btn-sm lg:btn-md">
           <LanguageIcon className="icon" />
           <ExpandMoreIcon className="icon" />
         </label>

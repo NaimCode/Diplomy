@@ -1,6 +1,6 @@
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { LogOutIcon, MenuIcon } from "../constants/icons";
+import { LogOutIcon } from "../constants/icons";
 
 const LogOut = () => {
   const { t } = useTranslation();

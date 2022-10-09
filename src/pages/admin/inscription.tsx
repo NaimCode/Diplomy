@@ -1,8 +1,7 @@
-import { motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { toast } from "react-toastify";
 import Input from "../../components/Input";
 import {
@@ -16,14 +15,13 @@ import {
   UnlockIcon,
 } from "../../constants/icons";
 import { trpc } from "../../utils/trpc";
-import { Modal } from "rsuite";
 import { prisma } from "../../server/db/client";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 //TODO: implementing language for admins
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const qId = ctx.query.id!;
+  const qId = ctx.query.id as string;
   const id = qId as string;
 
   const demande = JSON.parse(
@@ -51,7 +49,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   return {
     props: {
-      ...(await serverSideTranslations(ctx.locale!, ["common"])),
+      ...(await serverSideTranslations(ctx.locale||"", ["common"])),
       demande,
       code: process.env.ADMINS_PASSWORD,
     },
@@ -75,7 +73,7 @@ const DemandeInscription = (
       },
     }
   );
-  const { demande, error, isNotExist } = props;
+  const { demande } = props;
   const [isAdmin, setisAdmin] = useState(false);
   const [err, seterr] = useState(false);
   const [code, setCode] = useState("");

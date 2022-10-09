@@ -3,7 +3,7 @@ import React from 'react'
 
 
 type DialogConfirmationProps={
-onConfirm:Function
+onConfirm:()=>void
 }
 const DialogConfirmation = ({onConfirm}:DialogConfirmationProps) => {
  const {t}=useTranslation()
