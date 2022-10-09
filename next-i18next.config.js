@@ -1,6 +1,9 @@
-import { resolve } from 'path';
-export const i18n = {
-  defaultLocale: "fr",
-  locales: ["en", "fr", "ar"],
-  localePath: resolve('./public/locales')
+const path=require('path')
+module.exports = {
+
+ i18n: {
+    defaultLocale: "fr",
+    locales: ["en", "fr", "ar"],
+     localePath: path.resolve('./public/locales')
+  },
 };
