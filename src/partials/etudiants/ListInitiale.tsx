@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Etudiant, Formation } from "@prisma/client";
 import {
   createColumnHelper,
@@ -7,9 +9,9 @@ import {
 } from "@tanstack/react-table";
 import { useTranslation } from "next-i18next";
 import router from "next/router";
-import { useContext, useEffect, useId, useState } from "react";
+import { useContext, useEffect,  useState } from "react";
 import { useForm } from "react-hook-form";
-import { MdUpdate, MdVisibility } from "react-icons/md";
+import {  MdVisibility } from "react-icons/md";
 import { toast } from "react-toastify";
 import InputForm from "../../components/InputForm";
 import { AddIcon, DeleteIcon, EditIcon } from "../../constants/icons";
@@ -20,7 +22,6 @@ import UploadToIPFS from "../uploadToIPFS";
 
 const ListInitiale = () => {
   const { t } = useTranslation();
-  const text = (s: string) => t("workspace.etudiant." + s);
   const utilisateur = useContext(FullUserContext);
   const [etudiant, setetudiant] = useState();
   const { data, isLoading, refetch } = trpc.useQuery([
@@ -32,10 +33,10 @@ const ListInitiale = () => {
   ]);
 const [etudiantUpload, setetudiantUpload] = useState<Etudiant|undefined>(undefined)
 const {mutate:addDoc}=trpc.useMutation(['etudiant.add doc'],{
-  onError:(err)=>{
+  onError:()=>{
      toast.error(t('global.toast erreur'))
   },
-onSuccess:(data)=>{
+onSuccess:()=>{
   setetudiantUpload(undefined)
   refetch()
   toast.success(t('global.toast succes'))
@@ -44,7 +45,7 @@ onSuccess:(data)=>{
 })
 const onValid=(result:any)=>{
    const hash=result.path
-   addDoc({idEtudiant:etudiantUpload?.id!,type:"IMAGE",hash})
+   addDoc({idEtudiant:etudiantUpload?.id as string,type:"IMAGE",hash})
 }
   return (
     <>
@@ -94,11 +95,11 @@ type EtudiantInputType = {
 const DialogAdd = ({ refetch }: { refetch: any }) => {
   const { etablissement } = useContext(FullUserContext);
   //TODO: fix first formation get error
-  const [formation, setformation] = useState<string | undefined>(etablissement.formations[0].id!);
+  const [formation, setformation] = useState<string | undefined>(etablissement.formations[0].id);
   const {
     register,
     handleSubmit,
-    watch,
+ 
     reset,
     formState: { errors },
   } = useForm<EtudiantInputType>();
@@ -134,7 +135,7 @@ const DialogAdd = ({ refetch }: { refetch: any }) => {
     const is = isVirtuel({ formation: f });
      const temp={ ...data, formationId: formation, etablissemntId: etablissement.id}
     
-    add({data:temp,isVirtuel:is!})
+    add({data:temp,isVirtuel:is as boolean})
   
   }
   
@@ -197,7 +198,7 @@ type TableProps = {
   formations: Array<Formation>;
   refetch: any;
   setEtudiant: any;
-  setEtudiantUpload:Function
+  setEtudiantUpload:(s:any)=>void
 };
 
 const Table = ({ data, formations, refetch, setEtudiant,setEtudiantUpload }: TableProps) => {
@@ -264,7 +265,7 @@ const Table = ({ data, formations, refetch, setEtudiant,setEtudiantUpload }: Tab
             const formation = formations.filter(
               (f) => f.id == row.renderValue("formationId")
             )[0];
-            const link = `/workspace/formations/${formation?.intitule!}`;
+            const link = `/workspace/formations/${formation?.intitule}`;
 
             return (
               <tr key={row.id} className={"relative group"}>
@@ -337,7 +338,7 @@ const DialogUpdate = ({
   const {
     register,
     handleSubmit,
-    watch,
+   
     reset,
     formState: { errors },
   } = useForm<EtudiantInputType>({

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Etudiant, Formation, Transaction } from "@prisma/client";
 import {
   createColumnHelper,
@@ -5,33 +6,24 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ethers } from "ethers";
 import { useTranslation } from "next-i18next";
-import router from "next/router";
-import { useContext, useEffect, useId, useState } from "react";
-import { useForm } from "react-hook-form";
-import { MdUpdate, MdVisibility } from "react-icons/md";
+import { useContext, useState } from "react";
+
 import { toast } from "react-toastify";
 import DialogConfirmation from "../../components/DialogConfirmationDelete";
-import InputForm from "../../components/InputForm";
 import {
-  AddIcon,
   CodeQRIcon,
   CopyIcon,
   DeleteIcon,
-  EditIcon,
 } from "../../constants/icons";
 import { FullUserContext } from "../../utils/context";
-import { isVirtuel } from "../../utils/functions";
-import { GATEWAY_IPFS, useHasMetaMask, useQR } from "../../utils/hooks";
+import { GATEWAY_IPFS, useQR } from "../../utils/hooks";
 import { trpc } from "../../utils/trpc";
-import UploadToIPFS from "../uploadToIPFS";
 
 const Certifies = () => {
   const { t } = useTranslation();
-  const text = (s: string) => t("workspace.etudiant." + s);
   const utilisateur = useContext(FullUserContext);
-  const [etudiant, setetudiant] = useState();
+  const [setetudiant] = useState();
   const { data, isLoading, refetch } = trpc.useQuery([
     "etudiant.get",
     {
@@ -95,12 +87,7 @@ const Certifies = () => {
 
 export default Certifies;
 
-type EtudiantInputType = {
-  nom: string;
-  prenom: string;
-  email: string;
-  formationId: string;
-};
+
 
 type TableProps = {
   data: Array<Etudiant & { transaction: Transaction }>;
@@ -109,7 +96,7 @@ type TableProps = {
   setEtudiant: any;
 };
 
-const Table = ({ data, formations, refetch, setEtudiant }: TableProps) => {
+const Table = ({ data, formations, }: TableProps) => {
   const { t } = useTranslation();
   const columnsHelper = createColumnHelper<
     Etudiant & { transaction: Transaction }
@@ -128,6 +115,7 @@ const Table = ({ data, formations, refetch, setEtudiant }: TableProps) => {
             </button>
          
             <a
+            rel="noreferrer"
               target={"_blank"}
               href={qr.generate(e.transaction.hash)}
               className="btn btn-outline btn-sm lg:btn-md"
@@ -158,7 +146,7 @@ const Table = ({ data, formations, refetch, setEtudiant }: TableProps) => {
         //
         //
         return (
-          <a target={"_blank"} href={GATEWAY_IPFS + hash} className="text-sm">
+          <a  rel="noreferrer" target={"_blank"} href={GATEWAY_IPFS + hash} className="text-sm">
             <p className="max-w-[130px] lg:max-w-[160px] truncate">{hash}</p>
           </a>
         );
@@ -171,7 +159,7 @@ const Table = ({ data, formations, refetch, setEtudiant }: TableProps) => {
         const formation = formations.filter(
           (f) => f.id == e.formationId
         )[0];
-        const link = `/workspace/formations/${formation?.intitule!}`;
+        const link = `/workspace/formations/${formation?.intitule}`;
 
         return <a href={link}><p className="max-w-[150px] truncate">{formations.filter((f) => f.id == e.formationId)[0]?.intitule}</p></a>;
       },

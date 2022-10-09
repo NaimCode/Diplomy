@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { motion } from "framer-motion";
 import { useLottie } from "lottie-react";
-import { NextPage, InferGetServerSidePropsType } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
 import dataAnimation from "../../../public/lotties/success.json";
-import { HomeIcon, NavBackIcon } from "../../constants/icons";
+import { HomeIcon } from "../../constants/icons";
 
 
 export async function getServerSideProps({ locale }: { locale: string }) {
@@ -16,7 +15,7 @@ export async function getServerSideProps({ locale }: { locale: string }) {
     },
   };
 }
-const Success = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const Success = () => {
   const {t} = useTranslation()
   const router=useRouter()
 

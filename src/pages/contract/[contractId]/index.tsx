@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import {
   Contract,
@@ -98,7 +100,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       id,
       contract,
       utilisateur,
-      ...(await serverSideTranslations(context.locale!, ["common"])),
+      ...(await serverSideTranslations(context.locale||"", ["common"])),
     },
   };
 };
@@ -120,7 +122,7 @@ const ContractItem = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { t } = useTranslation();
-  const { id } = props;
+  
   const [contract, setcontract] = useState<FullContract|undefined>()
 
   const [formations, setformationsX] = useState<Array<
@@ -221,8 +223,8 @@ const ContractItem = (
                 : []
               : []
             ).map((_s, i) => {
-              const e: Formation & { versions: Array<Version> } =
-                formations.filter((f) => f.id == _s)[0]!;
+              const e: Formation & { versions: Array<Version> } |undefined=
+                formations.filter((f) => f.id == _s)[0];
 
               return (
                 <div
@@ -230,10 +232,10 @@ const ContractItem = (
                   className="flex group flex-row gap-4 items-center bg-base-100 rounded-md p-2 border-[1px]"
                 >
                   <div className="flex-grow space-y-3 px-2">
-                    <h6>{e.intitule}</h6>
-                    {e.versionnage ? (
+                    <h6>{e?.intitule}</h6>
+                    {e?.versionnage ? (
                       <p className="badge badge-secondary">
-                        {e.versions[e.versions.length - 1]?.numero}
+                        {e?.versions[e.versions.length - 1]?.numero}
                       </p>
                     ) : (
                       <p></p>
@@ -244,7 +246,7 @@ const ContractItem = (
                     <button
                       onClick={() => {
                         setformations((old) => [
-                          ...old.filter((o) => o != e.id),
+                          ...old.filter((o) => o != e?.id),
                         ]);
                       }}
                       className="opacity-0 group-hover:opacity-100 btn btn-error btn-sm"
@@ -288,8 +290,8 @@ const ContractItem = (
                mutate({
                 formations:selectedFormations,
                 aboutissement:selectedAboutissement as string,
-                id:contract?.id!,
-                membreId:contract?.membres.filter((c)=>c.etablissementId==props.utilisateur.etablissementId)[0]?.id!
+                id:contract?.id||"",
+                membreId:contract?.membres.filter((c)=>c.etablissementId==props.utilisateur.etablissementId)[0]?.id||""
                })
                   }else{
                     setstep(step + 1)
@@ -345,17 +347,17 @@ const Steps4 = ({ t }: { t: any }) => {
 
 type LayoutProps = {
   open: boolean;
-  setOpen: Function;
+  setOpen: (s:boolean)=>void;
   data: Array<{
-    label: String;
+    label: string;
     id: string;
     parentId: string;
   }>;
   oneValue?: boolean;
   selectedList: Array<string>;
-  onSelectedList: Function;
+  onSelectedList: (s:any)=>void;
   subtitle?: Array<{
-    label: String;
+    label: string;
     id: string;
   }>;
 };
@@ -371,7 +373,7 @@ const Layout = ({
 }: LayoutProps & {
   children: ReactNode;
 }) => {
-  const { t } = useTranslation();
+
   return (
     <div className="drawer drawer-end">
       <input

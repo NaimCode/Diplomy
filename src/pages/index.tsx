@@ -1,10 +1,8 @@
 
-import type { NextPage, InferGetServerSidePropsType } from "next";
+import type {  InferGetServerSidePropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import Head from "next/head";
 import MyLottie from "../components/MyLottie";
 import NavBar from "../partials/NavBar";
-import { getStaticPropsTranslations } from "../utils/i18n";
 import heroAnimation from "../../public/lotties/hero_light.json";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";

@@ -1,3 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Etablissement } from "@prisma/client";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { unstable_getServerSession } from "next-auth";
@@ -5,11 +8,8 @@ import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import React, { ReactNode } from "react";
 import { useState } from "react";
-import Select from "react-select";
-import makeAnimated, { Placeholder } from "react-select/animated";
-import { ButtonToolbar, Button, Drawer } from "rsuite";
-import { AddIcon, CheckIcon, DeleteIcon } from "../../constants/icons";
-import { useMyTheme } from "../../utils/hooks";
+
+import { AddIcon,  DeleteIcon } from "../../constants/icons";
 import { authOptions } from "../api/auth/[...nextauth]";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import router from "next/router";
@@ -51,7 +51,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       etablissements,
       etablissementId: utilisateur.etablissementId,
-      ...(await serverSideTranslations(context.locale!, ["common"])),
+      ...(await serverSideTranslations(context.locale||"", ["common"])),
     },
   };
 };
@@ -174,10 +174,10 @@ const Contract = (
 type LayoutProps = {
   children: ReactNode;
   open: boolean;
-  setOpen: Function;
+  setOpen: (s:boolean)=>void;
   etablissements: Array<Etablissement>;
   partenaires: Array<string>;
-  setpartenaires: Function;
+  setpartenaires: (s:any)=>void;
 };
 const Layout = ({
   children,
@@ -187,7 +187,7 @@ const Layout = ({
   partenaires,
   setpartenaires,
 }: LayoutProps) => {
-  const { t } = useTranslation();
+
   return (
     <div className="drawer drawer-end">
       <input

@@ -3,7 +3,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import Workspace from "../../../components/Workspace";
-import { createContext, ReactNode } from "react";
+import {  ReactNode } from "react";
 import { AdminIcon, AdvanceIcon, SchoolIcon} from "../../../constants/icons";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
@@ -28,7 +28,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
-  const t=context.query.tab
+
   
  if(!context.query.tab){
     return {
@@ -52,7 +52,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       user:utilisateur,
-      ...(await serverSideTranslations(context.locale!, ["common"])),
+      ...(await serverSideTranslations(context.locale||"", ["common"])),
     },
   };
 };
@@ -88,7 +88,6 @@ const tabs: Array<TTap> = [
 const Etablissement = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
-  const { t } = useTranslation();
   const router = useRouter();
   const {user} = props
   const currentTab = router.query.tab;

@@ -8,6 +8,6 @@ if(formation.versionnage){
     const versions=formation.versions
     return versions[versions.length-1]?.diplome.estVirtuel
 }else {
-    return formation.diplome!.estVirtuel
+    return formation.diplome?.estVirtuel
 }
 }

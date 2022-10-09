@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { z } from "zod";
 import { cloudy } from "../../../utils/cloudinary";
 import { createRouter } from "./../context";

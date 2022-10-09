@@ -1,5 +1,5 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { GetServerSideProps } from 'next';
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import Workspace from "../../../components/Workspace";
@@ -21,12 +21,12 @@ export const getServerSideProps: GetServerSideProps = async (context) =>{
   }
     return {
       props: {
-        ...(await serverSideTranslations(context.locale!, ["common"])),
+        ...(await serverSideTranslations(context.locale||"", ["common"])),
       },
     };
   }
   
-const Etablissement=(props: InferGetServerSidePropsType<typeof getServerSideProps>)=>{
+const Etablissement=()=>{
     return <>
     <Workspace>
         <div></div>

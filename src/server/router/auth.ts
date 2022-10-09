@@ -1,9 +1,7 @@
 import { z } from "zod";
 import { createRouter } from "./context";
-import nodemailer from "nodemailer";
 import { getBaseUrl } from "../../pages/_app";
 import { Transporter } from "../../utils/nodemailer";
-import { Etablissement } from "@prisma/client";
 
 
 const ZInscription = z.object({
@@ -66,7 +64,7 @@ export const authRouter = createRouter().mutation("inscription", {
     ])
     await Transporter.sendMail({
       to: email,
-      from: {name:'Eternum',address:process.env.ADMINS_EMAIL!},
+      from: {name:'Eternum',address:process.env.ADMINS_EMAIL||""},
       subject: `Félicitation`,
       html: `<div><h3>Votre demande d'inscription pour <b>ETERNUM</b> est acceptée 🎉</h3> <a href="${getBaseUrl()}">Mon compte</a></div>`
     })

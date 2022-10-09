@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Etudiant } from "@prisma/client";
 import { z } from "zod";
 import { createRouter } from "../context";

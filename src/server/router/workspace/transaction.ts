@@ -1,4 +1,4 @@
-import { Transaction } from "@prisma/client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { z } from "zod";
 import { getBaseUrl } from "../../../pages/_app";
 import { Transporter } from "../../../utils/nodemailer";
@@ -63,7 +63,7 @@ export const transactionRouter = createRouter()
  
         await Transporter.sendMail({
           to: input.emails,
-          from: {name:"Eternum",address:process.env.ADMINS_EMAI!},
+          from: {name:"Eternum",address:process.env.ADMINS_EMAI||""},
           subject: `Document certifié`,
           html: `<div><h3>Un contract dont vous faites partie a été signé avec succès</h3> <p>${transaction.hash}</p>
           <a href="${codeQR}">optenir code QR</a>
@@ -96,13 +96,11 @@ export const transactionRouter = createRouter()
     })),
     async resolve({ input, ctx }) {
       const { prisma } = ctx;
-      const trs:Array<Transaction>=[]
-    
-      for(let i of input){
+   
+      for(const i of input){
         const { transaction, codeQR, etudiant } = i;
         const email = etudiant.email;
-        const etablissementId = etudiant.etablissemntId;
-        const etudiantId = etudiant.id;
+       
 
         await Transporter.sendMail({
           to: email,
@@ -114,7 +112,11 @@ export const transactionRouter = createRouter()
         });
 
       }
-      const { transaction, codeQR, etudiant } = input[0]!;
+      const { transaction, etudiant } = input[0] as {
+        transaction?: any;
+        etudiant?: any;
+        codeQR: string;
+    };
     return await prisma.transaction.create({
       data: {
         ...transaction,

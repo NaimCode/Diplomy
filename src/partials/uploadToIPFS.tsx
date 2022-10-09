@@ -1,22 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @next/next/no-img-element */
+
 import { Etudiant } from "@prisma/client";
 import { useTranslation } from "next-i18next";
-import Image from "next/image";
 import React, {
   ChangeEvent,
-  ChangeEventHandler,
-  useEffect,
   useRef,
   useState,
 } from "react";
-import { Drawer, Button, Placeholder, Uploader } from "rsuite";
+import { Drawer } from "rsuite";
 import { AddFileIcon, UploadIcon } from "../constants/icons";
 import { Document, Page } from "react-pdf";
 import { useUploadToIPFS } from "../utils/hooks";
 
 type UploadToIPFSProps = {
-  close: Function;
+  close: (s:any)=>void;
   etudiant: Etudiant | undefined;
-  onValid:Function,
+  onValid:(s:any)=>void,
 };
 //TODO: mobile for choisir un fichier
 //TODO: limit size of a file
@@ -33,8 +33,8 @@ const UploadToIPFS = ({ close, etudiant,onValid }: UploadToIPFSProps) => {
     if (files) {
       const f = files[0];
       setfile(f);
-      settype(getType(f?.type!));
-      const url = URL.createObjectURL(f!);
+      settype(getType(f?.type as string));
+      const url = URL.createObjectURL(f as File);
       setpreview(url);
     }
   };
@@ -47,7 +47,7 @@ const UploadToIPFS = ({ close, etudiant,onValid }: UploadToIPFSProps) => {
   };
   const toIPFS = async () => {
     setisLoading(true);
-    const result = await (await store.init()).add(file!);
+    const result = await (await store.init()).add(file as File);
     setisLoading(false);
     setpreview(undefined)
     setfile(undefined)
@@ -68,7 +68,7 @@ const UploadToIPFS = ({ close, etudiant,onValid }: UploadToIPFSProps) => {
           <Drawer.Header closeButton={false}>
             <Drawer.Title className="hidden lg:flex items-center">
               <h6>
-                {etudiant!.prenom} {etudiant!.nom}
+                {etudiant?.prenom} {etudiant?.nom}
               </h6>
             </Drawer.Title>
             <Drawer.Actions>
@@ -93,7 +93,7 @@ const UploadToIPFS = ({ close, etudiant,onValid }: UploadToIPFSProps) => {
           <Drawer.Body className="relative">
             <div>
               {preview ? (
-                <DisplayContent url={preview} type={type!} file={file!} />
+                <DisplayContent url={preview} type={type as string} file={file as File} />
               ) : (
                 <div className="w-full h-[300px] border-dashed border-[1px] flex items-center justify-center">
                   <AddFileIcon className="icon" />
@@ -139,14 +139,12 @@ type DisplayContentProps = {
   file: File;
 };
 const DisplayContent = ({ type, url, file }: DisplayContentProps) => {
-  const [page, setpage] = useState<number | undefined>(undefined);
-  const onLoadPdf = () => {
-    setpage(1);
-  };
+  const [page] = useState<number | undefined>(undefined);
+
 
   if (type == "pdf") {
     return (
-      <Document file={file} onLoadSuccess={() => {}}>
+      <Document file={file} >
         <Page pageNumber={page} />
       </Document>
     );

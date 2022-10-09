@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { motion } from "framer-motion";
 import _ from "lodash";
 import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
-import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -30,9 +30,9 @@ const General = () => {
   const { data: session } = useSession();
   useEffect(() => {
     if (session?.user) {
-      setnom(session.user.name!);
-      setemail(session.user.email!);
-      setphoto(session.user.image!);
+      setnom(session.user.name||"");
+      setemail(session.user.email||"");
+      setphoto(session.user.image||"");
     }
   }, [session?.user]);
   const initData = {
@@ -46,18 +46,16 @@ const General = () => {
   const {
     register,
     handleSubmit,
-    getValues,
     watch,
-    formState: { errors },
   } = useForm<TInput>({
     defaultValues: initData,
   });
-  const {mutate:update, isLoading}=trpc.useMutation(['parametreRouter.update'],{
+  const {mutate:update}=trpc.useMutation(['parametreRouter.update'],{
     onError:(err)=>{
       console.log('err', err)
       toast.success(t('global.toast erreur'))
     },
-    onSuccess:(data)=>{
+    onSuccess:()=>{
 
       toast.success(t('global.toast succes'))
     }
@@ -65,7 +63,7 @@ const General = () => {
   const text = (s: string) => t("workspace.parametre." + s);
   const text1 = (s: string) => t("inscription." + s);
 
-  const updable = () =>  !_.isEqual(initData,watch()) || nom!=session?.user?.name! ||photo!=session?.user?.image!
+  const updable = () =>  !_.isEqual(initData,watch()) || nom!=session?.user?.name ||photo!=session?.user?.image
   
   const { controls } = useMyTransition({ trigger: updable() });
   const onSubmit: SubmitHandler<TInput> = (data) =>
@@ -178,7 +176,6 @@ const Input2 = ({
   error,
   placeholder,
   type,
-  register,
   props,
   value,
   setvalue,

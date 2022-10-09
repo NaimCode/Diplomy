@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { withTRPC } from "@trpc/next";
 import { ThemeProvider, useTheme } from 'next-themes'
 import superjson from "superjson";

@@ -52,7 +52,7 @@ const utilisateur=JSON.parse(JSON.stringify(await prisma?.utilisateur.findUnique
   return {
     props: {
       utilisateur,
-      ...(await serverSideTranslations(context.locale!, ["common"])),
+      ...(await serverSideTranslations(context.locale||"", ["common"])),
     },
   };
 };
@@ -86,7 +86,7 @@ const tabs: Array<TTap> = [
 const Etablissement = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
-  const { t } = useTranslation();
+
   const router = useRouter();
   const currentTab = router.query.tab;
 
@@ -115,6 +115,7 @@ const Tabs = () => {
       {tabs.map((tab, i) => {
         return (
           <span
+          key={i}
             onClick={() => {
               router.push(tab.route, undefined, { shallow: true });
             }}
@@ -142,7 +143,9 @@ const BottomNav = () => {
     <div className={`btm-nav transition-all lg:hidden`}>
       {tabs.map((tab, i) => {
         return (
+
           <button
+          key={i}
             onClick={() => {
               router.push(tab.route, undefined, { shallow: true });
             }}

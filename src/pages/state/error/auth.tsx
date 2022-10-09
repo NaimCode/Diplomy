@@ -6,7 +6,7 @@ import { NextPage } from "next"
 import { useRouter } from "next/router"
 import { NavBackIcon } from "../../../constants/icons"
 //TODO:Styling this page
-const Auth:NextPage = (props) => {
+const Auth:NextPage = () => {
     const {t}=useTranslation()
     const router=useRouter()
   return (

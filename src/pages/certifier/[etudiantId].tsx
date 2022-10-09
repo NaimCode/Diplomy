@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
 import {
   GetServerSideProps,
@@ -42,6 +43,8 @@ import { ethers } from "ethers";
 import CertificationAbi from "../../../web3/build/contracts/Certification.json";
 import { env } from "../../env/client.mjs";
 import { toast } from "react-toastify";
+import { MContract, MFormation } from "../../models/types";
+import { trpc } from "../../utils/trpc";
 
 type FullEtudiantType = Etudiant & {
   document: Document;
@@ -192,22 +195,21 @@ const Certifier = (
     const intitule =
       formation.versionnage &&
       versions[versions.length - 1]?.diplome.intituleDiff
-        ? versions[versions.length - 1]?.diplome.intitule
-        : formation.intitule;
+        ? versions[versions.length - 1]?.diplome.intitule as string
+        : formation.intitule as string;
 
     const version = formation.versionnage
-      ? versions[versions.length - 1]?.numero.toString()
+      ? versions[versions.length - 1]?.numero.toString()||""
       : "";
 
     console.log("formation.versions[-1]", formation.versions[-1]);
-    const diplome: Diplome = formation.versionnage
+    const diplome: Diplome|undefined = formation.versionnage
       ? versions[versions.length - 1]?.diplome
       : formation.diplome;
-    console.log("diplome", diplome);
 
     //TODO: change type according to language
-    const type = diplome.estVirtuel ? "Virtuel" : "Physique";
-    const months = diplome.expiration ? diplome.dureeExpiration : undefined;
+    const type = diplome?.estVirtuel ? "Virtuel" : "Physique";
+    const months = diplome?.expiration ? diplome?.dureeExpiration : undefined;
 
     const expiration = months ? addMonths(months) : "";
     return {
@@ -241,21 +243,21 @@ const Certifier = (
       ? versions[versions.length - 1]?.numero.toString()
       : "";
 
-    const diplome: Diplome = formation.versionnage
+    const diplome: Diplome |undefined= formation.versionnage
       ? versions[versions.length - 1]?.diplome
       : formation.diplome;
 
     //TODO: change type according to language
-    const type = diplome.estVirtuel ? "Virtuel" : "Physique";
-    const months = diplome.expiration ? diplome.dureeExpiration : undefined;
+    const type = diplome?.estVirtuel ? "Virtuel" : "Physique";
+    const months = diplome?.expiration ? diplome?.dureeExpiration : undefined;
 
     const expiration = months ? addMonths(months) : "";
     return {
-      intitule,
+      intitule:intitule as string,
       etablissementHash,
       nom,
       prenom,
-      version,
+      version:version as string,
       documentHash,
       type,
       expiration,
@@ -384,12 +386,12 @@ const Certifier = (
     },
   });
   const { mutate: certifierMultiple } = trpc.useMutation(["transaction.certifier multiple"], {
-    onError: (err) => {
+    onError: (err:any) => {
       console.log("error", err);
       toast.error(t("global.toast erreur"));
       setisWeb3Loading(false);
     },
-    onSuccess: (data) => {
+    onSuccess: (data:any) => {
       settransactionDone(data);
       setisWeb3Loading(false);
     },

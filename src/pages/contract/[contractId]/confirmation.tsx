@@ -1,11 +1,5 @@
-import {
-  ContractMembre,
-  Etablissement,
-  Formation,
-  Version,
-  Diplome,
-} from "@prisma/client";
-import { Contract } from "ethers";
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { useTranslation } from "next-i18next";
@@ -14,7 +8,7 @@ import router from "next/router";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { ArrayRightIcon, PlusIcon, SchoolIcon } from "../../../constants/icons";
-import { MContract, MContractMembre, MEtablissement, MFormation } from "../../../models/types";
+import { MContract, MContractMembre, MFormation } from "../../../models/types";
 import { trpc } from "../../../utils/trpc";
 import { authOptions } from "../../api/auth/[...nextauth]";
 
@@ -111,7 +105,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       contract,
       conditions,
       utilisateur,
-      ...(await serverSideTranslations(context.locale!, ["common"])),
+      ...(await serverSideTranslations(context.locale||"", ["common"])),
     },
   };
 };
@@ -128,7 +122,7 @@ const Confirmation = (
       (m) => m.etablissementId == props.utilisateur.etablissementId
     )[0]?.confirm;
 
-    setconfirm(c!);
+    setconfirm(c||false);
     toast.warning(text("tous refuser"));
   }, []);
 
@@ -139,7 +133,9 @@ const Confirmation = (
       toast.error(t("global.toast erreur"));
       console.log("err", err);
     },
-    onSuccess(data, variables, context) {
+    onSuccess(data, variables) {
+      console.log(data);
+      
       if (variables.confirmation) {
         toast.success("workspace.relation.vous avez confirme");
       } else {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { unstable_getServerSession } from "next-auth";
@@ -6,7 +7,7 @@ import Workspace from "../../../../components/Workspace";
 import { prisma } from "../../../../server/db/client";
 import { useTranslation } from "next-i18next";
 import { AddFileIcon, AddIcon, DeleteIcon } from "../../../../constants/icons";
-import { Diplome, Formation, Version } from "@prisma/client";
+import { Diplome, Version } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import InputForm, { TextAreaForm } from "../../../../components/InputForm";
 import { motion } from "framer-motion";
@@ -108,7 +109,7 @@ const FormationItem = (
   });
   const { t } = useTranslation();
   const deleteFormation = trpc.useMutation(["formation.delete"], {
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success(t("global.toast succes"));
       router.back();
     },

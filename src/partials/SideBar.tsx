@@ -18,7 +18,6 @@ import { useTheme } from "next-themes";
 import useWindowDimensions from "../utils/hooks";
 import ThemeSwitcher from "../components/ThemeSwitcher";
 import LanguageChanger from "../components/LanguageChanger";
-import LogOut from "../components/LogOut";
 import AvatarButton from "../components/Avatar";
 type TMenuItem = {
   title: string;
@@ -144,14 +143,14 @@ const Contact = () => {
     setisDark(theme == "dark");
   }, [theme]);
 
-  const { height, width } = useWindowDimensions();
+  const { height } = useWindowDimensions();
   return (
     <div
       className={`flex flex-col items-center gap-1 lg:gap-2 lg:translate-y-3`}
     >
       <div
         className={`${
-          height! <= 900 && "hidden lg:block h-[200px] w-[200px]"
+          height||900 <= 900 && "hidden lg:block h-[200px] w-[200px]"
         } `}
       >
         <MyLottie animationData={isDark ? animationDataDark : animationData} />
@@ -164,7 +163,5 @@ const Contact = () => {
   );
 };
 
-const ProfilCard = () => {
-  return <div></div>;
-};
+
 export default SideBar;

@@ -1,16 +1,13 @@
 import { signIn, useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
-import { useTheme } from "next-themes";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import ThemeSwitcher from "../components/ThemeSwitcher";
 import LanguageChanger from "../components/LanguageChanger";
 
-import Logo,{LogoBrand} from "../components/Logo";
-import { FileIcon } from "../constants/icons";
+import {LogoBrand} from "../components/Logo";
 
 const NavBar = () => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const handleSignIn = () => {
     if (session) {

@@ -1,4 +1,4 @@
-import { ContractMembre, Etablissement } from "@prisma/client";
+import {  Etablissement } from "@prisma/client";
 import { z } from "zod";
 import { getBaseUrl } from "../../../pages/_app";
 import { Transporter } from "../../../utils/nodemailer";
@@ -29,7 +29,7 @@ export const contractRouter = createRouter()
         console.log('before');
         await Transporter.sendMail({
           to: listEmail,
-          from: {name:'Eternum',address:process.env.ADMINS_EMAIL!},
+          from: {name:'Eternum',address:process.env.ADMINS_EMAIL||""},
           subject: `Demande de parténariat`,
           html: `<div><h3>Vous venez de recevoir une demande de parténariat, veuillez vous connectez pour l'accepter ou refuser</h3> <a href="${getBaseUrl()}/workspace/relation">Mon space de relation</a></div>`
         }).catch((err)=>{
@@ -103,7 +103,7 @@ export const contractRouter = createRouter()
               accept: false,
               etablissement: {
                 membresAutorises: {
-                  has: session?.user?.email!,
+                  has: session?.user?.email||"",
                 },
               },
             },
