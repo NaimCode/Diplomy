@@ -19,6 +19,7 @@ export const serverSchema = z.object({
   GOOGLE_CLIENT_ID:z.string(),
   GOOGLE_CLIENT_SECRET:z.string(),
   ADMINS_PASSWORD:z.string(),
+  DATABASE_TYPE:z.string()
 
 });
 
