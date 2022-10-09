@@ -1,5 +1,4 @@
 import { useTranslation } from "next-i18next";
-import Link from "next/link";
 import router from "next/router";
 import { Fragment } from "react";
 import { ArrayRightIcon } from "../constants/icons";

@@ -1,13 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
 import {
   GetServerSideProps,
   InferGetServerSidePropsType,
-  NextPage,
 } from "next";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { unstable_getServerSession } from "next-auth";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import React, { Fragment, useEffect, useState } from "react";
-import { authOptions } from "../api/auth/[...nextauth]";
+import React, { useState } from "react";
 import { prisma } from "../../server/db/client";
 import {
   Diplome,
@@ -35,7 +33,6 @@ import {
 } from "../../constants/icons";
 import {
   GATEWAY_IPFS,
-  useMyTheme,
   useMyTransition,
   useQR,
 } from "../../utils/hooks";
@@ -45,10 +42,6 @@ import { ethers } from "ethers";
 import CertificationAbi from "../../../web3/build/contracts/Certification.json";
 import { env } from "../../env/client.mjs";
 import { toast } from "react-toastify";
-import dark from "react-syntax-highlighter/dist/esm/styles/hljs/dark";
-import light from "react-syntax-highlighter/dist/esm/light";
-import { trpc } from "../../utils/trpc";
-import { MContract, MFormation } from "../../models/types";
 
 type FullEtudiantType = Etudiant & {
   document: Document;
@@ -59,11 +52,6 @@ type FullEtudiantType = Etudiant & {
   };
 };
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authOptions
-  );
 
   const id = context.query.etudiantId as string;
   const etudiant: FullEtudiantType = await prisma.etudiant
@@ -138,7 +126,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 // console.log(contracts);
 
-  for (let c of contracts) {
+  for (const c of contracts) {
     const etudiants: Array<Etudiant> = c.membres
       .map((m) =>
         m.etablissement.etudiants.filter((e) => e.email == etudiant.email)
@@ -157,7 +145,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       etudiant,
       formations_aboutissantes,
-      ...(await serverSideTranslations(context.locale!, ["common"])),
+      ...(await serverSideTranslations(context.locale||"", ["common"])),
     },
   };
 };
@@ -168,7 +156,6 @@ const Certifier = (
   const web3 = useWeb3Connection();
   const [isWeb3Loading, setisWeb3Loading] = useState(false);
   const [transactionDone, settransactionDone] = useState<any | undefined>();
-  const { isDark } = useMyTheme();
 
   const etudiant: FullEtudiantType = props.etudiant;
   const { controls } = useMyTransition({
@@ -205,16 +192,16 @@ const Certifier = (
     const intitule =
       formation.versionnage &&
       versions[versions.length - 1]?.diplome.intituleDiff
-        ? versions[versions.length - 1]?.diplome.intitule!
+        ? versions[versions.length - 1]?.diplome.intitule
         : formation.intitule;
 
     const version = formation.versionnage
-      ? versions[versions.length - 1]?.numero.toString()!
+      ? versions[versions.length - 1]?.numero.toString()
       : "";
 
     console.log("formation.versions[-1]", formation.versions[-1]);
     const diplome: Diplome = formation.versionnage
-      ? versions[versions.length - 1]?.diplome!
+      ? versions[versions.length - 1]?.diplome
       : formation.diplome;
     console.log("diplome", diplome);
 
@@ -247,15 +234,15 @@ const Certifier = (
     const intitule =
       formation.versionnage &&
       versions[versions.length - 1]?.diplome.intituleDiff
-        ? versions[versions.length - 1]?.diplome.intitule!
+        ? versions[versions.length - 1]?.diplome.intitule
         : formation.intitule;
 
     const version = formation.versionnage
-      ? versions[versions.length - 1]?.numero.toString()!
+      ? versions[versions.length - 1]?.numero.toString()
       : "";
 
     const diplome: Diplome = formation.versionnage
-      ? versions[versions.length - 1]?.diplome!
+      ? versions[versions.length - 1]?.diplome
       : formation.diplome;
 
     //TODO: change type according to language
@@ -277,9 +264,7 @@ const Certifier = (
 
   const onSign = async () => {
     //TODO: auto convertion
-    const provider = new ethers.providers.Web3Provider(
-      (window as any).ethereum
-    );
+
     console.log("price", env.NEXT_PUBLIC_PRICE);
     const hashs:Array<{transaction:object,codeQR:string,etudiant:any}>=[]
     const contract = new ethers.Contract(
@@ -287,7 +272,7 @@ const Certifier = (
       CertificationAbi.abi,
       web3.provider
     );
-    const signer = web3.provider!.getSigner();
+    const signer = web3.provider?.getSigner();
     if (!signer) {
       toast.error(t("web3.rejeter"));
     } else {
@@ -308,7 +293,7 @@ const Certifier = (
           info.version,
           info.expiration,
           info.type,
-          ethers.utils.getAddress(web3.account!),
+          ethers.utils.getAddress(web3.account||''),
           { value: env.NEXT_PUBLIC_PRICE }
         );
         const input={
@@ -329,7 +314,7 @@ const Certifier = (
         certifier(input)
         }else{
          
-          for(let f of props.formations_aboutissantes){
+          for(const f of props.formations_aboutissantes){
             const info = getInfoForContractMulti(etudiant,f);
            const hash = await contractSigner.NouveauDiplome(
               info.intitule,
@@ -340,7 +325,7 @@ const Certifier = (
               info.version,
               info.expiration,
               info.type,
-              ethers.utils.getAddress(web3.account!),
+              ethers.utils.getAddress(web3.account||""),
               { value: env.NEXT_PUBLIC_PRICE }
             );
 
@@ -392,7 +377,7 @@ const Certifier = (
       toast.error(t("global.toast erreur"));
       setisWeb3Loading(false);
     },
-    onSuccess: (data,variable) => {
+    onSuccess: (data) => {
      
       settransactionDone(data);
       setisWeb3Loading(false);
@@ -436,7 +421,7 @@ const Certifier = (
           <div className="divider"></div>
          {props.formations_aboutissantes.length!=0&& 
          <div className="bg-warning p-4 my-6 bg-opacity-60 border-warning">
-          L'etudiant a rempli les conditions pour {props.formations_aboutissantes.length} contrat(s) 
+          {t('workspace.relation.conditions rempli')} {props.formations_aboutissantes.length} {t('workspace.relation.contract(s)')} 
           </div>}
           <div className="w-full space-y-3">
             <div className="flex flex-row gap-4 items-center">
@@ -505,6 +490,7 @@ const Certifier = (
               </button>
               <a
                 target={"_blank"}
+                rel="noreferrer"
                 href={qr.generate(transactionDone.hash)}
                 className="btn btn-ghost gap-2 no-underline"
               >

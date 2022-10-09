@@ -1,14 +1,9 @@
-import {
-  Diplome,
-  Etablissement,
-  Etudiant,
-  Formation,
-  Version,
-} from "@prisma/client";
-import { ContractFactory, ethers } from "ethers";
+/* eslint-disable @next/next/no-img-element */
+
+import { ContractFactory } from "ethers";
 import { motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { unstable_getServerSession } from "next-auth";
+
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import router from "next/router";
@@ -19,24 +14,19 @@ import { toast } from "react-toastify";
 import MyLottie from "../../../components/MyLottie";
 import {
   BackIcon,
-  PersonIcon,
-  EmailIcon,
-  DiplomaIcon,
+
   CopyIcon,
   CodeQRIcon,
 } from "../../../constants/icons";
 import { env } from "../../../env/client.mjs";
 import {
-  useMyTheme,
+
   useMyTransition,
   useQR,
-  GATEWAY_IPFS,
 } from "../../../utils/hooks";
 import { trpc } from "../../../utils/trpc";
 import { useWeb3Connection } from "../../../utils/web3";
-import { authOptions } from "../../api/auth/[...nextauth]";
 import { Loading, Message } from "../[etudiantId]";
-import animationData from "../../../../public/lotties/ether_loading.json";
 import animationData2 from "../../../../public/lotties/checkout.json";
 import bravoAnimation from "../../../../public/lotties/bravo.json";
 import checkAnimation from "../../../../public/lotties/check.json";
@@ -44,11 +34,7 @@ import { MContract, MFormation } from "../../../models/types";
 import { FormationItem } from "../../contract/[contractId]/confirmation";
 import Partenariat from "../../../../web3/build/contracts/Partenariat.json";
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authOptions
-  );
+
 
   const id = context.query.contractId as string;
   const contract: MContract = await prisma?.contract
@@ -88,24 +74,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       contract,
       formations,
-      ...(await serverSideTranslations(context.locale!, ["common"])),
+      ...(await serverSideTranslations(context.locale||"", ["common"])),
     },
   };
 };
 
-type FullEtudiantType = Etudiant & {
-  document: Document;
-  etablissement: Etablissement;
-  formation: Formation & {
-    versions: Array<Version & { diplome: Diplome }>;
-    diplome: Diplome;
-  };
-};
+
 const Certifier = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const web3 = useWeb3Connection();
   const [isWeb3Loading, setisWeb3Loading] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [transactionDone, settransactionDone] = useState<any | undefined>();
   const contract: MContract = props.contract;
   const formations: Array<MFormation> = props.formations;
@@ -114,16 +94,7 @@ const Certifier = (
   });
   const { t } = useTranslation();
 
-  type CertificationProps = {
-    intitule: string;
-    documentHash: string;
-    nom: string;
-    etablissementHash: string;
-    prenom: string;
-    expiration: string;
-    type: string;
-    version: string;
-  };
+
   //test
   const { mutate: certifier } = trpc.useMutation(
     ["transaction.certifier contract"],
@@ -139,15 +110,10 @@ const Certifier = (
       },
     }
   );
-  function addMonths(numOfMonths: number, date = new Date()) {
-    date.setMonth(date.getMonth() + numOfMonths);
-    console.log("toLocaleDateString", date.toLocaleDateString());
 
-    return date.toLocaleDateString();
-  }
   const qr=useQR()
   const onSign = async () => {
-    const signer = web3.provider!.getSigner();
+    const signer = web3.provider?.getSigner();
     const factory = new ContractFactory(
       Partenariat.abi,
       Partenariat.bytecode,
@@ -185,7 +151,7 @@ const Certifier = (
 
     certifier({
       codeQR:qr.generate(contractSigner.deployTransaction.hash,160),
-      emails:formations.map((e)=>e.etablissement.membresAutorises[0]!),
+      emails:formations.map((e)=>e.etablissement.membresAutorises[0]||""),
       address: contractSigner.address,
       id: c.id,
       transaction: {
@@ -248,7 +214,7 @@ const Certifier = (
             >
               <div className="min-w-[50px] max-w-[50px] object-center">
                 <img
-                  src={m.etablissement.logo!}
+                  src={m.etablissement.logo||""}
                   alt="logo"
                   className="object-cover"
                 />
@@ -265,7 +231,7 @@ const Certifier = (
             <h6 className="my-3">{t("workspace.relation.step 2")}</h6>
 
             {formations.map((m, i) => (
-              <FormationItem item={m} classCard="rounded-md" />
+              <FormationItem key={i} item={m} classCard="rounded-md" />
             ))}
           </div>
           <div className="divider"></div>
@@ -319,7 +285,7 @@ const Certifier = (
                 <CopyIcon className="text-lg" />
                 {t("web3.copier le hash")}
               </button>
-              <a target={"_blank"} href={qr.generate(transactionDone.hash)} className="btn btn-ghost gap-2 no-underline">
+              <a  rel="noreferrer" target={"_blank"} href={qr.generate(transactionDone.hash)} className="btn btn-ghost gap-2 no-underline">
                 <CodeQRIcon className="text-lg"/>
                 {t('web3.QR code')}</a>
 
