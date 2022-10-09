@@ -1,4 +1,4 @@
-import { env } from "./src/env/server.mjs";
+
 import pkg from "./next-i18next.config.js";
 const { i18n } = pkg;
 /**
