@@ -95,7 +95,7 @@ type EtudiantInputType = {
 const DialogAdd = ({ refetch }: { refetch: any }) => {
   const { etablissement } = useContext(FullUserContext);
   //TODO: fix first formation get error
-  const [formation, setformation] = useState<string | undefined>(etablissement.formations[0].id);
+  const [formation, setformation] = useState<string | undefined>(etablissement.formations[0]?.id);
   const {
     register,
     handleSubmit,
@@ -169,6 +169,9 @@ const DialogAdd = ({ refetch }: { refetch: any }) => {
         </div>
         <select
           value={formation}
+          required
+          onInvalid={e => (e.target as HTMLInputElement).setCustomValidity(t('global.onInvalid'))}
+          onInput={e => (e.target as HTMLInputElement).setCustomValidity('')}
           onChange={(e) => setformation(e.target.value)}
           className="select w-full"
         >

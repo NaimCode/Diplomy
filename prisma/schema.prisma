@@ -11,7 +11,7 @@ datasource db {
     // Further reading: 
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+    url      = "postgres://naim:yxY8ebSrd33pFsn6kbRAlmqQW5t1lGdf@dpg-cd1efiqen0hm1trbdtf0-a.frankfurt-postgres.render.com/eternum"//env("DATABASE_URL")
 }
 
 model Example {
