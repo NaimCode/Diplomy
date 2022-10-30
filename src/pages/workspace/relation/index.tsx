@@ -34,6 +34,7 @@ import { DialogOk } from "../../../components/Dialog";
 import { DialogNoMetaMask } from "../../../partials/etudiants/Attente";
 import { MContract } from "../../../models/types";
 import {prisma} from "../../../server/db/client"
+import { GrUpdate } from "react-icons/gr";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
     context.req,
@@ -159,15 +160,32 @@ const Relation = (
                     : status == "signer"
                     ? "badge-primary"
                     : "";
-
+               // const update=()=><button onClick={()=>{}} className="btn btn-sm">{t('global.modifier')}</button>
                 //TODO: date to locale
                 const date = new Date(
                   c.createAt.toString()
                 ).toLocaleDateString();
 
                 return (
-                  <div
-                    onClick={() => {
+              
+                   <div
+ 
+                    key={i}
+                    className={`p-5  w-full  rounded-lg cursor-pointer transition-all duration-300 bg-base-200`}
+                  >
+                    <div className="flex flex-row gap-4 relative">
+
+                    <p className={`badge ${badge}`}>
+                      {t("workspace.relation.status " + status)}
+                    </p>
+                   
+                    </div>
+                    <p className="text-[10px] italic">
+                      {t("workspace.relation.entre")}
+                    </p>
+                    <div 
+                    //TODO: change trigger
+                                       onClick={() => {
                       if (status == "incomplet") {
                         //  setincompletDialog(true)
                         router.push("/contract/" + c.id);
@@ -185,16 +203,7 @@ const Relation = (
                         }
                       }
                     }}
-                    key={i}
-                    className={`p-5  w-full  rounded-lg cursor-pointer hover:shadow-md transition-all duration-300 bg-base-200`}
-                  >
-                    <p className={`badge ${badge}`}>
-                      {t("workspace.relation.status " + status)}
-                    </p>
-                    <p className="text-[10px] italic">
-                      {t("workspace.relation.entre")}
-                    </p>
-                    <div className="flex flex-wrap gap-3">
+                    className="flex flex-wrap gap-3">
                       {c.membres.map((m, i) => (
                         <div
                           key={i}
@@ -230,6 +239,16 @@ const Relation = (
                         </div>
                       ))}
                     </div>
+                    <div className="flex-wrap justify-center lg:justify-end gap-3 items-center flex">
+                      <button
+                      onClick={()=>router.push("/contract/"+c.id)}
+                        className="btn btn-primary btn-outline btn-sm lg:btn-sm gap-2 "
+                      >
+                        {t("global.modifier")}
+                      </button>
+                   
+                  
+                    </div>
                     <div className="w-full flex justify-end">
                       <p className="label-text text-[12px] opacity-40">
                         {" "}
@@ -237,6 +256,7 @@ const Relation = (
                       </p>
                     </div>
                   </div>
+               
                 );
               })}
           </div>
