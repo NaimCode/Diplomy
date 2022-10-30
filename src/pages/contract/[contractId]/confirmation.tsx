@@ -6,7 +6,7 @@ import { unstable_getServerSession } from "next-auth";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import router from "next/router";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { ArrayRightIcon, PlusIcon, SchoolIcon } from "../../../constants/icons";
 import { MContract, MContractMembre, MFormation } from "../../../models/types";
@@ -153,7 +153,7 @@ const Confirmation = (
     onConfirm({ avis, id });
   };
   return (
-    <div className="relative w-screen flex flex-col items-center justify-center px-3 py-10">
+    <div className="relative w-screen flex flex-col items-center justify-center px-3 py-10 ">
       <div className="flex flex-col lg:flex-row items-center justify-center">
         <div className="flex flex-col items-center">
           {(props.conditions as Array<MFormation>).map((f, i) => {
@@ -234,11 +234,11 @@ type TChat = {
   contract: MContract;
   props: any;
 };
-const Chat = ({ contractId, etablissementId, contract, props }: TChat) => {
+const Chat = ({  contract, props }: TChat) => {
   const { t } = useTranslation();
   const {
     data: chats,
-    isLoading: isLoadingChats,
+   
     refetch,
   } = trpc.useQuery(["contract.get chat", contract.id]);
   const { mutate: addChat, isLoading: isLoadingAdding } = trpc.useMutation(
@@ -256,7 +256,7 @@ const Chat = ({ contractId, etablissementId, contract, props }: TChat) => {
   const [parent] = useAutoAnimate(/* optional config */);
 
   const [content, setcontent] = useState("");
-  const onAdd = (e) => {
+  const onAdd = (e:FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const c = contract.membres.filter(
       (m) => m.etablissementId == props.utilisateur.etablissementId
@@ -284,7 +284,7 @@ const Chat = ({ contractId, etablissementId, contract, props }: TChat) => {
             className="textarea w-full shadow-md"
           />
           <button type="submit" className="btn shadow-md">
-            <SendIcon className="icon" />
+            <SendIcon className={`icon ${isLoadingAdding&&"loading"}`} />
           </button>
         </form>
         {chats?.length == 0 ? (

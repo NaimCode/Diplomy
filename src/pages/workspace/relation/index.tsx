@@ -125,7 +125,7 @@ const Relation = (
     }
   ): "incomplet" | "finalisation" | "signer" => {
     if (c.aboutissementId && c.conditionsId.length >= 1) {
-      if (c.membres.every((m) => m.confirm == true)) {
+      if (c.membres.every((m) => m.avis == 'CONFIRME')) {
         return "signer";
       } else {
         return "finalisation";

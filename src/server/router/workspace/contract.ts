@@ -157,7 +157,7 @@ export const contractRouter = createRouter()
       const { prisma } = ctx;
       const { id, avis } = input;
       console.log(id);
-      
+      //TODO: delete after all refuse
       return await prisma.contractMembre.update({
         where: {
           id,
