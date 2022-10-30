@@ -12,6 +12,7 @@ import {CgSandClock} from "react-icons/cg"
 import {AiFillEdit, AiOutlineOrderedList, AiOutlinePlus} from "react-icons/ai"
 import {GoSettings} from 'react-icons/go'
 import {BiCheckbox, BiCheckboxChecked,BiCheckboxMinus} from 'react-icons/bi'
+import {RiMailSendLine} from 'react-icons/ri'
 export const FileIcon=RiFileTextLine
 export const LanguageIcon=TbLanguage
 export const ExpandMoreIcon=MdExpandMore
@@ -61,3 +62,4 @@ export const SearchIcon=BsSearch
 export const Check2Icon=BiCheckboxChecked
 export const CheckMidIcon=BiCheckboxMinus
 export const CheckNoIcon=BiCheckbox
+export const SendIcon=RiMailSendLine

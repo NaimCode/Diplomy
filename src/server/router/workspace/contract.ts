@@ -174,6 +174,12 @@ export const contractRouter = createRouter()
        return ctx.prisma.chat.findMany({
         where:{
           contractId:input
+        },
+        orderBy:{
+          updateAt:'desc'
+        },
+        include:{
+          etablissement:true
         }
        })
     }
@@ -185,6 +191,7 @@ export const contractRouter = createRouter()
       etablissementId:z.string()
     }),
    async resolve({input,ctx}){
+    console.log('input', input)
       return ctx.prisma.chat.create({
         data:input
       })
