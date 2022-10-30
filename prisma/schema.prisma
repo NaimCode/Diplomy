@@ -266,7 +266,8 @@ model ContractMembre{
     //field
     accept Boolean @default(false)
     confirm Boolean @default(false)
-
+       avis AvisMembre @default(ATTENTE)
+    
     contractId String 
     Contract Contract @relation(fields: [contractId],references: [id],onDelete: Cascade)
 
@@ -282,3 +283,9 @@ enum TransactionType{
    CONTRACT
 }
 
+enum AvisMembre{
+    REFUSE
+    ATTENTE
+    ACCEPTE
+    ACCEPTE_EN_SURCIS
+}

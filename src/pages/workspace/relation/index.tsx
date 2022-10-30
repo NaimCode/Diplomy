@@ -240,12 +240,13 @@ const Relation = (
                       ))}
                     </div>
                     <div className="flex-wrap justify-center lg:justify-end gap-3 items-center flex">
-                      <button
+                      {status == "finalisation"?   <button
                       onClick={()=>router.push("/contract/"+c.id)}
                         className="btn btn-primary btn-outline btn-sm lg:btn-sm gap-2 "
                       >
                         {t("global.modifier")}
-                      </button>
+                      </button>:null }
+                   
                    
                   
                     </div>
