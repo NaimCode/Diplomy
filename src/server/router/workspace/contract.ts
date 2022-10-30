@@ -87,6 +87,7 @@ export const contractRouter = createRouter()
           },
           data: {
             confirm: true,
+            avis:"CONFIRME"
           },
         }),
       ]);
@@ -148,13 +149,13 @@ export const contractRouter = createRouter()
   })
   .mutation("confirmation", {
     input: z.object({
-      confirmation: z.boolean(),
+      avis: z.enum(['ATTENTE',"CONFIRME","CONFIRME_CONDITION","REFUSE"]),
       id: z.string(),
     }),
     async resolve({ input, ctx }) {
       //TODO: delete when all confirmation=false
       const { prisma } = ctx;
-      const { id, confirmation } = input;
+      const { id, avis } = input;
       console.log(id);
       
       return await prisma.contractMembre.update({
@@ -162,8 +163,30 @@ export const contractRouter = createRouter()
           id,
         },
         data: {
-          confirm: confirmation,
+        
+          avis
         },
       });
     },
+  }).query('get chat',{
+    input:z.string(),
+    async resolve({input,ctx}){
+       return ctx.prisma.chat.findMany({
+        where:{
+          contractId:input
+        }
+       })
+    }
+  })
+  .mutation('add chat',{
+    input:z.object({
+      contractId:z.string(),
+      content:z.string(),
+      etablissementId:z.string()
+    }),
+   async resolve({input,ctx}){
+      return ctx.prisma.chat.create({
+        data:input
+      })
+   }
   });

@@ -102,20 +102,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
+
+type TAvis="ATTENTE"|"CONFIRME"|"REFUSE"|"CONFIRME_CONDITION"
+
 const Confirmation = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { t } = useTranslation();
 
-  const [confirm, setconfirm] = useState(false);
+  const [avis, setAvis] = useState<TAvis>('ATTENTE');
   useEffect(() => {
     const contract: MContract = props.contract;
     const c = contract.membres.filter(
       (m) => m.etablissementId == props.utilisateur.etablissementId
-    )[0]?.confirm;
+    )[0]?.avis;
 
-    setconfirm(c||false);
-    toast.warning(text("tous refuser"));
+    setAvis(c||"ATTENTE");
+   // toast.warning(text("tous refuser"));
   }, []);
 
   const text = (s: string) => t("workspace.relation." + s);
@@ -125,19 +128,23 @@ const Confirmation = (
       toast.error(t("global.toast erreur"));
       console.log("err", err);
     },
-    onSuccess(data, variables) {
+    onSuccess(data) {
       console.log(data);
       
-      if (variables.confirmation) {
-        toast.success("workspace.relation.vous avez confirme");
-      } else {
-        toast.success("workspace.relation.vous avez refuse");
-      }
+      // if (variables.confirmation) {
+      //   toast.success("workspace.relation.vous avez confirme");
+      // } else {
+      //   toast.success("workspace.relation.vous avez refuse");
+      // }
       router.push("/workspace/relation");
     },
   });
+  const onSelect=(avis:TAvis) => {
+    const id=props.contract.membres.filter((f:MContractMembre)=>f.etablissementId==props.utilisateur.etablissementId)[0].id
+    onConfirm({avis,id})
+  }
   return (
-    <div className="relative h-screen w-screen flex flex-col items-center justify-center px-3">
+    <div className="relative w-screen flex flex-col items-center justify-center px-3 py-10">
       <div className="flex flex-col lg:flex-row items-center justify-center">
         <div className="flex flex-col items-center">
           {(props.conditions as Array<MFormation>).map((f, i) => {
@@ -155,29 +162,42 @@ const Confirmation = (
           classCard="text-primary shadow-md"
         />
       </div>
-
-      <div className="flex flex-row gap-10 py-10 fixed bottom-5 left-[50%] -translate-x-[50%]">
+ <br/>
+ <br/>
+      <div className="flex flex-wrap items-center justify-center gap-2 lg:gap-10 py-4 lg:py-10 ">
         <button
-          disabled={!confirm}
-          onClick={() => {
-            const id=props.contract.membres.filter((f:MContractMembre)=>f.etablissementId==props.utilisateur.etablissementId)[0].id
-            onConfirm({confirmation:false,id})
-          }}
+             disabled={avis=="REFUSE"}
+          onClick={()=>onSelect('REFUSE')}
          className= {`btn btn-outline btn-error ${isLoading&&"loading"}`}
         >
           {text("refuser")}
         </button>
         <button
-          disabled={confirm}
-          onClick={() => {
-            const id=props.contract.membres.filter((f:MContractMembre)=>f.etablissementId==props.utilisateur.etablissementId)[0].id
-            onConfirm({confirmation:true,id})
-          }}
+         
+          disabled={avis=="ATTENTE"}
+          onClick={()=>onSelect('ATTENTE')}
+         className= {`btn btn-outline ${isLoading&&"loading"}`}
+        >
+          {text("ATTENTE")}
+        </button>
+        <button
+           disabled={avis=="CONFIRME"}
+           onClick={()=>onSelect('CONFIRME')}
           className={`btn btn-outline btn-primary ${isLoading&&"loading"}`}
         >
           {text("accepter")}
         </button>
+        <button
+          disabled={avis=="CONFIRME_CONDITION"}
+          onClick={()=>onSelect('CONFIRME_CONDITION')}
+          className={`btn btn-outline btn-info`}
+        >
+          {text("accepter condition")}
+        </button>
       </div>
+      <div className="divider"/>
+
+      <Chat contract={props.contract}/>
     </div>
   );
 };
@@ -199,5 +219,40 @@ export const FormationItem = ({
     </div>
   );
 };
+
+
+type TChat={
+contractId?:string,
+etablissementId?:string,
+contract:MContract
+}
+const Chat=({contractId,etablissementId,contract}:TChat)=>{
+  const {t}=useTranslation()
+  const {data:chats,isLoading:isLoadingChats,refetch}=trpc.useQuery(['contract.get chat',contract.id])
+const {mutate:addChat,isLoading:isLoadingAdding}=trpc.useMutation(['contract.add chat'],{
+  onError:(err)=>{
+    toast.error(t("global.toast erreur"));
+    console.log("err", err);
+  },
+  onSuccess:()=>{
+    refetch()
+  }
+})
+const [content, setcontent] = useState('')
+const onAdd=()=>{
+  const c = contract.membres.filter(
+    (m) => m.etablissementId == props.utilisateur.etablissementId
+  )[0]
+  addChat({contractId:contract.id,etablissementId:c?.id||"",content})
+}
+return <div className="max-w-[700px] w-full p-4">
+<p className="py-1 pl-3 border-l-4 border-warning">{t('workspace.relation.chat')}</p>
+<div className="flex flex-col bg-base-200 min-h-[400px] w-full my-3 p-3 gap-3">
+   {chats?.length==0? <div className="flex-grow justify-center items-center">
+        
+        </div>: null}
+</div>
+</div>
+}
 
 export default Confirmation;

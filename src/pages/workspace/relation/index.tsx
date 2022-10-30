@@ -11,7 +11,10 @@ import {
   AddIcon,
   ArrowDownIcon,
   ArrowUpIcon,
+  Check2Icon,
   CheckIcon,
+  CheckMidIcon,
+  CheckNoIcon,
   CloseIcon,
   CodeQRIcon,
   CopyIcon,
@@ -220,20 +223,27 @@ const Relation = (
                             <p>{m.etablissement.nom}</p>
                             <h6>{m.etablissement.abrev}</h6>
                             {status != "incomplet" && (
-                              <p
-                                className={`flex flex-row gap-3 items-center ${
-                                  m.confirm ? "text-primary" : "opacity-40"
-                                }`}
-                              >
-                                {m.confirm ? (
-                                  <RadioActiveIcon />
-                                ) : (
-                                  <RadioDisabledIcon />
-                                )}{" "}
-                                {m.confirm
-                                  ? text("confirme")
-                                  : text("en attente")}
+                              <p className={`flex flex-row gap-1 items-center  ${m.avis=='ATTENTE'&&"opacity-40"} ${m.avis=='CONFIRME'&&"text-primary"} ${m.avis=='REFUSE'&&"text-red-500"} ${m.avis=='CONFIRME_CONDITION'&&"text-pink-500"}`}>
+                                {m.avis=='ATTENTE'&& <CheckNoIcon className="text-lg"/>}
+                                {m.avis=='CONFIRME'&& <Check2Icon className="text-lg"/>}
+                                {m.avis=='CONFIRME_CONDITION'&& <CheckMidIcon className="text-lg"/>}
+                                {m.avis=='REFUSE'&& <CloseIcon className="text-lg"/>}
+                                {text(m.avis)}
                               </p>
+                              // <p
+                              //   className={`flex flex-row gap-3 items-center ${
+                              //     m.confirm ? "text-primary" : "opacity-40"
+                              //   }`}
+                              // >
+                              //   {m.confirm ? (
+                              //     <RadioActiveIcon />
+                              //   ) : (
+                              //     <RadioDisabledIcon />
+                              //   )}{" "}
+                              //   {m.confirm
+                              //     ? text("confirme")
+                              //     : text("en attente")}
+                              // </p>
                             )}
                           </div>
                         </div>

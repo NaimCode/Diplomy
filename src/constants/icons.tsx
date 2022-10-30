@@ -11,6 +11,7 @@ import {GiDiploma} from "react-icons/gi"
 import {CgSandClock} from "react-icons/cg"
 import {AiFillEdit, AiOutlineOrderedList, AiOutlinePlus} from "react-icons/ai"
 import {GoSettings} from 'react-icons/go'
+import {BiCheckbox, BiCheckboxChecked,BiCheckboxMinus} from 'react-icons/bi'
 export const FileIcon=RiFileTextLine
 export const LanguageIcon=TbLanguage
 export const ExpandMoreIcon=MdExpandMore
@@ -56,3 +57,7 @@ export const RadioDisabledIcon=MdOutlineRadioButtonUnchecked
 export const PlusIcon=AiOutlinePlus
 export const ArrowRight=IoIosArrowForward
 export const SearchIcon=BsSearch
+
+export const Check2Icon=BiCheckboxChecked
+export const CheckMidIcon=BiCheckboxMinus
+export const CheckNoIcon=BiCheckbox

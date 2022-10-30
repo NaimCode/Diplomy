@@ -69,7 +69,7 @@ model Utilisateur {
     id              String        @unique @default(uuid())
     email           String        @unique
     etablissementId String
-    photo String?
+    photo           String?
     locale          String?
     isMembre        Boolean       @default(true)
     etablissement   Etablissement @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
@@ -90,21 +90,22 @@ model Inscription {
 }
 
 model Etablissement {
-    id               String        @id @default(uuid())
-    createAt         DateTime      @default(now())
-    updateAt         DateTime      @updatedAt
-    logo String?
+    id               String           @id @default(uuid())
+    createAt         DateTime         @default(now())
+    updateAt         DateTime         @updatedAt
+    logo             String?
     abrev            String
-    nom              String        @unique
+    nom              String           @unique
     identifiant      String?
     paysVille        String?
     address          String?
-    membresAutorises String[]      @unique @default([])
+    membresAutorises String[]         @unique @default([])
     membres          Utilisateur[]
     formations       Formation[]
-    etudiants Etudiant[]
-    transaction Transaction[]
-    contracts ContractMembre[]
+    etudiants        Etudiant[]
+    transaction      Transaction[]
+    contracts        ContractMembre[]
+    chats            Chat[]
 }
 
 model Formation {
@@ -113,32 +114,29 @@ model Formation {
     updateAt DateTime @updatedAt
 
     //fields
-    intitule        String        @unique
-    versionnage     Boolean       @default(true)
+    intitule    String  @unique
+    versionnage Boolean @default(true)
 
     //foreigh
-    diplomeId String?  @unique
-    diplome   Diplome? @relation(fields: [diplomeId], references: [id], onDelete: Cascade)
+    diplomeId       String?       @unique
+    diplome         Diplome?      @relation(fields: [diplomeId], references: [id], onDelete: Cascade)
     etablissementId String
     etablissement   Etablissement @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
-    
+
     //extra
-     versions Version[]
-     etudiants Etudiant[]
+    versions  Version[]
+    etudiants Etudiant[]
 
-     contractsAboutissement Contract[] 
-
-   
-
+    contractsAboutissement Contract[]
 }
 
 model Version {
-    id       String      @id @default(uuid())
+    id       String   @id @default(uuid())
     createAt DateTime @default(now())
     updateAt DateTime @updatedAt
 
     //fields
-    numero Int 
+    numero Int
 
     //foreign
     formationId String
@@ -147,7 +145,6 @@ model Version {
     formation   Formation @relation(fields: [formationId], references: [id], onDelete: Cascade)
 
     //extra
-   
 }
 
 model Diplome {
@@ -176,36 +173,35 @@ model Canvas {
     diplomes Diplome[]
 }
 
-
-model Etudiant{
-    id String @id @default(uuid())
+model Etudiant {
+    id       String   @id @default(uuid())
     createAt DateTime @default(now())
     updateAt DateTime @updatedAt
 
     //fields
-    nom String
-    prenom String
-    email String
+    nom     String
+    prenom  String
+    email   String
     removed Boolean? @default(false)
-    
+
     //Foreign
     etablissemntId String
-    etablissement Etablissement @relation(fields: [etablissemntId],references: [id],onDelete: Cascade)
-    formationId String
-    formation Formation @relation(fields: [formationId],references: [id],onDelete: Cascade)
+    etablissement  Etablissement @relation(fields: [etablissemntId], references: [id], onDelete: Cascade)
+    formationId    String
+    formation      Formation     @relation(fields: [formationId], references: [id], onDelete: Cascade)
 
-    documentId String? @unique
-    document Document? @relation(fields: [documentId],references: [id],onDelete: Cascade)
-      
+    documentId String?   @unique
+    document   Document? @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
     //extra
     transaction Transaction?
 }
 
-model Document{
-    id String @id @default(uuid())
+model Document {
+    id       String   @id @default(uuid())
     createAt DateTime @default(now())
     updateAt DateTime @updatedAt
-    
+
     //field
     type DocumentType
     hash String
@@ -214,78 +210,92 @@ model Document{
     Etudiant Etudiant?
 }
 
-
-model Transaction{
-    id String @id @default(uuid())
-    createAt DateTime @default(now())
-    updateAt DateTime @updatedAt
+model Transaction {
+    id          String          @id @default(uuid())
+    createAt    DateTime        @default(now())
+    updateAt    DateTime        @updatedAt
     //field
-    hash String @unique
+    hash        String          @unique
     blockNumber Int
-    blockHash String
-    signataire String
-    chainId Int
-    type TransactionType
+    blockHash   String
+    signataire  String
+    chainId     Int
+    type        TransactionType
 
     //extre
     etablissementId String?
-    etablissement Etablissement? @relation(fields: [etablissementId],references: [id],onDelete: Cascade) 
-    etudiantId String? @unique
-    etudiant Etudiant? @relation(fields: [etudiantId],references: [id],onDelete: Cascade)
+    etablissement   Etablissement? @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
+    etudiantId      String?        @unique
+    etudiant        Etudiant?      @relation(fields: [etudiantId], references: [id], onDelete: Cascade)
 
     //
     contract Contract?
- 
 }
 
-model Contract{
-    id String @id @default(uuid())
+model Contract {
+    id       String   @id @default(uuid())
     createAt DateTime @default(now())
     updateAt DateTime @updatedAt
-  
-    //field 
-     etape Int @default(1)
-     conditionsId String[]
-    
-      aboutissementId String?
-      aboutissement Formation? @relation(references: [id],fields: [ aboutissementId],onDelete: Cascade) 
-   
 
-    address String?
-     transactionId String? @unique
-     transaction Transaction? @relation(fields: [transactionId],references: [id],onDelete: Cascade)
-    
+    //field 
+    etape        Int      @default(1)
+    conditionsId String[]
+
+    aboutissementId String?
+    aboutissement   Formation? @relation(references: [id], fields: [aboutissementId], onDelete: Cascade)
+
+    address       String?
+    transactionId String?      @unique
+    transaction   Transaction? @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
     //extra
     membres ContractMembre[]
+
+    chat Chat[]
 }
 
-model ContractMembre{
-    id String @id @default(uuid())
+model Chat {
+    id       String   @id @default(uuid())
     createAt DateTime @default(now())
     updateAt DateTime @updatedAt
+
+    contractId      String
+    contract        Contract      @relation(fields: [contractId], references: [id], onDelete: Cascade)
+    etablissementId String
+    etablissement   Etablissement @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
+
+    content String
+}
+
+model ContractMembre {
+    id       String     @id @default(uuid())
+    createAt DateTime   @default(now())
+    updateAt DateTime   @updatedAt
     //field
-    accept Boolean @default(false)
-    confirm Boolean @default(false)
-       avis AvisMembre @default(ATTENTE)
-    
-    contractId String 
-    Contract Contract @relation(fields: [contractId],references: [id],onDelete: Cascade)
+    accept   Boolean    @default(false)
+    confirm  Boolean    @default(false)
+    avis     AvisMembre @default(ATTENTE)
+
+    contractId String
+    Contract   Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
 
     etablissementId String
-    etablissement Etablissement @relation(fields: [etablissementId],references: [id],onDelete: Cascade)
+    etablissement   Etablissement @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
 }
-enum DocumentType{
+
+enum DocumentType {
     PDF
     IMAGE
 }
-enum TransactionType{
-   CERTIFICATION
-   CONTRACT
+
+enum TransactionType {
+    CERTIFICATION
+    CONTRACT
 }
 
-enum AvisMembre{
+enum AvisMembre {
     REFUSE
     ATTENTE
-    ACCEPTE
-    ACCEPTE_EN_SURCIS
+    CONFIRME
+    CONFIRME_CONDITION
 }
